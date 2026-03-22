@@ -9810,47 +9810,63 @@ document.addEventListener('keydown', e => {
 // CONEXIÓN API GEMINI (Ámbito Global)
 // ══════════════════════════════════════════════════════════════════
 async function geminiRequest(apiKey, body, maxRetries = 2) {
-  // Reducimos reintentos para no dejar la pantalla congelada si Google bloquea
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-  let attempt = 0;
-  let baseDelay = 2000;
+  // Usamos la versión estable de la API y probamos modelos compatibles por orden.
+  const models = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'];
+  let lastModelError = '';
 
-  while (attempt <= maxRetries) {
-    try {
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent`;
+    let attempt = 0;
+    const baseDelay = 2000;
 
-      if (resp.ok) return await resp.json();
+    while (attempt <= maxRetries) {
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey
+          },
+          body: JSON.stringify(body)
+        });
 
-      // Si Google nos bloquea por límite de consultas (429) o saturación (503)
-      if (resp.status === 429 || resp.status >= 500) {
-        if (attempt === maxRetries) throw new Error(`Google API saturada (Error ${resp.status}). Por favor, espera un minuto.`);
-        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
-        await new Promise(r => setTimeout(r, delay));
-        attempt++;
-        continue;
+        if (resp.ok) return await resp.json();
+
+        const errText = await resp.text();
+        let errMsg = resp.statusText;
+        try { errMsg = JSON.parse(errText).error.message; } catch(e) {}
+
+        // Si el modelo no está disponible en esta clave/proyecto, probamos el siguiente.
+        if (resp.status === 404 && /not found|not supported/i.test(errMsg)) {
+          lastModelError = `Modelo ${model} no disponible: ${errMsg}`;
+          break;
+        }
+
+        // Si Google nos bloquea por límite de consultas (429) o saturación (5xx)
+        if (resp.status === 429 || resp.status >= 500) {
+          if (attempt === maxRetries) throw new Error(`Google API saturada (Error ${resp.status}). Por favor, espera un minuto.`);
+          const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
+          await new Promise(r => setTimeout(r, delay));
+          attempt++;
+          continue;
+        }
+
+        throw new Error(`Error API (${resp.status}): ${errMsg}`);
+
+      } catch (e) {
+        if (!e.message.includes('Error API') && !e.message.includes('Google API saturada')) {
+          if (attempt === maxRetries) throw new Error('Fallo de red o conexión bloqueada.');
+          const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
+          await new Promise(r => setTimeout(r, delay));
+          attempt++;
+          continue;
+        }
+        throw e;
       }
-
-      // Si es un error de clave inválida o petición mal formada
-      const errText = await resp.text();
-      let errMsg = resp.statusText;
-      try { errMsg = JSON.parse(errText).error.message; } catch(e) {}
-      throw new Error(`Error API (${resp.status}): ${errMsg}`);
-
-    } catch (e) {
-      if (!e.message.includes('Error API')) {
-        if (attempt === maxRetries) throw new Error('Fallo de red o conexión bloqueada.');
-        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
-        await new Promise(r => setTimeout(r, delay));
-        attempt++;
-        continue;
-      }
-      throw e;
     }
   }
+
+  throw new Error(lastModelError || 'No hay un modelo Gemini compatible disponible para esta clave.');
 }
 
 // ══════════════════════════════════════════════════════════════════
