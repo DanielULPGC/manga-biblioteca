@@ -10309,13 +10309,8 @@ INSTRUCCIONES DE RESPUESTA:
       } catch(fetchErr) {
         removeTyping();
         const msg = fetchErr.message || '';
-        if (msg.includes('400') || msg.includes('403') || msg.includes('API_KEY')) {
-          addMsg('assistant', 'Clave de Google no válida. Obtén una nueva en <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#7AB4FF">Google AI Studio →</a>');
-          keyStatus.textContent = 'Clave inválida'; keyStatus.className = 'asist-key-status err';
-          apiKey = ''; sessionStorage.removeItem(SESS_KEY);
-        } else {
-          addMsg('assistant', `<span style="color:#e06060">Error: ${msg}</span>`);
-        }
+        // Ahora nos dirá la verdad sin borrarte la clave
+        addMsg('assistant', `<span style="color:#e06060">Respuesta de Google: ${msg}</span>`);
         return;
       }
       removeTyping();
