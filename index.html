@@ -9635,11 +9635,128 @@ document.addEventListener('keydown', e => {
 
 
 
-// ── ASISTENTE PEDAGÓGICO IA ───────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// CONEXIÓN API GEMINI (Ámbito Global)
+// ══════════════════════════════════════════════════════════════════
+async function geminiRequest(apiKey, body, maxRetries = 2) {
+  // Reducimos reintentos para no dejar la pantalla congelada si Google bloquea
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  let attempt = 0;
+  let baseDelay = 2000;
+
+  while (attempt <= maxRetries) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (resp.ok) return await resp.json();
+
+      // Si Google nos bloquea por límite de consultas (429) o saturación (503)
+      if (resp.status === 429 || resp.status >= 500) {
+        if (attempt === maxRetries) throw new Error(`Google API saturada (Error ${resp.status}). Por favor, espera un minuto.`);
+        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
+        await new Promise(r => setTimeout(r, delay));
+        attempt++;
+        continue;
+      }
+
+      // Si es un error de clave inválida o petición mal formada
+      const errText = await resp.text();
+      let errMsg = resp.statusText;
+      try { errMsg = JSON.parse(errText).error.message; } catch(e) {}
+      throw new Error(`Error API (${resp.status}): ${errMsg}`);
+
+    } catch (e) {
+      if (!e.message.includes('Error API')) {
+        if (attempt === maxRetries) throw new Error('Fallo de red o conexión bloqueada.');
+        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
+        await new Promise(r => setTimeout(r, delay));
+        attempt++;
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// GENERADORES IA (Accesibles por los botones HTML)
+// ══════════════════════════════════════════════════════════════════
+async function generarRubrica() {
+  const apiKey  = sessionStorage.getItem('manga_asist_apikey') || '';
+  const titulo  = document.getElementById('rubricaTitulo').value.trim();
+  const nivel   = document.getElementById('rubricaNivel').value;
+  const comp    = document.getElementById('rubricaComp').value;
+  const bodyEl  = document.getElementById('rubricaBody');
+  const btn     = document.getElementById('rubricaGenBtn');
+
+  if (!titulo) { bodyEl.innerHTML = '<p class="rubrica-placeholder">Introduce el título de un manga.</p>'; return; }
+  if (!apiKey) {
+    bodyEl.innerHTML = '<p class="rubrica-no-key">Activa el <strong>Asistente IA</strong> (icono ✧ abajo a la derecha) con tu clave de Google AI Studio para usar esta función.</p>';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Generando…';
+  bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica con IA... (unos 10-15 segundos)</p>';
+
+  const prompt = `Genera una rúbrica de evaluación LOMLOE para trabajar el manga "${titulo}" en ${nivel}. Competencia principal: ${comp}.
+Formato: SOLO HTML (sin markdown de bloques de código). 1 párrafo contexto, tabla 4x4 (criterios/niveles), 1 párrafo final de instrucciones. Usa etiquetas semánticas estándar de tabla.`;
+
+  try {
+    const data = await geminiRequest(apiKey, {
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { maxOutputTokens: 1200, temperature: 0.6 }
+    });
+    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    bodyEl.innerHTML = `<div class="rubrica-content">${html.replace(/```html?\n?/g, '').replace(/```\n?/g, '')}</div>`;
+  } catch(e) {
+    bodyEl.innerHTML = `<div class="rubrica-no-key" style="color:#a00;text-align:left;"><strong>Error:</strong><br>${e.message}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generar rúbrica ✦';
+  }
+}
+
+async function generarSecuencia() {
+  const apiKey   = sessionStorage.getItem('manga_asist_apikey') || '';
+  const titulo   = document.getElementById('secTitulo').value.trim();
+  const etapa    = document.getElementById('secEtapa').value;
+  const sesiones = document.getElementById('secSesiones').value;
+  const comp     = document.getElementById('secComp').value;
+  const bodyEl   = document.getElementById('secBody');
+  const btn      = document.getElementById('secGenBtn');
+
+  if (!titulo) { bodyEl.innerHTML = '<p class="sec-placeholder">Introduce el título de un manga.</p>'; return; }
+  if (!apiKey) { bodyEl.innerHTML = '<p class="sec-placeholder">Activa el <strong>Asistente IA</strong> (icono ✧ abajo a la derecha) con tu clave.</p>'; return; }
+
+  btn.disabled = true; btn.textContent = 'Generando…';
+  bodyEl.innerHTML = '<p class="sec-placeholder">Generando secuencia didáctica... (unos 15-20 segundos)</p>';
+
+  const prompt = `Genera una secuencia didáctica para trabajar "${titulo}" en ${etapa} con ${sesiones} sesiones de 50 min. Competencia: ${comp}.
+Formato: SOLO HTML (sin markdown de bloques de código). 1 párrafo justificación, lista objetivos, tabla de sesiones, criterios evaluación.`;
+
+  try {
+    const data = await geminiRequest(apiKey, {
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { maxOutputTokens: 1500, temperature: 0.65 }
+    });
+    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    bodyEl.innerHTML = `<div class="sec-content">${html.replace(/```html?\n?/g, '').replace(/```\n?/g, '')}</div>`;
+  } catch(e) {
+    bodyEl.innerHTML = `<div class="rubrica-no-key" style="color:#a00;text-align:left;"><strong>Error:</strong><br>${e.message}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generar secuencia ✦';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ASISTENTE PEDAGÓGICO IA (Chat)
+// ══════════════════════════════════════════════════════════════════
 (function() {
   const SESS_KEY = 'manga_asist_apikey';
 
-  // ── Catalog embedded in JS ─────────────────────────────────
   const CATALOG_RAW = `Team medical dragon|Taro Nogizaka|2009|ciencia|bachillerato
 Eagle|Kaiji Kawaguchi|2008|historia|bachillerato
 3 x 3 eyes|Yuzo Takada|2019|ciencia|secundaria
@@ -9922,52 +10039,36 @@ La fortaleza de papel|Osamu Tezuka|1974|historia|secundaria`;
     return { title, author, year, uso, nivel };
   });
 
-  // ── System prompt ──────────────────────────────────────────
   function buildSystemPrompt() {
     const cat = CATALOG.map(c =>
       `• ${c.title} (${c.author}${c.year ? ', ' + c.year : ''}) — uso: ${c.uso} — nivel: ${c.nivel}`
     ).join('\n');
 
     return `Eres el Asistente Pedagógico de la Biblioteca del Campus del Obelisco (ULPGC, Gran Canaria), especializado en el uso didáctico del manga.
-
 Tu función es ayudar a docentes y visitantes a:
 - Encontrar títulos del fondo de manga adecuados para sus necesidades educativas
 - Diseñar actividades y situaciones de aprendizaje con manga
 - Conectar títulos con el currículo LOMLOE y las competencias clave
 - Argumentar pedagógicamente el uso del manga en el aula
-- Adaptar propuestas a distintas etapas: Infantil, Primaria, Secundaria, Bachillerato, Universidad
 
 FONDO COMPLETO DE LA BIBLIOTECA (279 títulos):
 Formato: Título (Autor, Año) — uso pedagógico principal — nivel
 ${cat}
 
-Usos pedagógicos: historia, filosofia, emocional, lenguas, inclusion, visual, ciencia, genero
-Niveles: infantil, primaria, secundaria, bachillerato, universidad
-
 INSTRUCCIONES DE RESPUESTA:
 - Responde siempre en español
 - Sé concreto: cita títulos reales del fondo cuando hagas recomendaciones
-- Cuando sugieras actividades, menciona la etapa, la competencia LOMLOE y la duración aproximada
-- Usa un tono cercano, profesional y pedagógicamente fundamentado
-- Si te preguntan sobre un título que no está en el fondo, dilo claramente
-- Las respuestas deben ser útiles pero concisas (máximo 300 palabras salvo que pidan detalle)
-- Puedes usar **negrita** para títulos de obras y *cursiva* para conceptos pedagógicos`;
+- Las respuestas deben ser útiles pero concisas (máximo 300 palabras salvo que pidan detalle)`;
   }
 
-  // ── DOM references ─────────────────────────────────────────
   let panel, overlay, messages, input, sendBtn, keyInput, keyStatus, keyArea;
   let conversationHistory = [];
   let apiKey = sessionStorage.getItem(SESS_KEY) || '';
 
-  // ── Render markdown-lite ────────────────────────────────────
   function renderMd(text) {
-    return text
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/\n/g, '<br>');
+    return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
   }
 
-  // ── Add message to chat ─────────────────────────────────────
   function addMsg(role, text, typing) {
     const div = document.createElement('div');
     div.className = 'asist-msg ' + (typing ? 'typing' : role);
@@ -9978,13 +10079,11 @@ INSTRUCCIONES DE RESPUESTA:
     return div;
   }
 
-  // ── Remove typing indicator ─────────────────────────────────
   function removeTyping() {
     const t = document.getElementById('asist-typing');
     if (t) t.remove();
   }
 
-  // ── Add suggestion chips ────────────────────────────────────
   function addSuggestions(items) {
     const wrap = document.createElement('div');
     wrap.style.cssText = 'align-self:flex-start;max-width:92%;margin-top:-.3rem';
@@ -10000,148 +10099,14 @@ INSTRUCCIONES DE RESPUESTA:
     messages.scrollTop = messages.scrollHeight;
   }
 
-  // ── Send message ────────────────────────────────────────────
-  
-// ── Gemini API con retroceso exponencial ─────────────────────
-// Función reescrita para asegurar un retroceso exponencial limpio, sin colisiones
-async function geminiRequest(apiKey, body, maxRetries = 8) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-  let attempt = 0;
-  let baseDelay = 3000; // Empezamos en 3 segundos
-
-  while (attempt <= maxRetries) {
-    try {
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-
-      if (resp.ok) {
-        return await resp.json();
-      }
-
-      if (resp.status === 429 || resp.status >= 500) {
-        if (attempt === maxRetries) {
-          throw new Error(`Google API está saturada. Por favor, espera un minuto y vuelve a intentarlo (Error ${resp.status}).`);
-        }
-        const delay = baseDelay * Math.pow(2, attempt);
-        const jitter = Math.random() * 1000;
-        const waitTime = Math.min(delay + jitter, 60000);
-        console.warn(`[Intento ${attempt + 1}/${maxRetries}] Límite API de Google. Esperando ${Math.round(waitTime / 1000)}s antes de reintentar...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        attempt++;
-        continue;
-      }
-
-      const errText = await resp.text();
-      let errMsg = resp.statusText;
-      try { const errJson = JSON.parse(errText); errMsg = errJson.error?.message || errMsg; } catch (e) {}
-      throw new Error(`Error en la API de Google (${resp.status}): ${errMsg}`);
-
-    } catch (e) {
-      if (!e.message.includes('Error en la API de Google')) {
-        if (attempt === maxRetries) {
-          throw new Error(`Fallo de conexión a internet. Revisa tu red y vuelve a intentarlo.`);
-        }
-        const waitTime = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
-        console.warn(`[Intento ${attempt + 1}/${maxRetries}] Fallo de red. Esperando ${Math.round(waitTime / 1000)}s...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        attempt++;
-        continue;
-      } else {
-        throw e;
-      }
-    }
-  }
-}
-
-// ══ GENERADOR DE RÚBRICA (IA) ════════════════════════════════
-async function generarRubrica() {
-  const apiKey  = sessionStorage.getItem('manga_asist_apikey') || '';
-  const titulo  = document.getElementById('rubricaTitulo').value.trim();
-  const nivel   = document.getElementById('rubricaNivel').value;
-  const comp    = document.getElementById('rubricaComp').value;
-  const bodyEl  = document.getElementById('rubricaBody');
-  const btn     = document.getElementById('rubricaGenBtn');
-
-  if (!titulo) { bodyEl.innerHTML = '<p class="rubrica-placeholder">Introduce el título de un manga del fondo.</p>'; return; }
-  if (!apiKey) {
-    bodyEl.innerHTML = `<p class="rubrica-no-key">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio.<br>
-      <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Obtén tu clave gratis →</a></p>`;
-    return;
-  }
-
-  btn.disabled = true; btn.textContent = 'Generando…';
-  bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica… (puede tardar hasta 30-40 s si hay que esperar el turno de la API)</p>';
-
-  const prompt = `Genera una rúbrica de evaluación LOMLOE para trabajar el manga "${titulo}" en ${nivel}.\nCompetencia principal: ${comp}.\nFormato: SOLO HTML. Incluye: párrafo de contexto, tabla 4 criterios × 4 niveles (Inicial, En desarrollo, Conseguido, Excelente), párrafo de instrucciones. Usa <h3><table><thead><tbody><tr><th><td><p>.`;
-
-  try {
-    const data = await geminiRequest(apiKey, {
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 1200, temperature: 0.6 }
-    });
-    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    html = html.replace(/```html?\n?/g, '').replace(/```\n?/g, '').trim();
-    bodyEl.innerHTML = `<div class="rubrica-content">${html}</div>`;
-  } catch(e) {
-    bodyEl.innerHTML = `<div style="color:#a00;padding:1rem"><strong>Error:</strong><br>${e.message}<br><br>
-      Si el error dice "saturada", espera unos segundos y vuelve a pulsar el botón.</div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = 'Generar rúbrica ✦';
-  }
-}
-
-// ══ GENERADOR DE SECUENCIA DIDÁCTICA ════════════════════════
-async function generarSecuencia() {
-  const apiKey   = sessionStorage.getItem('manga_asist_apikey') || '';
-  const titulo   = document.getElementById('secTitulo').value.trim();
-  const etapa    = document.getElementById('secEtapa').value;
-  const sesiones = document.getElementById('secSesiones').value;
-  const comp     = document.getElementById('secComp').value;
-  const bodyEl   = document.getElementById('secBody');
-  const btn      = document.getElementById('secGenBtn');
-
-  if (!titulo) { bodyEl.innerHTML = '<p class="sec-placeholder">Introduce el título de un manga del fondo.</p>'; return; }
-  if (!apiKey) {
-    bodyEl.innerHTML = '<p class="sec-placeholder">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio.<br><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style="color:#2a5a2a">Obtén tu clave gratis →</a></p>';
-    return;
-  }
-
-  btn.disabled = true; btn.textContent = 'Generando…';
-  bodyEl.innerHTML = '<p class="sec-placeholder">Generando secuencia didáctica… (puede tardar hasta 30-40 s si hay que esperar el turno de la API)</p>';
-
-  const prompt = `Genera una secuencia didáctica completa para el manga "${titulo}" en ${etapa} con ${sesiones} sesiones de 50 min.\nCompetencia: ${comp}.\nFormato: SOLO HTML. Incluye: título y justificación (1 párrafo), objetivos (lista), tabla de sesiones (número, título, actividad, materiales), criterios LOMLOE. Usa <h3><p><ul><li><table><thead><tbody><tr><th><td>.`;
-
-  try {
-    const data = await geminiRequest(apiKey, {
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 1400, temperature: 0.65 }
-    });
-    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    html = html.replace(/```html?\n?/g, '').replace(/```\n?/g, '').trim();
-    bodyEl.innerHTML = `<div class="sec-content">${html}</div>`;
-  } catch(e) {
-    bodyEl.innerHTML = `<div style="color:#a00;padding:1rem"><strong>Error:</strong><br>${e.message}<br><br>
-      Si el error dice "saturada", espera unos segundos y vuelve a pulsar el botón.</div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = 'Generar secuencia ✦';
-  }
-}
-async function sendMessage(text) {
+  async function sendMessage(text) {
     if (!text.trim() || !apiKey) return;
-    input.value = '';
-    input.style.height = 'auto';
-    sendBtn.disabled = true;
-
+    input.value = ''; input.style.height = 'auto'; sendBtn.disabled = true;
     addMsg('user', text);
     conversationHistory.push({ role: 'user', content: text });
-
     addMsg('assistant', 'Consultando el fondo…', true);
 
     try {
-      // Build Gemini conversation format
       const geminiContents = conversationHistory.map(m => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.content }]
@@ -10157,12 +10122,12 @@ async function sendMessage(text) {
       } catch(fetchErr) {
         removeTyping();
         const msg = fetchErr.message || '';
-        if (msg.includes('400') || msg.includes('403') || msg.includes('API_KEY') || msg.includes('inválid')) {
+        if (msg.includes('400') || msg.includes('403') || msg.includes('API_KEY')) {
           addMsg('assistant', 'Clave de Google no válida. Obtén una nueva en <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#7AB4FF">Google AI Studio →</a>');
           keyStatus.textContent = 'Clave inválida'; keyStatus.className = 'asist-key-status err';
           apiKey = ''; sessionStorage.removeItem(SESS_KEY);
         } else {
-          addMsg('assistant', msg || 'Error de red. Comprueba tu conexión e inténtalo de nuevo.');
+          addMsg('assistant', `<span style="color:#e06060">Error: ${msg}</span>`);
         }
         return;
       }
@@ -10171,792 +10136,113 @@ async function sendMessage(text) {
       conversationHistory.push({ role: 'assistant', content: reply });
       addMsg('assistant', reply);
 
-      // Show suggestions after first exchange
       if (conversationHistory.length === 2) {
-        addSuggestions([
-          'Dame un itinerario para Primaria',
-          'Recomiéndame manga para trabajar la empatía',
-          '¿Qué competencias LOMLOE trabaja Death Note?',
-          'Diseña una actividad de 50 min para ESO'
-        ]);
+        addSuggestions(['Dame un itinerario para Primaria', 'Recomiéndame manga para empatía', '¿Qué trabaja Death Note?', 'Diseña una actividad para ESO']);
       }
-
     } catch (e) {
       removeTyping();
-      addMsg('assistant', 'Error de red. Comprueba tu conexión e inténtalo de nuevo.');
+      addMsg('assistant', `<span style="color:#e06060">Error interno del asistente. Recarga la página si el problema persiste.</span>`);
     } finally {
-      sendBtn.disabled = false;
-      input.focus();
+      sendBtn.disabled = false; input.focus();
     }
   }
 
-  // ── Save API key ────────────────────────────────────────────
   function saveKey() {
     const k = keyInput.value.trim();
     if (!k.startsWith('AIza')) {
-      keyStatus.textContent = 'La clave de Google debe empezar por AIza…';
-      keyStatus.className = 'asist-key-status err';
-      return;
+      keyStatus.textContent = 'La clave debe empezar por AIza…'; keyStatus.className = 'asist-key-status err'; return;
     }
-    apiKeyGoogle = k; apiKey = k; activeProvider = 'google';
-    sessionStorage.setItem(SESS_KEY_G, k);
-    keyStatus.textContent = '✓ Clave de Google guardada para esta sesión';
-    keyStatus.className = 'asist-key-status ok';
+    apiKey = k; sessionStorage.setItem(SESS_KEY, k);
+    keyStatus.textContent = '✓ Clave guardada'; keyStatus.className = 'asist-key-status ok';
     keyInput.value = '';
     setTimeout(() => {
       keyArea.style.display = 'none';
       if (conversationHistory.length === 0) {
-        addMsg('assistant',
-          '¡Hola! Soy el asistente pedagógico de la **Biblioteca del Campus del Obelisco**. ' +
-          'Conozco el fondo completo de **279 títulos de manga** y puedo ayudarte a:\n\n' +
-          '• Encontrar el título adecuado para tu clase\n' +
-          '• Diseñar actividades y situaciones de aprendizaje\n' +
-          '• Conectar el manga con el currículo **LOMLOE**\n' +
-          '• Argumentar su uso ante tu claustro\n\n' +
-          '¿Por dónde empezamos?'
-        );
-        addSuggestions([
-          'Busco manga para Infantil',
-          'Quiero trabajar la memoria histórica en ESO',
-          'Recomiéndame algo para Filosofía de Bachillerato',
-          '¿Cómo justifico el manga ante mi claustro?'
-        ]);
+        addMsg('assistant', '¡Hola! Soy el asistente pedagógico de la **Biblioteca del Campus del Obelisco**. Conozco el fondo completo de **279 títulos** y puedo ayudarte a encontrar títulos, diseñar actividades o conectar el manga con el currículo LOMLOE.\n\n¿Por dónde empezamos?');
+        addSuggestions(['Busco manga para Infantil', 'Quiero trabajar memoria histórica en ESO', 'Recomiéndame algo para Filosofía']);
       }
     }, 800);
   }
 
-  // ── Open / close panel ──────────────────────────────────────
   function openPanel() {
-    overlay.classList.add('open');
-    panel.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    overlay.classList.add('open'); panel.classList.add('open'); document.body.style.overflow = 'hidden';
     if (apiKey) {
       keyArea.style.display = 'none';
       if (conversationHistory.length === 0) {
-        addMsg('assistant',
-          '¡Hola! Soy el asistente pedagógico de la **Biblioteca del Campus del Obelisco**. ' +
-          'Conozco el fondo completo de **279 títulos de manga** y puedo ayudarte a:\n\n' +
-          '• Encontrar el título adecuado para tu clase\n' +
-          '• Diseñar actividades y situaciones de aprendizaje\n' +
-          '• Conectar el manga con el currículo **LOMLOE**\n\n' +
-          '¿Por dónde empezamos?'
-        );
-        addSuggestions([
-          'Busco manga para Infantil',
-          'Quiero trabajar la memoria histórica en ESO',
-          'Recomiéndame algo para Filosofía de Bachillerato',
-          '¿Cómo justifico el manga ante mi claustro?'
-        ]);
+        addMsg('assistant', '¡Hola! Soy el asistente pedagógico de la **Biblioteca**. Conozco el fondo de **279 títulos**. ¿En qué te ayudo hoy?');
+        addSuggestions(['Busco manga para Infantil', 'Quiero trabajar memoria histórica en ESO', 'Recomiéndame algo para Filosofía']);
       }
     }
     setTimeout(() => input.focus(), 300);
   }
 
   function closePanel() {
-    overlay.classList.remove('open');
-    panel.classList.remove('open');
-    document.body.style.overflow = '';
+    overlay.classList.remove('open'); panel.classList.remove('open'); document.body.style.overflow = '';
   }
 
-  // ── Build DOM ───────────────────────────────────────────────
   function buildUI() {
-    overlay = document.createElement('div'); overlay.id = 'asist-overlay';
-    overlay.onclick = closePanel;
-    document.body.appendChild(overlay);
-
-    panel = document.createElement('div'); panel.id = 'asist-panel';
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', 'Asistente pedagógico de manga');
+    overlay = document.createElement('div'); overlay.id = 'asist-overlay'; overlay.onclick = closePanel; document.body.appendChild(overlay);
+    panel = document.createElement('div'); panel.id = 'asist-panel'; panel.setAttribute('role', 'dialog');
     panel.innerHTML = `
-      <div id="asist-head">
-        <h2>✦ Asistente Pedagógico</h2>
-        <button type="button" id="asist-close" aria-label="Cerrar asistente">Cerrar ✕</button>
-      </div>
-      <div id="asist-key-area">
-        <p>Clave de <strong>Google AI Studio</strong> — gratuita, sin tarjeta de crédito.
-        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer"
-           style="color:#7AB4FF">Obtén tu clave gratis →</a><br>
-        La clave se guarda solo en esta pestaña del navegador y no se comparte con nadie.</p>
-        <div id="asist-key-row">
-          <input type="password" id="asist-key-input" placeholder="AIzaSy…"
-                 autocomplete="off" spellcheck="false">
-          <button type="button" id="asist-key-save">Activar</button>
-        </div>
-        <p id="asist-key-status" class="asist-key-status"></p>
-      </div>
-      <div id="asist-messages" role="log" aria-live="polite"></div>
-      <div id="asist-input-area">
-        <textarea id="asist-input" placeholder="Escribe tu consulta pedagógica…"
-                  rows="1" aria-label="Mensaje al asistente"></textarea>
-        <button type="button" id="asist-send" aria-label="Enviar">Enviar</button>
-      </div>
-      <div id="asist-disclaimer">
-        Respuestas generadas por IA · Verifica siempre la información pedagógica
-      </div>`;
+      <div id="asist-head"><h2>✦ Asistente Pedagógico</h2><button type="button" id="asist-close">Cerrar ✕</button></div>
+      <div id="asist-key-area"><p>Clave de <strong>Google AI Studio</strong>. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#7AB4FF">Obtén tu clave gratis →</a></p>
+        <div id="asist-key-row"><input type="password" id="asist-key-input" placeholder="AIzaSy…"><button type="button" id="asist-key-save">Activar</button></div>
+        <p id="asist-key-status" class="asist-key-status"></p></div>
+      <div id="asist-messages"></div>
+      <div id="asist-input-area"><textarea id="asist-input" placeholder="Escribe tu consulta…"></textarea><button type="button" id="asist-send">Enviar</button></div>`;
     document.body.appendChild(panel);
 
-    // ── DOM refs ──
-    messages  = document.getElementById('asist-messages');
-    input     = document.getElementById('asist-input');
-    sendBtn   = document.getElementById('asist-send');
-    keyInput  = document.getElementById('asist-key-input');
-    keyStatus = document.getElementById('asist-key-status');
-    keyArea   = document.getElementById('asist-key-area');
+    messages = document.getElementById('asist-messages'); input = document.getElementById('asist-input');
+    sendBtn = document.getElementById('asist-send'); keyInput = document.getElementById('asist-key-input');
+    keyStatus = document.getElementById('asist-key-status'); keyArea = document.getElementById('asist-key-area');
 
-    document.getElementById('asist-close').onclick = closePanel;
-    document.getElementById('asist-key-save').onclick = saveKey;
-
+    document.getElementById('asist-close').onclick = closePanel; document.getElementById('asist-key-save').onclick = saveKey;
     keyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
-
-    // Auto-resize textarea
-    input.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage(input.value);
-      }
-    });
+    input.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input.value); } });
     sendBtn.onclick = () => sendMessage(input.value);
-
-    // Keyboard: Escape closes
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
-    });
-
-    // Show key area or not
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) closePanel(); });
     if (apiKey) keyArea.style.display = 'none';
 
-    // ── Floating button now inside FAB — wire up asist-fab ──
     const fabBtn = document.getElementById('asist-fab');
-    if (fabBtn) { fabBtn.onclick = openPanel; }
+    if (fabBtn) fabBtn.onclick = openPanel;
   }
 
-  // Init after DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildUI);
-  } else {
-    buildUI();
-  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', buildUI); } else { buildUI(); }
 })();
 
-
-// ══ FICHA DE AULA ════════════════════════════════════════════
-const USO_LABELS_F = {
-  historia:'Historia', filosofia:'Filosofía y ética', emocional:'Educación emocional',
-  lenguas:'Lengua extranjera', inclusion:'Inclusión', visual:'Alfabetización visual',
-  ciencia:'Ciencia y tecnología', genero:'Género e identidad'
-};
-const USO_COLORS_F = {
-  historia:'#5A3A1A', filosofia:'#4A2A6A', emocional:'#7A5A0A',
-  lenguas:'#2E6E3A', inclusion:'#3A4A8A', visual:'#5E3A8A',
-  ciencia:'#1A5A8B', genero:'#8B1A4A'
-};
-const NIV_LABELS_F = {
-  infantil:'Infantil', primaria:'Primaria', secundaria:'Secundaria',
-  bachillerato:'Bachillerato', universidad:'Universidad'
-};
-
-// Auto-generate 3 questions from the tip text
-function generateQuestions(tip, uso) {
-  const base = {
-    historia:   ['¿Qué contexto histórico refleja esta obra?',
-                 '¿Cómo se relaciona con los contenidos del currículo?',
-                 '¿Qué valores o conflictos históricos aparecen?'],
-    filosofia:  ['¿Qué dilema ético plantea la historia?',
-                 '¿Con qué corriente filosófica lo relacionarías?',
-                 '¿Qué preguntas fundamentales abre el texto?'],
-    emocional:  ['¿Qué emociones experimenta el personaje principal?',
-                 '¿Cómo resuelve el personaje sus conflictos internos?',
-                 '¿Qué estrategias de gestión emocional aparecen?'],
-    lenguas:    ['¿Qué elementos lingüísticos o culturales destaca la obra?',
-                 '¿Cómo se refleja la identidad cultural en el texto?',
-                 '¿Qué términos o expresiones son propios del contexto?'],
-    inclusion:  ['¿Cómo se representa la diversidad en la obra?',
-                 '¿Qué situaciones de exclusión o aceptación aparecen?',
-                 '¿Qué mensaje transmite sobre la diferencia?'],
-    visual:     ['¿Cómo usa el autor el lenguaje visual para narrar?',
-                 '¿Qué recursos gráficos (encuadre, línea, color) predominan?',
-                 '¿Cómo contribuye el dibujo al significado de la historia?'],
-    ciencia:    ['¿Qué concepto científico o tecnológico aparece en la obra?',
-                 '¿Es la representación científica fiel a la realidad?',
-                 '¿Qué implicaciones éticas plantea el avance tecnológico?'],
-    genero:     ['¿Cómo se representan los roles de género en la obra?',
-                 '¿Qué estereotipos aparecen o se cuestionan?',
-                 '¿Cómo se relaciona con los debates contemporáneos sobre igualdad?'],
-  };
-  return (base[uso] || base.visual).map((q, i) => `<li>${q}</li>`).join('');
+// ══ MODAL DE RÚBRICAS Y SECUENCIAS (CONTROLES DE CIERRE) ════════
+function closeRubrica() {
+  document.getElementById('rubricaOverlay').classList.remove('open');
 }
 
-// LOMLOE connection by uso
-function lomloeConnection(uso, nivel) {
-  const map = {
-    historia:   'Competencia Social y Cívica (CSC) · Conciencia y expresión cultural (CCEC). Vinculación con Ciencias Sociales e Historia: fuentes primarias, memoria histórica y pensamiento crítico.',
-    filosofia:  'Competencia Personal, Social y de Aprender a Aprender (CPSAA) · CCL. Vinculación con Filosofía y Ética: argumentación, dilemas morales y ciudadanía crítica.',
-    emocional:  'Competencia Personal, Social y de Aprender a Aprender (CPSAA). Vinculación con tutoría, Educación Emocional y desarrollo de habilidades socioemocionales.',
-    lenguas:    'Comunicación Lingüística (CCL) · Plurilingüe (CP). Vinculación con Lengua y Literatura, Lengua Extranjera: análisis textual, mediación cultural y lectura literaria.',
-    inclusion:  'Competencia Social y Cívica (CSC) · CPSAA. Vinculación transversal: convivencia, diversidad, educación en valores y tutoría.',
-    visual:     'Conciencia y expresión cultural (CCEC) · CCL. Vinculación con Educación Artística, Lengua y Literatura: análisis de imagen, narrativa visual y alfabetización mediática.',
-    ciencia:    'Competencia Matemática y en Ciencia y Tecnología (STEM). Vinculación con Biología, Física, Tecnología e Informática: pensamiento científico y ética tecnológica.',
-    genero:     'Competencia Social y Cívica (CSC) · CPSAA. Vinculación con Igualdad de Género (materia transversal) y Educación para la Ciudadanía.',
-  };
-  return map[uso] || map.visual;
-}
-
-function openFicha(card) {
-  // Attach period to vitrina/ficha calls
-  const _periodo = card.querySelector('.periodo-badge')?.textContent || '';
-  card._periodo = _periodo;
-  const title  = card.querySelector('.cat-title')?.textContent || '';
-  const author = card.querySelector('.cat-author')?.textContent || '';
-  const tip    = card.getAttribute('data-tip') || '';
-  const uso    = (card.getAttribute('data-uso') || '').split(' ')[0];
-  const nivel  = card.getAttribute('data-nivel') || '';
-
-  document.getElementById('fichaTitleEl').textContent = title;
-  document.getElementById('fichaAuthor').textContent  = author;
-  document.getElementById('fichaDesc').textContent    = tip;
-
-  // Badges
-  const badgesEl = document.getElementById('fichaBadges');
-  badgesEl.innerHTML = uso.split(' ').map(u =>
-    `<span class="ficha-badge" style="background:${USO_COLORS_F[u]||'#5a3a1a'}">${USO_LABELS_F[u]||u}</span>`
-  ).join('');
-
-  // Levels
-  document.getElementById('fichaNiv').textContent =
-    nivel.split(' ').map(n => NIV_LABELS_F[n] || n).filter(Boolean).join(' · ');
-
-  // Questions
-  document.getElementById('fichaQuestions').innerHTML = generateQuestions(tip, uso);
-
-  // LOMLOE
-  document.getElementById('fichaLomloe').textContent = lomloeConnection(uso, nivel);
-
-  // Open overlay
-  const ov = document.getElementById('fichaOverlay');
+function openRubrica(card) {
+  const title = card.querySelector('.cat-title')?.textContent || '';
+  const nivel = card.getAttribute('data-nivel') || '';
+  
+  const ov = document.getElementById('rubricaOverlay');
   ov.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.getElementById('rubricaTitulo').value = title;
+  document.getElementById('rubricaBody').innerHTML = '<p class="rubrica-placeholder">Elige un título y etapa, y el asistente IA generará una rúbrica de evaluación LOMLOE lista para usar.</p>';
 }
 
-function closeFicha() {
-  document.getElementById('fichaOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+function closeSec() {
+  document.getElementById('secOverlay').classList.remove('open');
 }
 
-// ══ COMPARADOR REDISEÑADO ════════════════════════════════════
-const compSelection = new Map(); // title_key → card data
-
-function toggleComp(btn) {
-  const card   = btn.closest('.cat-card');
-  const title  = card.querySelector('.cat-title')?.textContent?.trim() || '';
-  const key    = title.slice(0, 30);
-
-  if (compSelection.has(key)) {
-    compSelection.delete(key);
-    btn.classList.remove('selected');
-    btn.textContent = '+ Comparar';
-  } else {
-    if (compSelection.size >= 3) {
-      // Visual feedback — shake
-      btn.style.animation = 'none';
-      btn.offsetHeight;
-      return;
-    }
-    const uso    = card.getAttribute('data-uso') || '';
-    const nivel  = card.getAttribute('data-nivel') || '';
-    const tip    = card.getAttribute('data-tip') || '';
-    const author = card.querySelector('.cat-author')?.textContent || '';
-    const periodo= card.querySelector('.periodo-badge')?.textContent || '';
-    const opacUrl= card.querySelector('.cat-opac-link')?.href || '';
-    const uso1   = uso.split(' ')[0];
-    compSelection.set(key, { title, author, uso: uso1, nivel, tip, periodo, opacUrl });
-    btn.classList.add('selected');
-    btn.textContent = '✓ Añadido';
-  }
-  updateCompDrawer();
+function openSec() {
+  document.getElementById('secOverlay').classList.add('open');
 }
 
-function updateCompDrawer() {
-  const drawer  = document.getElementById('compDrawer');
-  const goBtn   = document.getElementById('compGoBtn');
-  const slots   = [
-    document.getElementById('compSlot0'),
-    document.getElementById('compSlot1'),
-    document.getElementById('compSlot2'),
-  ];
-  if (!drawer) return;
-
-  const items = [...compSelection.values()];
-  const count = items.length;
-
-  // Update slots
-  slots.forEach((slot, i) => {
-    if (items[i]) {
-      slot.textContent = items[i].title;
-      slot.classList.add('filled');
-      slot.title = 'Clic para quitar';
-      slot.onclick = () => removeFromComp(items[i].title);
-    } else {
-      slot.textContent = `Título ${i + 1}`;
-      slot.classList.remove('filled');
-      slot.title = '';
-      slot.onclick = null;
-    }
-  });
-
-  // Show/hide drawer
-  drawer.classList.toggle('visible', count > 0);
-  goBtn.disabled = count < 2;
-}
-
-function removeFromComp(title) {
-  const key = title.slice(0, 30);
-  compSelection.delete(key);
-  // Unmark the card button
-  document.querySelectorAll('.cat-comp-btn').forEach(btn => {
-    const t = btn.closest('.cat-card')?.querySelector('.cat-title')?.textContent?.trim() || '';
-    if (t.slice(0, 30) === key) {
-      btn.classList.remove('selected');
-      btn.textContent = '+ Comparar';
-    }
-  });
-  updateCompDrawer();
-}
-
-function clearComp() {
-  compSelection.clear();
-  document.querySelectorAll('.cat-comp-btn.selected').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.textContent = '+ Comparar';
-  });
-  updateCompDrawer();
-}
-
-function openComp() {
-  if (compSelection.size < 2) return;
-  const items = [...compSelection.values()];
-  const USO_COLORS_C = {
-    historia:'#5A3A1A',filosofia:'#4A2A6A',emocional:'#7A5A0A',
-    lenguas:'#2E6E3A',inclusion:'#3A4A8A',visual:'#5E3A8A',
-    ciencia:'#1A5A8B',genero:'#8B1A4A'
-  };
-  const USO_LABELS_C = {
-    historia:'Historia',filosofia:'Filosofía',emocional:'Ed. emocional',
-    lenguas:'Lengua extranjera',inclusion:'Inclusión',visual:'Alfabetización visual',
-    ciencia:'Ciencia y tecnología',genero:'Género e identidad'
-  };
-  const NIV_LABELS_C = {
-    infantil:'Infantil',primaria:'Primaria',secundaria:'Secundaria',
-    bachillerato:'Bachillerato',universidad:'Universidad'
-  };
-
-  // Build card columns
-  const cols = items.map(d => {
-    const color   = USO_COLORS_C[d.uso] || '#5a3a1a';
-    const usoLbl  = USO_LABELS_C[d.uso]  || d.uso;
-    const nivBadges = d.nivel.split(' ')
-      .map(n => `<span class="cc-niv">${NIV_LABELS_C[n]||n}</span>`).join('');
-    const slug  = encodeURIComponent(d.title.trim()).replace(/%20/g, '+');
-    const opac  = d.opacUrl || `https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3D${slug}`;
-    return `<div class="comp-card-col">
-      <div style="height:4px;background:${color};border-radius:3px 3px 0 0;margin:-1.2rem -1.3rem 1rem"></div>
-      <div class="cc-title">${d.title}</div>
-      <div class="cc-author">${d.author}</div>
-      <div class="cc-row">
-        <span class="cc-label">Uso pedagógico</span>
-        <div><span class="cc-badge" style="background:${color}">${usoLbl}</span></div>
-      </div>
-      <div class="cc-row">
-        <span class="cc-label">Nivel educativo</span>
-        <div>${nivBadges}</div>
-      </div>
-      <div class="cc-row">
-        <span class="cc-label">Período histórico</span>
-        <div><span class="cc-periodo">${d.periodo||'—'}</span></div>
-      </div>
-      <div class="cc-row">
-        <span class="cc-label">Descripción didáctica</span>
-        <p class="cc-desc">${d.tip||'—'}</p>
-      </div>
-      <a class="cc-opac" href="${opac}" target="_blank" rel="noopener noreferrer">Ver en catálogo ULPGC →</a>
-    </div>`;
-  }).join('');
-
-  document.getElementById('compCards').innerHTML = cols;
-  document.getElementById('compOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeComp() {
-  document.getElementById('compOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ══ FILTRAR CATÁLOGO POR TÍTULO (desde índice LOMLOE) ════════
-function filterByTitle(title) {
-  // Close any open modal
-  ['compOverlay','mapaOverlay','rubricaOverlay','fichaOverlay'].forEach(id => {
-    document.getElementById(id)?.classList.remove('open');
-  });
-  document.body.style.overflow = '';
-
-  // Put the title in the search box and trigger search
-  const searchInput = document.getElementById('catalogSearch');
-  if (searchInput) {
-    searchInput.value = title;
-    if (typeof searchCatalog === 'function') searchCatalog(title);
-  }
-
-  // Scroll to catalog section smoothly
-  const catEl = document.getElementById('catalogo');
-  if (catEl) catEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+// ══ MODAL MAPA ══════════════════════════════════════════════════
+function openMapa() { document.getElementById('mapaOverlay').classList.add('open'); }
+function closeMapa() { document.getElementById('mapaOverlay').classList.remove('open'); }
 
 // ══ FAB TOGGLE ══════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  const toggle = document.getElementById('tools-fab-toggle');
-  const items  = document.getElementById('fabItems');
-  if (!toggle || !items) return;
-
-  toggle.addEventListener('click', function() {
-    const isOpen = items.classList.toggle('open');
-    toggle.classList.toggle('open', isOpen);
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    toggle.textContent = isOpen ? '×' : '+';
-  });
-
-  document.addEventListener('click', e => {
-    if (!e.target.closest('#tools-fab')) {
-      items.classList.remove('open');
-      toggle.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = '+';
-    }
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      items.classList.remove('open');
-      toggle.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = '+';
-    }
-  });
-});
-
-// ══ MODAL HELPERS (Rúbrica, Secuencia, Mapa) ════════════════════
-function closeRubrica() {
-  document.getElementById('rubricaOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
-function openRubrica(card) {
-  const title = card?.querySelector?.('.cat-title')?.textContent || '';
-  document.getElementById('rubricaTitulo').value = title;
-  document.getElementById('rubricaBody').innerHTML =
-    '<p class="rubrica-placeholder">Elige etapa y competencia, y pulsa Generar.</p>';
-  document.getElementById('rubricaOverlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeSec() {
-  document.getElementById('secOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
-function openSec(card) {
-  if (card?.querySelector) {
-    document.getElementById('secTitulo').value =
-      card.querySelector('.cat-title')?.textContent || '';
-  }
-  document.getElementById('secOverlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function openMapa() {
-  document.getElementById('mapaOverlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if (typeof buildMapaGrid === 'function') buildMapaGrid();
-}
-function closeMapa() {
-  document.getElementById('mapaOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ══ ESCAPE CLOSES ALL MODALS ════════════════════════════════════
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  ['rubricaOverlay','secOverlay','mapaOverlay','fichaOverlay','compOverlay','lecturaOverlay']
-    .forEach(id => document.getElementById(id)?.classList.remove('open'));
-  document.body.style.overflow = '';
+document.getElementById('tools-fab-toggle')?.addEventListener('click', function() {
+  this.classList.toggle('open');
+  document.getElementById('fabItems').classList.toggle('open');
 });
 </script>
-<!-- ══════════════════ VITRINA MODAL ══════════════════ -->
-<div class="vitrina-overlay" id="vitrineOverlay" role="presentation"
-     onclick="closeVitrina()"></div>
-<aside class="vitrina-drawer" id="vitrineDrawer"
-       role="dialog" aria-modal="true" aria-labelledby="vitrineTitle"
-       aria-hidden="true">
-  <div class="vitrina-era-stripe" id="vitrineStripe"></div>
-  <div class="vitrina-header">
-    <button type="button" class="vitrina-close" onclick="closeVitrina()"
-            aria-label="Cerrar panel de detalle">✕ Cerrar</button>
-    <span class="vitrina-era-tag" id="vitrineEraTag"></span>
-    <div class="vitrina-title" id="vitrineTitle"></div>
-    <div class="vitrina-author" id="vitrineAuthor"></div>
-  </div>
-  <div class="vitrina-body">
-    <div class="vitrina-desc" id="vitrineDesc"></div>
-    <div class="vitrina-meta" id="vitrineMeta"></div>
-    <div style="margin-top:.7rem;">
-      <button type="button" class="vitrina-catalog-btn" id="vitrineCatalogBtn"
-              onclick="vitrineSearchCatalog()"
-              aria-label="Buscar este título en el catálogo">
-        🔍 Buscar en el catálogo
-      </button>
-      <a id="vitrineOpacLink" class="vitrina-catalog-btn" href="#"
-         target="_blank" rel="noopener noreferrer"
-         style="display:none;text-align:center;text-decoration:none;margin-top:.4rem;
-                background:rgba(42,90,42,.12);border-color:rgba(42,90,42,.4);color:#2a5a2a">
-        📚 Ver en catálogo ULPGC →
-      </a>
-    </div>
-    <div class="vitrina-ficha" id="vitrineFicha">
-      <div class="vitrina-ficha-label">Llévalo al aula</div>
-      <div class="vitrina-ficha-steps" id="vitrineSteps"></div>
-      <div class="vitrina-ficha-tarea" id="vitrineTarea"></div>
-    </div>
-    <div class="vitrina-related" id="vitrineRelated" style="display:none">
-      <span class="vitrina-section-label">Otros títulos relacionados</span>
-      <div id="vitrineRelatedList"></div>
-    </div>
-  </div>
-</aside>
-
-<button type="button" class="proyeccion-btn" onclick="toggleProyeccion()" aria-label="Activar modo proyección: pantalla completa con la línea del tiempo">⊞ Modo proyección</button>
-<button type="button" class="proyeccion-exit" onclick="toggleProyeccion()" aria-label="Salir del modo proyección (también puedes pulsar Escape)">✕ Salir de proyección</button>
-<button type="button" class="modo-aula-btn" onclick="toggleModoAula()" aria-pressed="false" aria-label="Modo aula: oculta los 21 títulos con contenido adulto o sensible del catálogo">🏫 Modo aula</button>
-<button type="button" class="print-btn" onclick="printAll()">⎙ Versión imprimible</button>
-
-<!-- ══ FICHA DE AULA MODAL ══════════════════════════════════ -->
-<div id="fichaOverlay" role="dialog" aria-modal="true" aria-labelledby="fichaTitleEl">
-  <div id="fichaModal">
-    <div class="ficha-header">
-      <span class="ficha-label">⊕ Ficha de aula — Biblioteca Campus del Obelisco · ULPGC</span>
-      <div class="ficha-title" id="fichaTitleEl"></div>
-      <div class="ficha-author" id="fichaAuthor"></div>
-    </div>
-    <div class="ficha-body">
-      <div class="ficha-section">
-        <span class="ficha-section-label">Uso pedagógico · Nivel</span>
-        <div class="ficha-badges" id="fichaBadges"></div>
-        <div class="ficha-niv" id="fichaNiv"></div>
-      </div>
-      <div class="ficha-section">
-        <span class="ficha-section-label">Descripción didáctica</span>
-        <p class="ficha-desc" id="fichaDesc"></p>
-      </div>
-      <div class="ficha-section ficha-questions">
-        <span class="ficha-section-label">Preguntas para el aula</span>
-        <ol id="fichaQuestions"></ol>
-      </div>
-      <div class="ficha-section">
-        <span class="ficha-section-label">Conexión curricular LOMLOE</span>
-        <p class="ficha-desc" id="fichaLomloe"></p>
-      </div>
-    </div>
-    <div class="ficha-actions">
-      <button type="button" class="ficha-print-btn" onclick="document.body.classList.add('printing-ficha');window.print();setTimeout(()=>document.body.classList.remove('printing-ficha'),500)">⎙ Imprimir ficha</button>
-      <button type="button" class="ficha-close-btn" onclick="closeFicha()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ COMPARADOR MODAL ══════════════════════════════════════ -->
-<div id="compOverlay" role="dialog" aria-modal="true" aria-labelledby="compTitle">
-  <div id="compModal">
-    <div class="comp-header">
-      <h2 id="compTitle">⊕ Comparativa de títulos</h2>
-      <button type="button" class="comp-close" onclick="closeComp()">Cerrar ✕</button>
-    </div>
-    <div id="compCards"></div>
-    <div class="comp-footer">
-      <button type="button" class="comp-close-btn2" onclick="closeComp()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ RÚBRICA MODAL ═════════════════════════════════════════ -->
-<div id="rubricaOverlay" role="dialog" aria-modal="true" aria-labelledby="rubricaTitle">
-  <div id="rubricaModal">
-    <div class="rubrica-header">
-      <h2 id="rubricaTitle">⊕ Generador de rúbrica</h2>
-      <button type="button" class="rubrica-close" onclick="closeRubrica()">Cerrar ✕</button>
-    </div>
-    <div class="rubrica-controls">
-      <div>
-        <label for="rubricaTitulo">Título de manga</label>
-        <input type="text" id="rubricaTitulo" placeholder="Escribe un título del fondo…" style="width:180px">
-      </div>
-      <div>
-        <label for="rubricaNivel">Etapa educativa</label>
-        <select id="rubricaNivel">
-          <option value="Educación Infantil">Infantil</option>
-          <option value="Educación Primaria">Primaria</option>
-          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
-          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
-          <option value="Bachillerato">Bachillerato</option>
-          <option value="Universidad">Universidad</option>
-        </select>
-      </div>
-      <div>
-        <label for="rubricaComp">Competencia principal</label>
-        <select id="rubricaComp">
-          <option value="CCL">CCL — Comunicación lingüística</option>
-          <option value="CPAA">CPAA — Aprender a aprender</option>
-          <option value="CSC">CSC — Social y cívica</option>
-          <option value="CCEC">CCEC — Expresión cultural</option>
-          <option value="CD">CD — Competencia digital</option>
-          <option value="CPSAA">CPSAA — Personal y social</option>
-        </select>
-      </div>
-      <button type="button" class="rubrica-gen-btn" id="rubricaGenBtn" onclick="generarRubrica()">
-        Generar rúbrica ✦
-      </button>
-    </div>
-    <div class="rubrica-body" id="rubricaBody">
-      <p class="rubrica-placeholder">Elige un título y etapa, y el asistente IA generará una rúbrica de evaluación LOMLOE lista para usar.</p>
-    </div>
-    <div class="rubrica-actions">
-      <button type="button" class="rubrica-print-btn" onclick="document.body.classList.add('printing-rubrica');window.print();setTimeout(()=>document.body.classList.remove('printing-rubrica'),500)">⎙ Imprimir rúbrica</button>
-      <button type="button" class="rubrica-close2" onclick="closeRubrica()">Cerrar</button>
-    </div>
-  </div>
-</div>
-<!-- ── FIN MODALES FICHA / COMPARADOR / RÚBRICA ── -->
-
-
-
-<!-- ══ GENERADOR DE SECUENCIA DIDÁCTICA ══════════════════════ -->
-<div id="secOverlay" role="dialog" aria-modal="true" aria-labelledby="secTitle">
-  <div id="secModal">
-    <div class="sec-header">
-      <h2 id="secTitle">⊕ Secuencia didáctica</h2>
-      <button type="button" class="sec-close" onclick="closeSec()">Cerrar ✕</button>
-    </div>
-    <div class="sec-controls">
-      <div>
-        <label for="secTitulo">Título de manga</label>
-        <input type="text" id="secTitulo" placeholder="Título del fondo…" style="width:160px">
-      </div>
-      <div>
-        <label for="secEtapa">Etapa</label>
-        <select id="secEtapa">
-          <option value="Educación Infantil">Infantil</option>
-          <option value="Educación Primaria">Primaria</option>
-          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
-          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
-          <option value="Bachillerato">Bachillerato</option>
-          <option value="Universidad">Universidad</option>
-        </select>
-      </div>
-      <div>
-        <label for="secSesiones">N.º de sesiones</label>
-        <select id="secSesiones">
-          <option value="2">2 sesiones</option>
-          <option value="4" selected>4 sesiones</option>
-          <option value="6">6 sesiones</option>
-          <option value="8">8 sesiones</option>
-        </select>
-      </div>
-      <div>
-        <label for="secComp">Competencia principal</label>
-        <select id="secComp">
-          <option value="CCL">CCL — Lingüística</option>
-          <option value="CPSAA">CPSAA — Personal y social</option>
-          <option value="CSC">CSC — Social y cívica</option>
-          <option value="CCEC">CCEC — Expresión cultural</option>
-          <option value="STEM">STEM — Científica</option>
-        </select>
-      </div>
-      <button type="button" class="sec-gen-btn" id="secGenBtn" onclick="generarSecuencia()">
-        Generar secuencia ✦
-      </button>
-    </div>
-    <div class="sec-body" id="secBody">
-      <p class="sec-placeholder">Elige un título, la etapa, el número de sesiones y la competencia principal.
-      El asistente IA generará una secuencia didáctica completa lista para llevar al aula.</p>
-    </div>
-    <div class="sec-actions">
-      <button type="button" class="sec-print-btn"
-        onclick="document.body.classList.add('printing-sec');window.print();setTimeout(()=>document.body.classList.remove('printing-sec'),500)">
-        ⎙ Imprimir secuencia
-      </button>
-      <button type="button" class="sec-close2" onclick="closeSec()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MAPA DE CONEXIONES ══════════════════════════════════════ -->
-<div id="mapaOverlay" role="dialog" aria-modal="true" aria-labelledby="mapaTitle">
-  <div id="mapaModal">
-    <div class="mapa-header">
-      <h2 id="mapaTitle">⊕ Mapa de conexiones entre títulos</h2>
-      <button type="button" class="mapa-close" onclick="closeMapa()">Cerrar ✕</button>
-    </div>
-    <div id="mapaContainer" class="mapa-container" 
-         aria-label="Títulos del fondo agrupados por temática pedagógica"></div>
-  </div>
-</div>
-
-<!-- ── FIN MODALES NUEVAS FUNCIONALIDADES ── -->
-
-
-<button type="button" id="gtt-btn" aria-label="Volver al inicio de la página" title="Volver arriba">↑</button>
-
-<!-- ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ -->
-<div id="tools-fab" role="toolbar" aria-label="Herramientas">
-  <div class="fab-items" id="fabItems">
-    <div class="fab-item">
-      <span class="fab-item-label">Secuencia didáctica</span>
-      <button type="button" class="fab-action" onclick="openSec()" aria-label="Generador de secuencia didáctica" title="Secuencia didáctica">✦</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Mapa de títulos</span>
-      <button type="button" class="fab-action" onclick="openMapa()" aria-label="Mapa de conexiones entre títulos" title="Mapa de títulos">⊞</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Asistente IA</span>
-      <button type="button" class="fab-action" id="asist-fab" onclick="openPanel()" aria-label="Asistente pedagógico IA" title="Asistente IA">✧</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Modo proyección</span>
-      <button type="button" class="fab-action proyeccion-btn" aria-label="Activar modo proyección" title="Modo proyección">⛶</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Modo aula</span>
-      <button type="button" class="fab-action modo-aula-btn" aria-label="Activar modo aula" title="Modo aula">⊞</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Imprimir</span>
-      <button type="button" class="fab-action print-btn" onclick="window.print()" aria-label="Imprimir" title="Imprimir">⎙</button>
-    </div>
-  </div>
-  <button type="button" id="tools-fab-toggle" aria-label="Abrir herramientas" aria-expanded="false" title="Herramientas">+</button>
-</div>
-
-<!-- ══ COMP DRAWER ══════════════════════════════════════════ -->
-<div id="compDrawer" role="status" aria-live="polite" aria-label="Títulos seleccionados para comparar">
-  <span class="comp-drawer-title">Comparar:</span>
-  <div id="compSlots">
-    <span class="comp-slot empty" id="compSlot0">+ Añade un título</span>
-    <span class="comp-slot empty" id="compSlot1">+ Añade un título</span>
-    <span class="comp-slot empty" id="compSlot2">+ Añade un título</span>
-  </div>
-  <div class="comp-drawer-actions">
-    <button type="button" class="comp-drawer-btn comp-go-btn" id="compGoBtn" onclick="openComp()" disabled>Ver comparativa ▶</button>
-    <button type="button" class="comp-drawer-btn comp-clear-btn" onclick="clearComp()">✕ Vaciar</button>
-  </div>
-</div>
-
 </body>
 </html>
