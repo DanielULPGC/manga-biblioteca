@@ -10302,7 +10302,7 @@ INSTRUCCIONES DE RESPUESTA:
       let data;
       try {
         data = await geminiRequest(apiKey, {
-          system_instruction: { parts: [{ text: buildSystemPrompt() }] },
+          systemInstruction: { parts: [{ text: buildSystemPrompt() }] },
           contents: geminiContents,
           generationConfig: { maxOutputTokens: 800, temperature: 0.7 }
         });
