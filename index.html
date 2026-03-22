@@ -67,7 +67,8 @@
   "accessibilityHazard": "none",
   "accessMode": ["textual", "visual"]
 }
-
+</script>
+<script>
 // ── BOTÓN VOLVER ARRIBA ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   const btn = document.getElementById('gtt-btn');
@@ -82,8 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-</script>
-<script>
 // ── Modo proyección ──────────────────────────────────────────────
 let modoProyeccionActive = false;
 
@@ -536,8 +535,7 @@ h1 em { color: var(--red); font-style: normal; }
   letter-spacing: .03em;
 }
 
-/* ─── TOOLTIP — lives on <body>
-<div id="top-anchor" style="position:absolute;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none" aria-hidden="true"></div>, positioned by JS ── */
+/* ─── TOOLTIP — lives on <body> ── */
 #gtt {
   display: none;
   position: fixed;
@@ -2742,7 +2740,6 @@ p.sa-alternatives strong { color: var(--ink); }
   box-shadow: 0 3px 12px rgba(0,0,0,.4);
   display: flex; align-items: center; justify-content: center;
 }
-#gtt-btn:hover { background: var(--gold); color: var(--ink); transform: translateY(-2px); }
 #gtt-btn:hover { background: var(--gold); color: var(--ink); transform: translateY(-2px); }
 
 /* ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ */
@@ -9002,6 +8999,180 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
 
 <footer>El manga como recurso didáctico — Biblioteca del Campus del Obelisco &nbsp;·&nbsp; Pasa el cursor sobre los títulos para más información</footer>
 
+
+<!-- ══ RÚBRICA MODAL ═════════════════════════════════════════ -->
+<div id="rubricaOverlay" role="dialog" aria-modal="true" aria-labelledby="rubricaTitle">
+  <div id="rubricaModal">
+    <div class="rubrica-header">
+      <h2 id="rubricaTitle">⊕ Generador de rúbrica</h2>
+      <button type="button" class="rubrica-close" onclick="closeRubrica()">Cerrar ✕</button>
+    </div>
+    <div class="rubrica-controls">
+      <div>
+        <label for="rubricaTitulo">Título de manga</label>
+        <input type="text" id="rubricaTitulo" placeholder="Escribe un título del fondo…" style="width:180px">
+      </div>
+      <div>
+        <label for="rubricaNivel">Etapa educativa</label>
+        <select id="rubricaNivel">
+          <option value="Educación Infantil">Infantil</option>
+          <option value="Educación Primaria">Primaria</option>
+          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
+          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
+          <option value="Bachillerato">Bachillerato</option>
+          <option value="Universidad">Universidad</option>
+        </select>
+      </div>
+      <div>
+        <label for="rubricaComp">Competencia principal</label>
+        <select id="rubricaComp">
+          <option value="CCL">CCL — Comunicación lingüística</option>
+          <option value="CPAA">CPAA — Aprender a aprender</option>
+          <option value="CSC">CSC — Social y cívica</option>
+          <option value="CCEC">CCEC — Expresión cultural</option>
+          <option value="CD">CD — Competencia digital</option>
+          <option value="CPSAA">CPSAA — Personal y social</option>
+        </select>
+      </div>
+      <button type="button" class="rubrica-gen-btn" id="rubricaGenBtn" onclick="generarRubrica()">
+        Generar rúbrica ✦
+      </button>
+    </div>
+    <div class="rubrica-body" id="rubricaBody">
+      <p class="rubrica-placeholder">Elige un título y etapa, y el asistente IA generará una rúbrica de evaluación LOMLOE lista para usar.</p>
+    </div>
+    <div class="rubrica-actions">
+      <button type="button" class="rubrica-print-btn" onclick="document.body.classList.add('printing-rubrica');window.print();setTimeout(()=>document.body.classList.remove('printing-rubrica'),500)">⎙ Imprimir rúbrica</button>
+      <button type="button" class="rubrica-close2" onclick="closeRubrica()">Cerrar</button>
+    </div>
+  </div>
+</div>
+<!-- ── FIN MODALES FICHA / COMPARADOR / RÚBRICA ── -->
+
+<!-- ══ GENERADOR DE SECUENCIA DIDÁCTICA ══════════════════════ -->
+<div id="secOverlay" role="dialog" aria-modal="true" aria-labelledby="secTitle">
+  <div id="secModal">
+    <div class="sec-header">
+      <h2 id="secTitle">⊕ Secuencia didáctica</h2>
+      <button type="button" class="sec-close" onclick="closeSec()">Cerrar ✕</button>
+    </div>
+    <div class="sec-controls">
+      <div>
+        <label for="secTitulo">Título de manga</label>
+        <input type="text" id="secTitulo" placeholder="Título del fondo…" style="width:160px">
+      </div>
+      <div>
+        <label for="secEtapa">Etapa</label>
+        <select id="secEtapa">
+          <option value="Educación Infantil">Infantil</option>
+          <option value="Educación Primaria">Primaria</option>
+          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
+          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
+          <option value="Bachillerato">Bachillerato</option>
+          <option value="Universidad">Universidad</option>
+        </select>
+      </div>
+      <div>
+        <label for="secSesiones">N.º de sesiones</label>
+        <select id="secSesiones">
+          <option value="2">2 sesiones</option>
+          <option value="4" selected>4 sesiones</option>
+          <option value="6">6 sesiones</option>
+          <option value="8">8 sesiones</option>
+        </select>
+      </div>
+      <div>
+        <label for="secComp">Competencia principal</label>
+        <select id="secComp">
+          <option value="CCL">CCL — Lingüística</option>
+          <option value="CPSAA">CPSAA — Personal y social</option>
+          <option value="CSC">CSC — Social y cívica</option>
+          <option value="CCEC">CCEC — Expresión cultural</option>
+          <option value="STEM">STEM — Científica</option>
+        </select>
+      </div>
+      <button type="button" class="sec-gen-btn" id="secGenBtn" onclick="generarSecuencia()">
+        Generar secuencia ✦
+      </button>
+    </div>
+    <div class="sec-body" id="secBody">
+      <p class="sec-placeholder">Elige un título, la etapa, el número de sesiones y la competencia principal.
+      El asistente IA generará una secuencia didáctica completa lista para llevar al aula.</p>
+    </div>
+    <div class="sec-actions">
+      <button type="button" class="sec-print-btn"
+        onclick="document.body.classList.add('printing-sec');window.print();setTimeout(()=>document.body.classList.remove('printing-sec'),500)">
+        ⎙ Imprimir secuencia
+      </button>
+      <button type="button" class="sec-close2" onclick="closeSec()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAPA DE CONEXIONES ══════════════════════════════════════ -->
+<div id="mapaOverlay" role="dialog" aria-modal="true" aria-labelledby="mapaTitle">
+  <div id="mapaModal">
+    <div class="mapa-header">
+      <h2 id="mapaTitle">⊕ Mapa de conexiones entre títulos</h2>
+      <button type="button" class="mapa-close" onclick="closeMapa()">Cerrar ✕</button>
+    </div>
+    <div id="mapaContainer" class="mapa-container" 
+         aria-label="Títulos del fondo agrupados por temática pedagógica"></div>
+  </div>
+</div>
+
+<!-- ── FIN MODALES NUEVAS FUNCIONALIDADES ── -->
+
+<div id="top-anchor" style="position:absolute;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none" aria-hidden="true"></div>
+
+<button type="button" id="gtt-btn" aria-label="Volver al inicio de la página" title="Volver arriba">↑</button>
+
+<!-- ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ -->
+<div id="tools-fab" role="toolbar" aria-label="Herramientas">
+  <div class="fab-items" id="fabItems">
+    <div class="fab-item">
+      <span class="fab-item-label">Secuencia didáctica</span>
+      <button type="button" class="fab-action" onclick="openSec()" aria-label="Generador de secuencia didáctica" title="Secuencia didáctica">✦</button>
+    </div>
+    <div class="fab-item">
+      <span class="fab-item-label">Mapa de títulos</span>
+      <button type="button" class="fab-action" onclick="openMapa()" aria-label="Mapa de conexiones entre títulos" title="Mapa de títulos">⊞</button>
+    </div>
+    <div class="fab-item">
+      <span class="fab-item-label">Asistente IA</span>
+      <button type="button" class="fab-action" id="asist-fab" aria-label="Asistente pedagógico IA" title="Asistente IA">✧</button>
+    </div>
+    <div class="fab-item">
+      <span class="fab-item-label">Modo proyección</span>
+      <button type="button" class="fab-action proyeccion-btn" aria-label="Activar modo proyección" title="Modo proyección">⛶</button>
+    </div>
+    <div class="fab-item">
+      <span class="fab-item-label">Modo aula</span>
+      <button type="button" class="fab-action modo-aula-btn" aria-label="Activar modo aula" title="Modo aula">⊞</button>
+    </div>
+    <div class="fab-item">
+      <span class="fab-item-label">Imprimir</span>
+      <button type="button" class="fab-action print-btn" onclick="window.print()" aria-label="Imprimir" title="Imprimir">⎙</button>
+    </div>
+  </div>
+  <button type="button" id="tools-fab-toggle" aria-label="Abrir herramientas" aria-expanded="false" title="Herramientas">+</button>
+</div>
+
+<!-- ══ COMP DRAWER ══════════════════════════════════════════ -->
+<div id="compDrawer" role="status" aria-live="polite" aria-label="Títulos seleccionados para comparar">
+  <span class="comp-drawer-title">Comparar:</span>
+  <div id="compSlots">
+    <span class="comp-slot empty" id="compSlot0">+ Añade un título</span>
+    <span class="comp-slot empty" id="compSlot1">+ Añade un título</span>
+    <span class="comp-slot empty" id="compSlot2">+ Añade un título</span>
+  </div>
+  <div class="comp-drawer-actions">
+    <button type="button" class="comp-drawer-btn comp-go-btn" id="compGoBtn" onclick="openComp()" disabled>Ver comparativa ▶</button>
+    <button type="button" class="comp-drawer-btn comp-clear-btn" onclick="clearComp()">✕ Vaciar</button>
+  </div>
+</div>
+
+
 <script>
 // ── Global tooltip element (lives on body, above everything) ──
 const gtt = document.createElement('div');
@@ -10241,7 +10412,9 @@ function closeMapa() { document.getElementById('mapaOverlay').classList.remove('
 // ══ FAB TOGGLE ══════════════════════════════════════════════════
 document.getElementById('tools-fab-toggle')?.addEventListener('click', function() {
   this.classList.toggle('open');
-  document.getElementById('fabItems').classList.toggle('open');
+  const fabItems = document.getElementById('fabItems');
+  fabItems?.classList.toggle('open');
+  this.setAttribute('aria-expanded', this.classList.contains('open') ? 'true' : 'false');
 });
 </script>
 </body>
