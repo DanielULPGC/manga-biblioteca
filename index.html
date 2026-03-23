@@ -67,28 +67,22 @@
   "accessibilityHazard": "none",
   "accessMode": ["textual", "visual"]
 }
-
+</script>
+<script>
 // ── BOTÓN VOLVER ARRIBA ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   const btn = document.getElementById('gtt-btn');
   if (!btn) return;
-  btn.addEventListener('click', function() {
+  btn.classList.add('visible');
+  btn.addEventListener('click', () => {
     const anchor = document.getElementById('top-anchor');
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  });
-});
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
     try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
     try { document.documentElement.scrollTop = 0; } catch(e) {}
     try { document.body.scrollTop = 0; } catch(e) {}
   });
 });
 
-</script>
-<script>
 // ── Modo proyección ──────────────────────────────────────────────
 let modoProyeccionActive = false;
 
@@ -541,8 +535,7 @@ h1 em { color: var(--red); font-style: normal; }
   letter-spacing: .03em;
 }
 
-/* ─── TOOLTIP — lives on <body>
-<div id="top-anchor" style="position:absolute;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none" aria-hidden="true"></div>, positioned by JS ── */
+/* ─── TOOLTIP — lives on <body> ── */
 #gtt {
   display: none;
   position: fixed;
@@ -2738,83 +2731,61 @@ p.sa-alternatives strong { color: var(--ink); }
 /* ── BOTÓN VOLVER ARRIBA ─────────────────────────────────── */
 #gtt-btn {
   position: fixed; bottom: 1.4rem; left: 1.4rem;
-  z-index: 10000; width: 44px; height: 44px;
+  z-index: 9999; width: 42px; height: 42px;
   background: var(--ink); color: var(--gold);
   border: 2px solid var(--gold); border-radius: 50%;
   font-size: 1.2rem; font-weight: 700; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 3px 12px rgba(0,0,0,.45);
+  opacity: 1; pointer-events: all;
   transition: background .15s, transform .15s;
-  pointer-events: all;
-}
-#gtt-btn.fab-open {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s;
+  box-shadow: 0 3px 12px rgba(0,0,0,.4);
+  display: flex; align-items: center; justify-content: center;
 }
 #gtt-btn:hover { background: var(--gold); color: var(--ink); transform: translateY(-2px); }
 
 /* ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ */
-/* ══ FAB — BARRA DE HERRAMIENTAS FLOTANTE ══════════════════ */
 #tools-fab {
   position: fixed; bottom: 1.4rem; right: 1.4rem;
-  z-index: 1001;
-  display: flex; flex-direction: column-reverse; align-items: flex-end; gap: .45rem;
+  z-index: 1001; display: flex; flex-direction: column-reverse;
+  align-items: flex-end; gap: .5rem;
 }
 #tools-fab-toggle {
   width: 48px; height: 48px; border-radius: 50%;
   background: var(--ink); color: var(--gold);
   border: 2px solid var(--gold); cursor: pointer;
-  font-size: 1.4rem; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
   box-shadow: 0 3px 14px rgba(0,0,0,.4);
   transition: background .15s, transform .2s;
-  flex-shrink: 0;
+  z-index: 2; position: relative;
+  font-family: 'Cinzel', serif; font-weight: 700;
 }
-#tools-fab-toggle:hover,
+#tools-fab-toggle:hover { background: #2a1a08; transform: rotate(45deg); }
 #tools-fab-toggle.open { background: #2a1a08; transform: rotate(45deg); }
 
 .fab-items {
-  display: flex; flex-direction: column-reverse; gap: .35rem;
+  display: none;
+  flex-direction: column-reverse;
   align-items: flex-end;
-  max-height: 0; overflow: hidden;
-  opacity: 0;
-  transition: max-height .3s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+  gap: .4rem;
 }
-.fab-items.open { max-height: 500px; opacity: 1; overflow: visible; }
-
+.fab-items.open { display: flex; }
 .fab-item {
-  display: flex; align-items: center; gap: .45rem;
+  display: flex; align-items: center; gap: .5rem;
   justify-content: flex-end;
 }
-/* Tooltip label — appears to LEFT of circular button */
-.fab-item-label {
-  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
-  letter-spacing: .05em; color: #f5efe0;
-  background: rgba(20,12,4,.95); border: 1px solid rgba(184,134,11,.4);
-  border-radius: 3px; padding: 3px 8px;
-  white-space: nowrap; pointer-events: none;
-  opacity: 0; transform: translateX(6px);
-  transition: opacity .15s .05s, transform .15s .05s;
-}
-.fab-items.open .fab-item-label {
-  opacity: 1; transform: translateX(0);
-}
-
 .fab-action {
-  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-  border: 1.5px solid rgba(184,134,11,.45);
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid rgba(184,134,11,.4);
   background: rgba(26,16,8,.92); color: var(--gold);
-  font-size: .88rem; cursor: pointer;
+  font-size: .85rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background .12s, border-color .12s, transform .12s;
   box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  transition: background .12s, border-color .12s, transform .12s;
+  flex-shrink: 0;
 }
 .fab-action:hover { background: #2a1a08; border-color: var(--gold); transform: scale(1.08); }
 .fab-action.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 
-@media print { #tools-fab, #histBtn { display: none !important; } }
-
+@media print { #tools-fab, #gtt-btn { display: none !important; } }
 
 /* ══ COMPARADOR REDISEÑADO ══════════════════════════════════ */
 /* Replace ⊕ with a clean toggle chip at card bottom */
@@ -3127,236 +3098,258 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .comp-card-opac:hover { text-decoration: underline; }
 
-/* ── VITRINA OPAC LINK ──────────────────────────────────── */
-#vitrineOpacLink {
-  display: block;
-  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
-  letter-spacing: .05em; text-decoration: none;
-  color: #5a8a5a; background: rgba(42,90,42,.1);
-  border: 1px solid rgba(42,90,42,.3); border-radius: 3px;
-  padding: .35rem .8rem; margin-top: .4rem;
-  text-align: center; transition: background .12s;
-}
-#vitrineOpacLink:hover { background: rgba(42,90,42,.2); }
-
-/* ══ HISTORIAL DE SESIÓN ─────────────────────────────────── */
-#histBtn {
-  position: fixed; bottom: 5.2rem; left: 1.4rem;
-  z-index: 9998; background: var(--ink); color: var(--gold);
-  border: 1.5px solid rgba(184,134,11,.5); border-radius: 4px;
-  padding: .3rem .75rem; font-family: 'Cinzel', serif;
-  font-size: .65rem; font-weight: 700; letter-spacing: .05em;
-  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3);
-  transition: background .15s; white-space: nowrap;
-  display: none; /* shown only when there's activity */
-}
-#histBtn.visible { display: block; }
-#histBtn:hover { background: #2a1a08; }
-
-#histOverlay {
-  display: none; position: fixed; inset: 0; z-index: 4000;
-  background: rgba(10,8,4,.72); backdrop-filter: blur(2px);
-}
-#histOverlay.open { display: flex; align-items: center; justify-content: center; padding: 1rem; }
-#histModal {
-  background: var(--paper); color: var(--ink);
-  width: min(600px, 98vw); max-height: 88vh;
-  overflow-y: auto; border-radius: 6px;
-  box-shadow: 0 8px 40px rgba(0,0,0,.35);
-  font-family: 'EB Garamond', serif;
-}
-#histModal .hist-header {
-  background: linear-gradient(135deg, #1a1008, #2a1a08);
-  color: #f5efe0; padding: 1rem 1.4rem;
-  display: flex; align-items: center; justify-content: space-between;
-  border-radius: 6px 6px 0 0;
-}
-#histModal .hist-header h2 {
-  font-family: 'Cinzel', serif; font-size: .85rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase; color: var(--gold);
-  margin: 0;
-}
-.hist-close {
-  background: none; border: 1px solid rgba(245,239,224,.3);
-  color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
-}
-#histBody {
-  padding: 1.2rem 1.4rem; min-height: 100px;
-}
-.hist-section {
-  margin-bottom: 1.2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px dashed var(--rule);
-}
-.hist-section:last-child { border-bottom: none; }
-.hist-section-title {
-  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--grey);
-  margin-bottom: .5rem; display: block;
-}
-.hist-item {
-  font-size: .9rem; line-height: 1.6; color: var(--ink);
-  padding: .2rem 0;
-}
-.hist-item-time {
-  font-size: .72rem; color: var(--grey); font-style: italic;
-  margin-right: .5rem;
-}
-.hist-empty {
-  text-align: center; padding: 2rem; color: var(--grey);
-  font-style: italic; font-size: .9rem;
-}
-#histModal .hist-actions {
-  padding: .8rem 1.4rem; border-top: 1px solid var(--rule);
-  background: rgba(232,221,200,.2); display: flex; gap: .5rem;
-  border-radius: 0 0 6px 6px; flex-wrap: wrap;
-}
-.hist-export-btn {
-  background: #5a3a1a; color: #fff; border: none; border-radius: 3px;
-  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .7rem;
-  font-weight: 700; cursor: pointer; transition: background .12s; flex: 1;
-}
-.hist-export-btn:hover { background: #7a4a2a; }
-.hist-clear-btn {
-  background: transparent; color: var(--grey); border: 1px solid var(--rule);
-  border-radius: 3px; padding: .4rem 1rem; font-family: 'Cinzel', serif;
-  font-size: .7rem; cursor: pointer;
-}
-.hist-clear-btn:hover { background: rgba(180,30,30,.1); color: #a00; }
-@media print { #histBtn, #histOverlay { display: none !important; } }
-
 /* ══ FICHAS DE LECTURA GUIADA ───────────────────────────── */
-#lecturaOverlay {
-  display: none; position: fixed; inset: 0; z-index: 4000;
-  background: rgba(10,8,4,.72); backdrop-filter: blur(2px);
+#lecturaOverlay { display:none; position:fixed; inset:0; z-index:4000; background:rgba(10,8,4,.72); backdrop-filter:blur(2px); }
+#lecturaOverlay.open { display:flex; align-items:center; justify-content:center; padding:1rem; }
+#lecturaModal { background:#fff; color:var(--ink); width:min(580px,98vw); max-height:90vh; overflow-y:auto; border-radius:6px; box-shadow:0 8px 40px rgba(0,0,0,.35); font-family:'EB Garamond',serif; }
+#lecturaModal .lectura-header { background:linear-gradient(135deg,#1a2a6a,#2a3a8a); color:#f5efe0; padding:1.2rem 1.4rem .9rem; border-radius:6px 6px 0 0; }
+.lectura-label { font-family:'Cinzel',serif; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:#aac4ff; display:block; margin-bottom:.3rem; }
+.lectura-title-el { font-size:1.25rem; font-weight:600; line-height:1.2; margin:0 0 .2rem; }
+.lectura-author-el { font-size:.85rem; font-style:italic; color:rgba(245,239,224,.7); }
+.lectura-nivel-tabs { display:flex; gap:.4rem; padding:.8rem 1.4rem; border-bottom:1px solid var(--rule); flex-wrap:wrap; background:rgba(232,221,200,.3); }
+.lectura-nivel-tab { font-family:'Cinzel',serif; font-size:.63rem; font-weight:700; padding:.28rem .8rem; border-radius:3px; cursor:pointer; border:1.5px solid var(--rule); background:rgba(232,221,200,.4); color:var(--grey); transition:all .12s; }
+.lectura-nivel-tab.active { background:#1a2a6a; color:#fff; border-color:#1a2a6a; }
+.lectura-panel { display:none; }
+.lectura-panel.active { display:block; }
+.lectura-body { padding:1.1rem 1.4rem; }
+.lectura-section-lbl { font-family:'Cinzel',serif; font-size:.63rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1a2a6a; display:block; margin:.9rem 0 .4rem; }
+.lectura-qs ol { padding-left:1.2rem; margin:.2rem 0 .8rem; }
+.lectura-qs li { font-size:.92rem; line-height:1.65; margin-bottom:.3rem; }
+.lectura-visual-box { background:rgba(42,58,122,.06); border-left:3px solid #2a3a7a; border-radius:0 3px 3px 0; padding:.6rem .9rem; font-size:.9rem; line-height:1.6; margin-bottom:.7rem; }
+.lectura-reflection { background:rgba(184,134,11,.07); border-left:3px solid var(--gold); border-radius:0 3px 3px 0; padding:.6rem .9rem; font-size:.9rem; line-height:1.6; font-style:italic; }
+.lectura-actions { padding:.8rem 1.4rem 1rem; border-top:1px solid var(--rule); background:rgba(232,221,200,.2); display:flex; gap:.5rem; border-radius:0 0 6px 6px; }
+.lectura-print-btn { background:#1a2a6a; color:#fff; border:none; border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; font-weight:700; cursor:pointer; flex:1; }
+.lectura-close-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; cursor:pointer; }
+.cat-lectura-btn { flex:1; min-width:0; font-family:'Cinzel',serif; font-size:.6rem; font-weight:700; letter-spacing:.02em; cursor:pointer; border-radius:3px; padding:5px 4px; text-align:center; transition:all .12s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a3a6a; background:rgba(26,58,106,.07); border:1px solid rgba(26,58,106,.25); }
+.cat-lectura-btn:hover { background:rgba(26,58,106,.18); }
+@media print { body.printing-lectura > *:not(#lecturaOverlay) { display:none !important; } body.printing-lectura #lecturaOverlay { display:block !important; position:static !important; background:none !important; } body.printing-lectura .lectura-actions, body.printing-lectura .lectura-nivel-tabs { display:none !important; } }
+
+#histOverlay { display:none; position:fixed; inset:0; z-index:4000; background:rgba(10,8,4,.72); backdrop-filter:blur(2px); }
+#histOverlay.open { display:flex; align-items:center; justify-content:center; padding:1rem; }
+#histModal { background:var(--paper); color:var(--ink); width:min(600px,98vw); max-height:88vh; overflow-y:auto; border-radius:6px; box-shadow:0 8px 40px rgba(0,0,0,.35); font-family:'EB Garamond',serif; }
+.hist-header { background:linear-gradient(135deg,#1a1008,#2a1a08); color:#f5efe0; padding:1rem 1.4rem; display:flex; align-items:center; justify-content:space-between; border-radius:6px 6px 0 0; }
+.hist-header h2 { font-family:'Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:0; }
+.hist-close { background:none; border:1px solid rgba(245,239,224,.3); color:rgba(245,239,224,.6); padding:2px 9px; cursor:pointer; font-family:'Cinzel',serif; font-size:.7rem; border-radius:3px; }
+#histBody { padding:1.2rem 1.4rem; min-height:80px; }
+.hist-section { margin-bottom:1rem; padding-bottom:.8rem; border-bottom:1px dashed var(--rule); }
+.hist-section:last-child { border-bottom:none; }
+.hist-section-title { font-family:'Cinzel',serif; font-size:.65rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); margin-bottom:.4rem; display:block; }
+.hist-item { font-size:.9rem; line-height:1.6; color:var(--ink); padding:.15rem 0; }
+.hist-item-time { font-size:.72rem; color:var(--grey); font-style:italic; margin-right:.4rem; }
+.hist-empty { text-align:center; padding:1.5rem; color:var(--grey); font-style:italic; font-size:.9rem; }
+.hist-actions { padding:.8rem 1.4rem; border-top:1px solid var(--rule); background:rgba(232,221,200,.2); display:flex; gap:.5rem; border-radius:0 0 6px 6px; flex-wrap:wrap; }
+.hist-export-btn { background:#5a3a1a; color:#fff; border:none; border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; font-weight:700; cursor:pointer; flex:1; }
+.hist-clear-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; cursor:pointer; }
+@media print { #histOverlay { display:none !important; } }
+
+/* ── TAB SYSTEM — tamaños uniformes, colores por sección ── */
+.cur-tab, .sa-tab, .itin-tab, .univ-tab, .rec-tab {
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
+  letter-spacing: .05em; padding: .38rem 1rem;
+  border: 1.5px solid var(--rule); border-radius: 3px 3px 0 0;
+  cursor: pointer; background: rgba(232,221,200,.45); color: var(--grey);
+  transition: background .14s, color .14s; white-space: nowrap;
 }
-#lecturaOverlay.open { display: flex; align-items: center; justify-content: center; padding: 1rem; }
-#lecturaModal {
-  background: #fff; color: var(--ink);
-  width: min(580px, 98vw); max-height: 90vh;
-  overflow-y: auto; border-radius: 6px;
-  box-shadow: 0 8px 40px rgba(0,0,0,.35);
+.cur-tab:hover:not(.active)  { background: rgba(90,58,26,.1);  color: var(--ink); }
+.sa-tab:hover:not(.active)   { background: rgba(42,58,122,.1); color: var(--ink); }
+.itin-tab:hover:not(.active) { background: rgba(42,122,42,.1); color: var(--ink); }
+.univ-tab:hover:not(.active) { background: rgba(74,42,26,.1);  color: var(--ink); }
+.rec-tab:hover:not(.active)  { background: rgba(122,74,10,.1); color: var(--ink); }
+.itin-tab.active { background: #2a6a2a; border-color: #2a6a2a; }
+
+/* ══ CATÁLOGO — UX COLAPSADO ═══════════════════════════════ */
+#catGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  padding: 1.2rem 2rem 2rem;
+  align-items: flex-start;
+}
+/* Default: cards hidden until user interacts */
+.catalog-collapsed #catGrid .cat-card { display: none; }
+.catalog-collapsed #catGrid .cat-card.search-match { display: flex; }
+
+/* Explore button */
+.catalog-explore-btn {
+  display: block;
+  margin: 1rem auto;
+  font-family: 'Cinzel', serif;
+  font-size: .72rem; font-weight: 700; letter-spacing: .07em;
+  color: var(--ink); background: transparent;
+  border: 1.5px solid var(--gold);
+  border-radius: 4px; padding: .45rem 1.4rem;
+  cursor: pointer; transition: background .14s, color .14s;
+}
+.catalog-explore-btn:hover { background: var(--gold); color: var(--paper); }
+.catalog-explore-btn.expanded { opacity: .5; }
+
+/* Collapsed state banner */
+.catalog-collapsed-banner {
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+  color: var(--grey);
   font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: .95rem;
+  line-height: 1.7;
 }
-#lecturaModal .lectura-header {
-  background: linear-gradient(135deg, #1a2a6a, #2a3a8a);
-  color: #f5efe0; padding: 1.2rem 1.4rem .9rem;
-  border-radius: 6px 6px 0 0;
+.catalog-collapsed .catalog-collapsed-banner { display: block; }
+.catalog-collapsed-banner { display: none; }
+
+/* When searching: always show grid regardless of collapsed state */
+.catalog-searching #catGrid .cat-card { display: flex !important; }
+.catalog-searching .catalog-collapsed-banner { display: none !important; }
+.catalog-searching .catalog-explore-btn { display: none; }
+
+/* Result count emphasis */
+#searchCount {
+  font-family: 'Cinzel', serif;
+  font-size: .65rem; font-weight: 700;
+  color: var(--grey); letter-spacing: .04em;
 }
-.lectura-label {
-  font-family: 'Cinzel', serif; font-size: .62rem; letter-spacing: .12em;
-  text-transform: uppercase; color: #aac4ff; display: block; margin-bottom: .3rem;
+
+/* ══ VISUAL IMPROVEMENTS ════════════════════════════════════ */
+
+/* Stronger card bar */
+.cat-card-bar { height: 8px !important; }
+
+/* Card title hierarchy */
+.cat-title {
+  font-family: 'EB Garamond', serif;
+  font-weight: 700; font-size: 1rem;
+  color: var(--ink); line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
 }
-.lectura-title-el {
-  font-size: 1.25rem; font-weight: 600; line-height: 1.2; margin: 0 0 .2rem;
+.cat-author {
+  font-size: .75rem; color: #5a5249;
+  font-style: italic; line-height: 1.3;
 }
-.lectura-author-el {
-  font-size: .85rem; font-style: italic; color: rgba(245,239,224,.7);
-}
-.lectura-nivel-tabs {
-  display: flex; gap: .4rem; padding: .8rem 1.4rem;
-  border-bottom: 1px solid var(--rule); flex-wrap: wrap;
-  background: rgba(232,221,200,.3);
-}
-.lectura-nivel-tab {
-  font-family: 'Cinzel', serif; font-size: .63rem; font-weight: 700;
-  padding: .28rem .8rem; border-radius: 3px; cursor: pointer;
-  border: 1.5px solid var(--rule); background: rgba(232,221,200,.4);
-  color: var(--grey); transition: all .12s;
-}
-.lectura-nivel-tab.active { background: #1a2a6a; color: #fff; border-color: #1a2a6a; }
-.lectura-panel { display: none; }
-.lectura-panel.active { display: block; }
-.lectura-body { padding: 1.1rem 1.4rem; }
-.lectura-section-lbl {
-  font-family: 'Cinzel', serif; font-size: .63rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase; color: #1a2a6a;
-  display: block; margin: .9rem 0 .4rem;
-}
-.lectura-qs ol { padding-left: 1.2rem; margin: .2rem 0 .8rem; }
-.lectura-qs li { font-size: .92rem; line-height: 1.65; margin-bottom: .3rem; }
-.lectura-vocab {
-  background: rgba(42,58,122,.06); border-left: 3px solid #2a3a7a;
-  border-radius: 0 3px 3px 0; padding: .6rem .9rem;
-  font-size: .9rem; line-height: 1.6; margin-bottom: .7rem;
-}
-.lectura-reflection {
-  background: rgba(184,134,11,.07); border-left: 3px solid var(--gold);
-  border-radius: 0 3px 3px 0; padding: .6rem .9rem;
-  font-size: .9rem; line-height: 1.6; font-style: italic;
-}
-.lectura-visual-box {
-  background: rgba(94,58,138,.06); border-left: 3px solid #5E3A8A;
-  border-radius: 0 3px 3px 0; padding: .6rem .9rem;
-  font-size: .9rem; line-height: 1.65; margin-bottom: .7rem;
-}
-.lectura-actions {
-  padding: .8rem 1.4rem 1rem; border-top: 1px solid var(--rule);
-  background: rgba(232,221,200,.2); display: flex; gap: .5rem;
-  border-radius: 0 0 6px 6px;
-}
-.lectura-print-btn {
-  background: #1a2a6a; color: #fff; border: none; border-radius: 3px;
-  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .7rem;
-  font-weight: 700; cursor: pointer; flex: 1;
-}
-.lectura-print-btn:hover { background: #2a3a8a; }
-.lectura-close-btn {
-  background: transparent; color: var(--grey); border: 1px solid var(--rule);
-  border-radius: 3px; padding: .4rem 1rem; font-family: 'Cinzel', serif;
-  font-size: .7rem; cursor: pointer;
-}
-/* Lectura button in cat-card */
-.cat-lectura-btn {
-  flex: 1;
-  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
-  letter-spacing: .03em; color: #1a2a6a; cursor: pointer;
-  background: rgba(42,58,122,.07); border: 1px solid rgba(42,58,122,.25);
-  border-radius: 3px; padding: 3px 5px; text-align: center;
+
+/* Action buttons — bigger touch targets */
+.cat-card-actions { display: flex; gap: 3px; margin-top: 6px; flex-wrap: wrap; }
+.cat-ficha-btn, .cat-comp-btn, .cat-lectura-btn,
+button[onclick*="openRubrica"] {
+  flex: 1; min-width: 0;
+  font-family: 'Cinzel', serif;
+  font-size: .6rem; font-weight: 700;
+  padding: 5px 4px !important;
+  border-radius: 3px; text-align: center;
+  cursor: pointer; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
   transition: all .12s;
 }
-.cat-lectura-btn:hover { background: rgba(42,58,122,.18); }
+.cat-ficha-btn {
+  color: #5a3a1a; background: rgba(90,58,26,.09);
+  border: 1px solid rgba(90,58,26,.28);
+}
+.cat-ficha-btn:hover { background: rgba(90,58,26,.2); }
+.cat-comp-btn {
+  color: #2a3a7a; background: rgba(42,58,122,.08);
+  border: 1px solid rgba(42,58,122,.28);
+}
+.cat-comp-btn:hover { background: rgba(42,58,122,.2); }
+.cat-lectura-btn {
+  color: #1a3a6a; background: rgba(26,58,106,.07);
+  border: 1px solid rgba(26,58,106,.25);
+}
+.cat-lectura-btn:hover { background: rgba(26,58,106,.18); }
+button[onclick*="openRubrica"] {
+  color: #3a1a6a; background: rgba(58,26,106,.07);
+  border: 1px solid rgba(58,26,106,.25);
+}
+button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
-@media print {
-  body.printing-lectura > *:not(#lecturaOverlay) { display: none !important; }
-  body.printing-lectura #lecturaOverlay { display: block !important; position: static !important; background: none !important; }
-  body.printing-lectura #lecturaModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
-  body.printing-lectura .lectura-actions, body.printing-lectura .lectura-nivel-tabs { display: none !important; }
+/* Section backgrounds — more distinct */
+.catalog-section { background: rgba(245,239,224,.5); }
+.curriculo-section { background: rgba(90,58,26,.04); }
+.sa-section { background: rgba(42,58,122,.05); }
+.itin-section { background: rgba(42,110,42,.04); }
+.univ-section { background: rgba(74,42,26,.04); }
+.recursos-section { background: rgba(122,74,10,.04); }
+
+/* Section h2 — unified, clean */
+.catalog-section h2,
+.curriculo-section h2,
+.sa-section h2,
+.itin-section h2,
+.univ-section h2,
+.recursos-section h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem; font-weight: 700;
+  letter-spacing: .08em;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--rule);
+  margin-bottom: 1.2rem;
 }
 
-/* ══ CHIP IN-CATALOG vs SUGGESTION ─────────────────────────── */
-.comp-title-chip[data-incatalog="1"] {
-  background: rgba(46,110,58,.12);
-  border-color: rgba(46,110,58,.5);
-  color: #1a4a24;
+/* Search bar cleaner */
+.search-bar {
+  padding: .7rem 2rem .6rem;
+  background: rgba(232,221,200,.55);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  gap: .75rem; flex-wrap: wrap;
 }
-.comp-title-chip[data-incatalog="1"]::before {
-  content: '✓ ';
-  font-size: .55rem;
-  opacity: .8;
+.search-bar label {
+  font-family: 'Cinzel', serif; font-size: .65rem;
+  font-weight: 700; letter-spacing: .07em;
+  color: var(--grey); text-transform: uppercase;
+  white-space: nowrap;
 }
-.comp-title-chip[data-incatalog="0"] {
-  background: rgba(90,70,10,.08);
-  border-color: rgba(184,134,11,.35);
-  color: #5a4a10;
-  font-style: italic;
+#catalogSearch {
+  font-family: 'EB Garamond', serif; font-size: 1rem;
+  padding: .35rem 1rem;
+  border: 1.5px solid var(--rule); border-radius: 4px;
+  background: rgba(245,239,224,.95); color: var(--ink);
+  flex: 1; min-width: 180px; max-width: 380px;
+  transition: border-color .15s, box-shadow .15s;
 }
-.comp-title-chip[data-incatalog="0"]::after {
-  content: ' ↗';
-  font-size: .55rem;
-  opacity: .65;
+#catalogSearch:focus {
+  outline: none; border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184,134,11,.15);
 }
-/* Legend */
-.lomloe-legend {
-  display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
-  font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .04em;
+
+/* Filter buttons */
+.fb {
+  font-family: 'Cinzel', serif; font-size: .65rem !important;
+  font-weight: 700; color: #fff; border: none;
+  cursor: pointer; padding: .3rem .75rem !important;
+  border-radius: 3px; letter-spacing: .03em;
+  transition: opacity .15s, transform .1s; white-space: nowrap;
 }
-.lomloe-legend span {
-  display: flex; align-items: center; gap: .3rem; color: var(--grey);
+.fb:hover { opacity: .85; transform: translateY(-1px); }
+.fb.active { outline: 2px solid rgba(255,255,255,.55); outline-offset: 1px; }
+.fb-all-uso, .fb-all-nivel { background: var(--grey) !important; }
+
+/* Tab system — clean */
+.cur-tab, .sa-tab, .itin-tab, .univ-tab, .rec-tab {
+  font-family: 'Cinzel', serif; font-size: .67rem;
+  font-weight: 700; letter-spacing: .05em;
+  padding: .38rem .95rem; white-space: nowrap;
+  border: 1.5px solid var(--rule);
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  background: rgba(232,221,200,.45); color: var(--grey);
+  transition: background .14s, color .14s;
 }
-.lomloe-legend .leg-cat  { color: #1a4a24; }
-.lomloe-legend .leg-sug  { color: #5a4a10; font-style: italic; }
+.cur-tab:hover:not(.active)  { background: rgba(90,58,26,.1); color: var(--ink); }
+.sa-tab:hover:not(.active)   { background: rgba(42,58,122,.1); color: var(--ink); }
+.itin-tab:hover:not(.active) { background: rgba(42,110,42,.1); color: var(--ink); }
+.univ-tab:hover:not(.active) { background: rgba(74,42,26,.1); color: var(--ink); }
+.rec-tab:hover:not(.active)  { background: rgba(122,74,10,.1); color: var(--ink); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  #catGrid { padding: .75rem 1rem; gap: .6rem; }
+  .cat-card { width: calc(50% - .45rem) !important; min-width: 155px; }
+  .search-bar { padding: .6rem 1rem; }
+  #catalogSearch { max-width: none; }
+}
+@media (max-width: 480px) {
+  .cat-card { width: 100% !important; }
+  #catGrid { padding: .5rem .75rem; gap: .5rem; }
+}
 </style>
 </head>
 <body>
@@ -3966,7 +3959,7 @@ p.sa-alternatives strong { color: var(--ink); }
 
 
 <!-- ══════════════════ CATÁLOGO COMPLETO ══════════════════ -->
-<div class="catalog-section" id="catalogo">
+<div class="catalog-section catalog-collapsed" id="catalogo">
   <div class="catalog-header">
     <h2 class="catalog-title">Catálogo completo del fondo</h2>
     <p class="catalog-sub">279 títulos · Pasa el cursor sobre cada tarjeta para ver la descripción pedagógica · Los filtros de uso y nivel operan sobre este catálogo y la línea del tiempo simultáneamente · Busca por título, autor o tema libre</p>
@@ -7513,10 +7506,6 @@ p.sa-alternatives strong { color: var(--ink); }
       Índice inverso del catálogo: desde cada competencia clave LOMLOE, accede a los títulos 
       del fondo que la trabajan de forma más directa. Pulsa un título para buscarlo en el catálogo.
     </p>
-    <div class="lomloe-legend">
-      <span class="leg-cat">✓ En el fondo de la biblioteca</span>
-      <span class="leg-sug"><em>En cursiva ↗</em> Sugerencia de uso (no disponible en el fondo)</span>
-    </div>
     <div class="comp-grid">
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7524,7 +7513,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Comunicación Lingüística</span>
     </div>
     <p class="comp-desc">Lectura literaria, análisis textual, narración visual y mediación cultural.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Frieren')">Frieren: más allá del fin del viaje</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Frieren: más allá del fin del viaje')">Frieren: más allá del fin del viaje</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7532,7 +7521,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Matemática y Científico-Tecnológica</span>
     </div>
     <p class="comp-desc">Pensamiento científico, ética tecnológica, robótica y ecología.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Patlabor')">Patlabor</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('The ghost in the shell')">Ghost in the Shell</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Dr. Stone')">Dr. Stone</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Planetes :integral')">Planetes</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Patlabor')">Patlabor</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Ghost in the Shell')">Ghost in the Shell</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Dr. Stone')">Dr. Stone</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Planetes')">Planetes</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7540,7 +7529,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Digital</span>
     </div>
     <p class="comp-desc">Alfabetización mediática, análisis de imagen y cultura digital.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Nausicaä : del valle del viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Serial Experiments Lain')">Serial Experiments Lain</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Leviathan')">Leviathan</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Patlabor')">Patlabor</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Nausicaä del Valle del Viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Serial Experiments Lain')">Serial Experiments Lain</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Leviathan')">Leviathan</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Patlabor')">Patlabor</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7548,7 +7537,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Personal, Social y Aprender a Aprender</span>
     </div>
     <p class="comp-desc">Autoconocimiento, gestión emocional, bienestar y metacognición.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Nana')">Nana</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Tengo cáncer terminal, pero estoy bien')">Tengo cáncer terminal, pero estoy bien</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Nana')">Nana</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Tengo cáncer terminal, pero estoy bien')">Tengo cáncer terminal, pero estoy bien</button><button type="button" class="comp-title-chip" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7556,7 +7545,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Ciudadanía</span>
     </div>
     <p class="comp-desc">Memoria histórica, valores democráticos y pensamiento crítico.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Adolf')">Adolf</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Barefoot Gen')">Barefoot Gen</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Vagabond')">Vagabond</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('La época de Botchan')">La época de Botchan</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Vinland Saga')">Vinland Saga</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Adolf')">Adolf</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Barefoot Gen')">Barefoot Gen</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Vagabond')">Vagabond</button><button type="button" class="comp-title-chip" onclick="filterByTitle('La época de Botchan')">La época de Botchan</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Vinland Saga')">Vinland Saga</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7564,7 +7553,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Emprendedora</span>
     </div>
     <p class="comp-desc">Iniciativa, creatividad, vocación y resolución de problemas.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Bakuman')">Bakuman</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Atelier of witch hat = El atelier de sombreros de mago')">Atelier of witch hat</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Bakuman')">Bakuman</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Atelier of witch hat')">Atelier of witch hat</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7572,7 +7561,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Conciencia y Expresión Cultural</span>
     </div>
     <p class="comp-desc">Patrimonio cultural, expresión artística y diversidad cultural.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Gon')">Gon</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Nausicaä : del valle del viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Chōjū-giga')">Chōjū-giga</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Gon')">Gon</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Nausicaä del Valle del Viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Chōjū-giga')">Chōjū-giga</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7580,7 +7569,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Social y Cívica</span>
     </div>
     <p class="comp-desc">Inclusión, igualdad, identidad y convivencia intercultural.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Trágica derrota')">Trágica derrota</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Sailor Moon')">Sailor Moon</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Adolf')">Adolf</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Trágica derrota')">Trágica derrota</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Sailor Moon')">Sailor Moon</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Adolf')">Adolf</button></div>
   </div>
 </div>
 
@@ -7824,7 +7813,7 @@ p.sa-alternatives strong { color: var(--ink); }
 </div>
 
 
-<!-- ══════════════════ ITINERARIOS UNIVERSITARIOS ════════════════ -->
+<!-- ══════════════════ ITINERARIOS UNIVERSITARIOS ══════════════════ -->
 <div class="univ-section" id="universidad">
   <h2>⊕ Recorridos didácticos universitarios — ULPGC · Campus del Obelisco</h2>
   <p class="univ-intro">Propuestas de uso del fondo de manga para la docencia universitaria en los grados del Campus del Obelisco.
@@ -8306,7 +8295,6 @@ p.sa-alternatives strong { color: var(--ink); }
     </div>
   </div>
 
-</div>
 <!-- ── FIN ITINERARIOS UNIVERSITARIOS ── -->
 
 
@@ -9243,6 +9231,228 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
 
 <footer>El manga como recurso didáctico — Biblioteca del Campus del Obelisco &nbsp;·&nbsp; Pasa el cursor sobre los títulos para más información</footer>
 
+
+<!-- ══ FICHA DE AULA MODAL ══════════════════════════════════ -->
+<div id="fichaOverlay" role="dialog" aria-modal="true" aria-labelledby="fichaTitleEl" onclick="if(event.target===this) closeFicha()">
+  <div id="fichaModal">
+    <div class="ficha-header">
+      <span class="ficha-label">⊕ Ficha de aula — Biblioteca Campus del Obelisco · ULPGC</span>
+      <div class="ficha-title" id="fichaTitleEl"></div>
+      <div class="ficha-author" id="fichaAuthor"></div>
+    </div>
+    <div class="ficha-body">
+      <div class="ficha-section">
+        <span class="ficha-section-label">Uso pedagógico · Nivel</span>
+        <div class="ficha-badges" id="fichaBadges"></div>
+        <div class="ficha-niv" id="fichaNiv"></div>
+      </div>
+      <div class="ficha-section">
+        <span class="ficha-section-label">Descripción didáctica</span>
+        <p class="ficha-desc" id="fichaDesc"></p>
+      </div>
+      <div class="ficha-section ficha-questions">
+        <span class="ficha-section-label">Preguntas para el aula</span>
+        <ol id="fichaQuestions"></ol>
+      </div>
+      <div class="ficha-section">
+        <span class="ficha-section-label">Conexión curricular LOMLOE</span>
+        <p class="ficha-desc" id="fichaLomloe"></p>
+      </div>
+    </div>
+    <div class="ficha-actions">
+      <button type="button" class="ficha-print-btn" onclick="document.body.classList.add('printing-ficha');window.print();setTimeout(()=>document.body.classList.remove('printing-ficha'),500)">⎙ Imprimir ficha</button>
+      <button type="button" class="ficha-close-btn" onclick="closeFicha()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMPARADOR MODAL ══════════════════════════════════════ -->
+<div id="compOverlay" role="dialog" aria-modal="true" aria-labelledby="compTitle" onclick="if(event.target===this) closeComp()">
+  <div id="compModal">
+    <div class="comp-header">
+      <h2 id="compTitle">⊕ Comparativa de títulos</h2>
+      <button type="button" class="comp-close" onclick="closeComp()">Cerrar ✕</button>
+    </div>
+    <div id="compCards"></div>
+    <div class="comp-footer">
+      <button type="button" class="comp-close-btn2" onclick="closeComp()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RÚBRICA MODAL ═════════════════════════════════════════ -->
+<div id="rubricaOverlay" role="dialog" aria-modal="true" aria-labelledby="rubricaTitle">
+  <div id="rubricaModal">
+    <div class="rubrica-header">
+      <h2 id="rubricaTitle">⊕ Generador de rúbrica</h2>
+      <button type="button" class="rubrica-close" onclick="closeRubrica()">Cerrar ✕</button>
+    </div>
+    <div class="rubrica-controls">
+      <div>
+        <label for="rubricaTitulo">Título de manga</label>
+        <input type="text" id="rubricaTitulo" placeholder="Escribe un título del fondo…" style="width:180px">
+      </div>
+      <div>
+        <label for="rubricaNivel">Etapa educativa</label>
+        <select id="rubricaNivel">
+          <option value="Educación Infantil">Infantil</option>
+          <option value="Educación Primaria">Primaria</option>
+          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
+          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
+          <option value="Bachillerato">Bachillerato</option>
+          <option value="Universidad">Universidad</option>
+        </select>
+      </div>
+      <div>
+        <label for="rubricaComp">Competencia principal</label>
+        <select id="rubricaComp">
+          <option value="CCL">CCL — Comunicación lingüística</option>
+          <option value="CPAA">CPAA — Aprender a aprender</option>
+          <option value="CSC">CSC — Social y cívica</option>
+          <option value="CCEC">CCEC — Expresión cultural</option>
+          <option value="CD">CD — Competencia digital</option>
+          <option value="CPSAA">CPSAA — Personal y social</option>
+        </select>
+      </div>
+      <button type="button" class="rubrica-gen-btn" id="rubricaGenBtn" onclick="generarRubrica()">
+        Generar rúbrica ✦
+      </button>
+    </div>
+    <div class="rubrica-body" id="rubricaBody">
+      <p class="rubrica-placeholder">Elige un título y etapa, y el asistente IA generará una rúbrica de evaluación LOMLOE lista para usar.</p>
+    </div>
+    <div class="rubrica-actions">
+      <button type="button" class="rubrica-print-btn" onclick="document.body.classList.add('printing-rubrica');window.print();setTimeout(()=>document.body.classList.remove('printing-rubrica'),500)">⎙ Imprimir rúbrica</button>
+      <button type="button" class="rubrica-close2" onclick="closeRubrica()">Cerrar</button>
+    </div>
+  </div>
+</div>
+<!-- ── FIN MODALES FICHA / COMPARADOR / RÚBRICA ── -->
+
+<!-- ══ GENERADOR DE SECUENCIA DIDÁCTICA ══════════════════════ -->
+<div id="secOverlay" role="dialog" aria-modal="true" aria-labelledby="secTitle">
+  <div id="secModal">
+    <div class="sec-header">
+      <h2 id="secTitle">⊕ Secuencia didáctica</h2>
+      <button type="button" class="sec-close" onclick="closeSec()">Cerrar ✕</button>
+    </div>
+    <div class="sec-controls">
+      <div>
+        <label for="secTitulo">Título de manga</label>
+        <input type="text" id="secTitulo" placeholder="Título del fondo…" style="width:160px">
+      </div>
+      <div>
+        <label for="secEtapa">Etapa</label>
+        <select id="secEtapa">
+          <option value="Educación Infantil">Infantil</option>
+          <option value="Educación Primaria">Primaria</option>
+          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
+          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
+          <option value="Bachillerato">Bachillerato</option>
+          <option value="Universidad">Universidad</option>
+        </select>
+      </div>
+      <div>
+        <label for="secSesiones">N.º de sesiones</label>
+        <select id="secSesiones">
+          <option value="2">2 sesiones</option>
+          <option value="4" selected>4 sesiones</option>
+          <option value="6">6 sesiones</option>
+          <option value="8">8 sesiones</option>
+        </select>
+      </div>
+      <div>
+        <label for="secComp">Competencia principal</label>
+        <select id="secComp">
+          <option value="CCL">CCL — Lingüística</option>
+          <option value="CPSAA">CPSAA — Personal y social</option>
+          <option value="CSC">CSC — Social y cívica</option>
+          <option value="CCEC">CCEC — Expresión cultural</option>
+          <option value="STEM">STEM — Científica</option>
+        </select>
+      </div>
+      <button type="button" class="sec-gen-btn" id="secGenBtn" onclick="generarSecuencia()">
+        Generar secuencia ✦
+      </button>
+    </div>
+    <div class="sec-body" id="secBody">
+      <p class="sec-placeholder">Elige un título, la etapa, el número de sesiones y la competencia principal.
+      El asistente IA generará una secuencia didáctica completa lista para llevar al aula.</p>
+    </div>
+    <div class="sec-actions">
+      <button type="button" class="sec-print-btn"
+        onclick="document.body.classList.add('printing-sec');window.print();setTimeout(()=>document.body.classList.remove('printing-sec'),500)">
+        ⎙ Imprimir secuencia
+      </button>
+      <button type="button" class="sec-close2" onclick="closeSec()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAPA DE CONEXIONES ══════════════════════════════════════ -->
+<div id="mapaOverlay" role="dialog" aria-modal="true" aria-labelledby="mapaTitle">
+  <div id="mapaModal">
+    <div class="mapa-header">
+      <h2 id="mapaTitle">⊕ Mapa de conexiones entre títulos</h2>
+      <button type="button" class="mapa-close" onclick="closeMapa()">Cerrar ✕</button>
+    </div>
+    <div id="mapaContainer" class="mapa-container" 
+         aria-label="Títulos del fondo agrupados por temática pedagógica"></div>
+  </div>
+</div>
+
+<!-- ── FIN MODALES NUEVAS FUNCIONALIDADES ── -->
+
+<div id="top-anchor" style="position:absolute;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none" aria-hidden="true"></div>
+
+<button type="button" id="gtt-btn" aria-label="Volver al inicio de la página" title="Volver arriba">↑</button>
+
+<!-- ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ -->
+<div id="tools-fab" role="toolbar" aria-label="Herramientas">
+  <div class="fab-items" id="fabItems">
+    <div class="fab-item">
+      <button type="button" class="fab-action" onclick="openSec()" aria-label="Generador de secuencia didáctica" title="Secuencia didáctica">✦</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action" onclick="openMapa()" aria-label="Mapa de conexiones entre títulos" title="Mapa de títulos">⊞</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action" id="asist-fab" onclick="openPanel()" aria-label="Asistente pedagógico IA" title="Asistente IA">✧</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action proyeccion-btn" onclick="toggleProyeccion()" aria-label="Activar modo proyección" title="Modo proyección">⛶</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action modo-aula-btn" onclick="toggleModoAula()" aria-pressed="false" aria-label="Activar modo aula" title="Modo aula">⊞</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action print-btn" onclick="window.print()" aria-label="Imprimir" title="Imprimir">⎙</button>
+    </div>
+      <div class="fab-item">
+      <button type="button" class="fab-action" onclick="openHist()" aria-label="Historial de la sesión" title="Historial">&#9719;</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action" onclick="var a=document.getElementById('top-anchor');if(a)a.scrollIntoView({behavior:'smooth'});else window.scrollTo({top:0,behavior:'smooth'});" aria-label="Volver al inicio" title="Volver arriba">↑</button>
+    </div>
+  </div>
+  <button type="button" id="tools-fab-toggle" aria-label="Abrir herramientas" aria-expanded="false" title="Herramientas">+</button>
+</div>
+
+<!-- ══ COMP DRAWER ══════════════════════════════════════════ -->
+<div id="compDrawer" role="status" aria-live="polite" aria-label="Títulos seleccionados para comparar">
+  <span class="comp-drawer-title">Comparar:</span>
+  <div id="compSlots">
+    <span class="comp-slot empty" id="compSlot0">+ Añade un título</span>
+    <span class="comp-slot empty" id="compSlot1">+ Añade un título</span>
+    <span class="comp-slot empty" id="compSlot2">+ Añade un título</span>
+  </div>
+  <div class="comp-drawer-actions">
+    <button type="button" class="comp-drawer-btn comp-go-btn" id="compGoBtn" onclick="openComp()" disabled>Ver comparativa ▶</button>
+    <button type="button" class="comp-drawer-btn comp-clear-btn" onclick="clearComp()">✕ Vaciar</button>
+  </div>
+</div>
+
+
 <script>
 // ── Global tooltip element (lives on body, above everything) ──
 const gtt = document.createElement('div');
@@ -9570,10 +9780,57 @@ const NIVEL_LABELS_V = {
   bachillerato:'Bachillerato', universidad:'Universidad'
 };
 
+function ensureVitrinaUI() {
+  if (document.getElementById('vitrineOverlay') && document.getElementById('vitrineDrawer')) return;
 
-// ── Safety: ensure vitrina UI exists ────────────────────────
+  const overlay = document.createElement('div');
+  overlay.id = 'vitrineOverlay';
+  overlay.className = 'vitrina-overlay';
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.addEventListener('click', closeVitrina);
+
+  const drawer = document.createElement('aside');
+  drawer.id = 'vitrineDrawer';
+  drawer.className = 'vitrina-drawer';
+  drawer.setAttribute('role', 'dialog');
+  drawer.setAttribute('aria-modal', 'true');
+  drawer.setAttribute('aria-hidden', 'true');
+  drawer.setAttribute('aria-labelledby', 'vitrineTitle');
+  drawer.innerHTML = `
+    <div id="vitrineStripe" class="vitrina-era-stripe"></div>
+    <div class="vitrina-header">
+      <div>
+        <div id="vitrineEraTag" class="vitrina-era-tag">Línea del tiempo</div>
+        <h3 id="vitrineTitle" class="vitrina-title">Obra</h3>
+        <div id="vitrineAuthor" class="vitrina-author"></div>
+        <div id="vitrinePeriodo" class="vitrina-periodo" style="display:none"></div>
+      </div>
+      <button type="button" class="vitrina-close" aria-label="Cerrar vitrina">✕</button>
+    </div>
+    <div class="vitrina-body">
+      <p id="vitrineDesc" class="vitrina-desc"></p>
+      <div id="vitrineMeta" class="vitrina-meta"></div>
+      <a id="vitrineOpacLink" class="vitrina-catalog-btn" href="#" target="_blank" rel="noopener">Buscar en el catálogo ULPGC</a>
+      <div class="vitrina-ficha">
+        <div class="vitrina-ficha-label">Llévalo al aula</div>
+        <div id="vitrineSteps" class="vitrina-ficha-steps"></div>
+        <div id="vitrineTarea" class="vitrina-ficha-tarea"></div>
+      </div>
+      <section id="vitrineRelated" class="vitrina-related" style="display:none">
+        <div class="vitrina-section-label">Más obras relacionadas</div>
+        <div id="vitrineRelatedList"></div>
+      </section>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(drawer);
+
+  drawer.querySelector('.vitrina-close').addEventListener('click', closeVitrina);
+}
 
 function openVitrina(card) {
+  ensureVitrinaUI();
   const vitrineId = card.getAttribute('data-vitrina');
   if (!vitrineId) return;
   const title  = card.querySelector('.ct')?.textContent || '';
@@ -9852,6 +10109,7 @@ function vitrineSearchCatalog() {
 // Event delegation: handles vitrina clicks robustly regardless of DOM timing
 // Also apply role/tabindex to all vitrina cards
 document.addEventListener('DOMContentLoaded', () => {
+  ensureVitrinaUI();
   document.querySelectorAll('.card[data-vitrina]').forEach(card => {
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
@@ -9879,790 +10137,7 @@ document.addEventListener('keydown', e => {
 
 
 
-// ── ASISTENTE PEDAGÓGICO IA ───────────────────────────────────
-(function() {
-  const SESS_KEY = 'manga_asist_apikey';
-
-  // ── Catalog embedded in JS ─────────────────────────────────
-  const CATALOG_RAW = `Team medical dragon|Taro Nogizaka|2009|ciencia|bachillerato
-Eagle|Kaiji Kawaguchi|2008|historia|bachillerato
-3 x 3 eyes|Yuzo Takada|2019|ciencia|secundaria
-Mangavisión : [Guía del tebeo japonés]|Santiago García|1995|historia|bachillerato
-Adam y Eve|Hideo Yamamoto|2018|ciencia|bachillerato
-Así habló Zaratustra : el manga|Friedrich Nietzsche|2011|filosofia|bachillerato
-Monster : [Kanzenban I]|Naoki Urasawa|2009|filosofia|bachillerato
-Master Keaton|Naoki Urasawa|2012|historia|bachillerato
-El libro de los insectos humanos|Osamu Tezuka|2013|filosofia|bachillerato
-El contrato social : el manga|Jean Jacques Rousseau|2013|filosofia|bachillerato
-El arte de la guerra : el manga|Sunzi|2012|historia|bachillerato
-El príncipe : el manga|Niccolò Machiavelli|2012|filosofia|bachillerato
-La divina comedia : el manga|Dante Alighieri|2011|lenguas|bachillerato
-Ilíada y Odisea : el manga|Homero|2013|lenguas|secundaria
-Autobiografía|Shigeru Mizuki|2012|historia|bachillerato
-El gourmet solitario|Jiro Taniguchi|2011|emocional|bachillerato
-I am a hero|Kengo Hanazawa|2013|ciencia|bachillerato
-Vagabond|Takehiko Inoue|2013|historia|bachillerato
-Manga : ritos y adivinaciones|María del Pozo|2007|historia|universidad
-Kanikosen|Takiji Kobayashi|2014|historia|bachillerato
-El capital : el manga|Karl Marx|2013|filosofia|bachillerato
-Cielos radiantes|Jiro Taniguchi|2011|emocional|bachillerato
-Furari|Jiro Taniguchi|2012|historia|bachillerato
-Diario de una desaparición|Hideo Azuma|2006|emocional|bachillerato
-Gantz|Hiroya Oku|2011|ciencia|bachillerato
-Thermae Romae|Mari Yamazaki|2013|historia|secundaria
-Kokoro|Nagi Yoshizaki|2015|emocional|bachillerato
-Adolf|Osamu Tezuka|2013|historia|bachillerato
-Los años dulces|Jiro Taniguchi|2011|emocional|bachillerato
-Alabaster|Osamu Tezuka|2014|ciencia|bachillerato
-Don Quijote de la Mancha : el manga|Miguel de Cervantes Saavedra|2016|lenguas|secundaria
-Les envahisseurs|KBenjamin|2012|ciencia|bachillerato
-Paseos de un gourmet solitario|Jiro Taniguchi|2016|emocional|bachillerato
-El olmo del Cáucaso y otras historias|Jiro Taniguchi|2016|emocional|bachillerato
-Tomoji|Jiro Taniguchi|2016|historia|bachillerato
-La canción de Apolo|Osamu Tezuka|2014|emocional|bachillerato
-La chica a la orilla del mar. v. 2|Inio Asano|2014|emocional|bachillerato
-La montaña mágica|Jiro Taniguchi|2016|emocional|bachillerato
-Plinivs|Mari Yamazaki|2016|historia|bachillerato
-Crónicas de la era glacial|Jiro Taniguchi|2016|ciencia|bachillerato
-Ichi Efu|Kazuto Tatsuta|2016|historia|bachillerato
-Barrio lejano|Jiro Taniguchi|2016|emocional|bachillerato
-Capitán Harlock|Leiji Matsumoto|2016|ciencia|secundaria
-Emilio : el manga|Jean Jacques Rousseau|2015|filosofia|bachillerato
-Usagi Yojimbo : la colección Fantagraphics|Stan Sakai|2017|historia|secundaria
-Ayako. 2|Osamu Tezuka|2017|historia|bachillerato
-Gorda|Moyoko Anno|2002|genero|bachillerato
-Venecia|Jiro Taniguchi|2017|historia|bachillerato
-The ghost in the shell|Masamune Shirow|2017|ciencia|bachillerato
-Master Keaton : re-Master|Naoki Urasawa|2017|historia|bachillerato
-Los guardianes del Louvre|Jiro Taniguchi|2015|historia|bachillerato
-Akira|Katsuhiro Otomo|2012|ciencia|bachillerato
-Devorar la tierra|Osamu Tezuka|2015|ciencia|bachillerato
-Bárbara|Osamu Tezuka|2016|emocional|bachillerato
-Ayako. 1|Osamu Tezuka|2016|historia|bachillerato
-El barrio de La Luz|Inio Asano|2017|emocional|bachillerato
-Bestiarius|Masasumi Kakizaki|2015|historia|bachillerato
-La ciudad de cristal|Paul Karasik|2017|visual|bachillerato
-Sky Hawk|Jiro Taniguchi|2017|historia|bachillerato
-La pequeña forastera : Siúil, a Rún|Nagabe|2018|emocional|primaria
-El club del divorcio|Kazuo Kamimura|2017|genero|bachillerato
-Antología|Osamu Tezuka|2018|historia|secundaria
-Fénix|Osamu Tezuka|2013|filosofia|bachillerato
-Usagi Yojimbo: saga|Stan Sakai|2017|historia|secundaria
-El bosque milenario|Jiro Taniguchi|2018|emocional|secundaria
-Miss Hokusai|Hinako Sugiura|2018|historia|bachillerato
-Black Jack|Osamu Tezuka|2018|ciencia|secundaria
-Sick|Tomo Kurahashi|2016|inclusion|bachillerato
-Kiss Of Fire|Nitta Youka|2006|genero|bachillerato
-Saint Seiya : los caballeros del Zodíaco|Masami Kurumada|2013|emocional|secundaria
-Una mujer de la era Shôwa|Kazuo Kamimura|2018|historia|bachillerato
-Pescadores de medianoche|Yoshihiro Tatsumi|2018|historia|bachillerato
-Historia de una geisha|Kazuo Kamimura|2015|historia|bachillerato
-Kitaro|Shigeru Mizuki|2010|historia|secundaria
-El conde de Montecristo|Alexandre Dumas|2018|lenguas|secundaria
-IM. El sumo sacerdote Imhotep|Makoto Morishita|2018|historia|secundaria
-Vinland Saga|Makoto Yukimura|2014|historia|bachillerato
-Astroboy|Osamu Tezuka|2018|ciencia|primaria
-The Legend of Kamui The Island of Sugaru|Sanpei Shirato|1990|historia|bachillerato
-La cruzada de los inocentes|Usamaru Furuya|2017|historia|bachillerato
-La heroica leyenda de Arslan|Hiromu Arakawa|2015|historia|secundaria
-Shingen Takeda : el tigre de Kai|Kazuo Koike|2016|historia|secundaria
-Solanin : Integral|Inio Asano|2019|emocional|bachillerato
-La leyenda de madre Sarah|Katsuhiro Otomo|2008|ciencia|bachillerato
-Historias cortas de Satoshi Kon|Satoshi Kon|2012|visual|bachillerato
-Avatares de una espada memorable|Hiroshi Hirata|2017|historia|bachillerato
-Historias cortas de Naoki Urasawa|Naoki Urasawa|2011|filosofia|bachillerato
-El sabueso|Jiro Taniguchi|2013|filosofia|bachillerato
-Pluto|Naoki Urasawa|2005|ciencia|bachillerato
-Historias de Edgar Allan Poe|Edgar Allan Poe|2019|lenguas|bachillerato
-La tragedia de P|Rumiko Takahashi|2007|filosofia|bachillerato
-Orgullo y prejuicio|Jane Austen|2016|lenguas|bachillerato
-1 or W|Rumiko Takahashi|2007|emocional|bachillerato
-Regreso al mar.|Satoshi Kon|2013|emocional|bachillerato
-La Bestia|Hideki Mori|2015|filosofia|bachillerato
-El Lobo solitario y su cachorro|Kazuo Koike|2016|historia|bachillerato
-Hokusai|Shôtarô Ishinomori|2019|emocional|bachillerato
-Mundo salvaje|Jiro Taniguchi|2019|ciencia|bachillerato
-La cantina de medianoche : Tokyo stories|Abe Yaro|2019|emocional|bachillerato
-La cumbre de los dioses|Jiro Taniguchi|2007|emocional|bachillerato
-3, calle de los misterios|Shigeru Mizuki|2011|historia|secundaria
-Emma|Jane Austen|2019|lenguas|bachillerato
-Operación muerte|Shigeru Mizuki|2010|historia|bachillerato
-Mujeres del Zodíaco|Maki Miyako|2019|emocional|bachillerato
-Mi vida en barco|Tsuge Tadao|2019|historia|bachillerato
-The one pound gospel.|Rumiko Takahashi|2008|emocional|secundaria
-Ciudad de Yotsuya, Barrio de Hanazono|Kan Takahama|2017|historia|bachillerato
-El último vuelo de las mariposas.|Kan Takahama|2016|historia|bachillerato
-Hanzô : el camino del asesino.|Kazuo Koike|2015|historia|bachillerato
-En la vida real|Cory Doctorow|2015|ciencia|bachillerato
-Yotsuba!|Kiyohiko Azuma|2010|lenguas|primaria
-Ranma 1|Rumiko Takahashi|2015|genero|secundaria
-Dentro de los yokais.|Shigeru Mizuki|2019|historia|secundaria
-Happy!|Naoki Urasawa|2013|emocional|secundaria
-MW|Osamu Tezuka|2019|filosofia|bachillerato
-Norte Sur|Alberto Breccia|1989|historia|bachillerato
-Grandes esperanzas|Crystal S Chan|2019|lenguas|bachillerato
-Ekhö mundo espejo, Integral|Christophe Arleston|2020|ciencia|secundaria
-Issak|Shinji Makari|2020|historia|bachillerato
-Death Note Edición integral|Tsugumi Ohba|2019|filosofia|bachillerato
-Son Goku, el héroe de la ruta de la seda|Kazuo Koike|2016|historia|secundaria
-Llegó la primavera|Kazuo Koike|2017|emocional|bachillerato
-Las aventuras de Tom Sawyer.|Mark Twain|2020|lenguas|secundaria
-Kei: crónica de una juventud|Kazuo Koike|2015|emocional|bachillerato
-El hombre sediento|Kazuo Koike|2014|historia|bachillerato
-Sunny Sunny Ann!|Miki Yamamoto|2020|emocional|primaria
-Romeo y Julieta.|William Shakespeare|2020|lenguas|secundaria
-Golden Kamuy|Satoru Noda|2017|historia|bachillerato
-Innocent rouge|Shin'ichi Sakamoto|2019|historia|bachillerato
-Innocent|Shin'ichi Sakamoto|2016|historia|bachillerato
-Garoden|Jiro Taniguchi|2020|historia|bachillerato
-Cráter|Osamu Tezuka|2020|ciencia|secundaria
-El chico de los ojos de gato.|Kazuo Umezz|2020|emocional|secundaria
-La hora del té de la pequeña forastera|Nagabe|2020|emocional|primaria
-El ratón de biblioteca|Miya Kazuki|2020|lenguas|primaria
-Fragmentos del Mal|Junji Ito|2019|visual|bachillerato
-Frankenstein|Junji Ito|2020|ciencia|bachillerato
-Gyo|Junji Ito|2019|ciencia|bachillerato
-Tabi no sakana = Bocados de un viaje gourmet|Qusumi Masayuki|2020|emocional|bachillerato
-NeuN|Tsutomu Takahashi|2020|historia|bachillerato
-Bride stories.|Kaoru Mori|2013|historia|secundaria
-El almanaque de mi padre|Jiro Taniguchi|2020|emocional|bachillerato
-Mascotas|Jiro Taniguchi|2020|emocional|primaria
-Uzumaki : espiral|Junji Ito|2017|visual|bachillerato
-El espejo : antología de historias cortas|Rumiko Takahashi|2020|emocional|bachillerato
-Dust 8|Osamu Tezuka|2020|ciencia|secundaria
-Planetes :integral|Makoto Yukimura|2020|ciencia|bachillerato
-Asa, el ejecutor|Kazuo Koike|2021|historia|bachillerato
-Arte|Ohkubo Kei|2021|visual|bachillerato
-Queen Emeraldas|Leiji Matsumoto|2021|ciencia|secundaria
-Grand dolls|Osamu Tezuka|2021|filosofia|bachillerato
-Yona : Princesa del Amanecer|Mizuho Kusanagi|2018|genero|secundaria
-Crítica de la razón pura : el manga|Immanuel Kant|2016|filosofia|bachillerato
-El paraíso perdido : el manga|John Milton|2018|filosofia|bachillerato
-El manifiesto comunista : el manga|Karl Marx|2018|filosofia|bachillerato
-Introducción al psicoanálisis : el manga|Sigmund Freud|2017|filosofia|bachillerato
-Carl G. Jung y la psicología analítica : el manga|Carl G|2018|filosofia|bachillerato
-La riqueza de las naciones : el manga|Adam Smith|2018|filosofia|bachillerato
-El pájaro azul|Takashi Murakami|2016|emocional|primaria
-La casa de los insectos|Kazuo Umezz|2020|ciencia|bachillerato
-Bajo un cielo nuevo|Cocoro Hirai|2019|emocional|secundaria
-¡Kota, ven!|Takashi Murakami|2019|emocional|primaria
-Grashros|Muneyuki Kaneshiro|2021|ciencia|secundaria
-Kasajirô, el clava-tatamis|Kazuo Koike|2016|historia|secundaria
-Moby Dick: el manga|Herman Melville|2016|lenguas|bachillerato
-Las penas del joven Werther : el manga|Johann Wolfgang von Goethe|2016|emocional|bachillerato
-Los hermanos Karamázov : el manga|Fiódor Dostoievski|2018|filosofia|bachillerato
-En busca del tiempo perdido: el manga|Marcel Proust|2017|filosofia|bachillerato
-Sobre la libertad : el manga|Idea original John Stuart Mill|2016|filosofia|bachillerato
-La enfermedad mortal : el manga|Soren Kierkegaard|2016|filosofia|bachillerato
-La metamorfosis : el manga|Franz Kafka|2016|lenguas|secundaria
-La muerte de Sócrates : el manga|Jun Matsuura|2018|filosofia|bachillerato
-Anna Karenina: el manga|León Tolstói|2017|genero|bachillerato
-El anticristo : el manga|Friedrich Nietzsche|2016|filosofia|bachillerato
-Canción de Navidad : el manga|Charles Dickens|2017|emocional|secundaria
-El libro del tao : el manga|Lao-Tsé|2014|filosofia|bachillerato
-Crimen y castigo : el manga|Fiódor Dostoievski|2016|filosofia|bachillerato
-Kamasutra : el manga|Vatsyayana|2016|genero|bachillerato
-La leyenda de Kujaku|Kazuo Koike|2017|historia|secundaria
-De la guerra : el manga|Karl von Clausewitz|2017|historia|bachillerato
-Hamlet : el manga|William Shakespeare|2015|lenguas|secundaria
-Fausto : el manga|Johann Wolfgang von Goethe|2016|filosofia|bachillerato
-Jiletta o el caos frenético|Osamu Tezuka|2021|ciencia|bachillerato
-Las Montañas de la Locura|Gou Tanabe|2021|visual|bachillerato
-I.L.|Osamu Tezuka|2021|emocional|bachillerato
-Macbeth|William Shakespeare|2021|lenguas|bachillerato
-Usagi Yojimbo|Stan Sakai|2021|historia|secundaria
-Oen|Ryoichi Ikegami|2021|historia|bachillerato
-Los locos del Gekiga|Masahiko Matsumoto|2021|historia|bachillerato
-Buda|Osamu Tezuka|2021|filosofia|bachillerato
-Cuentos de un pasado lejano : konjaku monogatari|Shigeru Mizuki|2022|historia|secundaria
-El club de los libros prohibidos|Hyun Sook Kim|2021|historia|secundaria
-La verdad sobre las brujas|Ebishi Maki|2021|genero|secundaria
-Rainbow Parakeet|Osamu Tezuka|2021|emocional|secundaria
-La mujer del espía|Masasumi Kakizaki|2022|historia|bachillerato
-Ambassador Magma|Osamu Tezuka|2021|ciencia|primaria
-Flores rojas|Yoshiharu Tsuge|2022|visual|bachillerato
-Opus|Satoshi Kon|2022|visual|bachillerato
-Kamen Rider|Shôtarô Ishinomori|2021|ciencia|primaria
-Dororon Enma-Kun|Go Nagai|2021|emocional|secundaria
-Los artistas no pisan las flores|Marco Kohinata|2022|genero|bachillerato
-Las flores del mar Egeo|Akame Hinoshita|2022|genero|bachillerato
-Mundo perdido|Yoshihiro Tatsumi|2022|historia|bachillerato
-Hamlet|William Shakespeare|2022|emocional|bachillerato
-Yuko|Ryoichi Ikegami|2021|emocional|bachillerato
-Joe del mañana|Asao Takamori|2022|emocional|secundaria
-Dinosan : Dinosaurs Sanctuary|Itaru Kinoshita|2022|ciencia|primaria
-Romeo y Julieta|Yumiko Igarashi|2022|lenguas|secundaria
-Tokyo revengers|Ken Wakui|2021|emocional|secundaria
-Family Compo|Tsukasa Hojo|2022|genero|bachillerato
-Relatos de Sabu e ichi|Shôtarô Ishinomori|2015|historia|bachillerato
-La época de Botchan|Jiro Taniguchi|2022|historia|bachillerato
-El País de Tanabata|Hitoshi Iwaaki|2021|historia|bachillerato
-Regreso al mar|Satoshi Kon|2022|emocional|bachillerato
-Big X|Osamu Tezuka|2021|ciencia|secundaria
-Ataque a los titanes|Hajime Isayama|2012|historia|bachillerato
-El precio de mi vida|Miaki Sugaru|2022|filosofia|bachillerato
-La posada de los objetos perdidos|Hozumi|2016|emocional|primaria
-El profe del profe|Noji|2022|emocional|primaria
-El ojo azul de Horus|Chie Inudo|2022|historia|secundaria
-El zorro y el pequeño tanuki|Mi Tagawa|2022|emocional|primaria
-Nieve roja|Susumu Katsumata|2022|historia|bachillerato
-Atelier of witch hat = El atelier de sombreros de mago|Kamome Shirahama|2018|visual|primaria
-Historias cortas|Gosho Aoyama|2022|emocional|secundaria
-Seraphim 266613336 Wings|Mamoru Oshii|2022|ciencia|bachillerato
-Guardianes de la noche|Koyoharu Gotouge|2022|historia|secundaria
-Don Dracula|Osamu Tezuka|2023|emocional|primaria
-Shinobino|Ogaki Rokuro|2021|historia|bachillerato
-Mujirushi : el signo de los sueños|Naoki Urasawa|2022|filosofia|bachillerato
-Prime Rose|Osamu Tezuka|2022|ciencia|secundaria
-X-venture : el cuerpo en crisis : story|comic / Hot-Blooded Souls|2022|ciencia|primaria
-Gericault|Takaho Nakahara|2023|historia|bachillerato
-Hinatsuba|Koichi Masahara|2023|emocional|secundaria
-Lady Snowblood|Kazuo Koike|2006|historia|bachillerato
-Mermaid Saga|Rumiko Takahashi|2023|emocional|bachillerato
-Amor es cuando cesa la lluvia|Jun Mayuzuki|2018|emocional|bachillerato
-Una mujer y la guerra|Yoko Kondo|2023|historia|bachillerato
-Devorar la Tierra|Osamu Tezuka|2023|ciencia|bachillerato
-El Viaje De Shuna|Hayao Miyazaki|2023|historia|secundaria
-El fin del mundo de las brujas|Kujira|2023|emocional|secundaria
-Hokusai manga|Hokusai Katsushika|2023|historia|bachillerato
-Tierra, sangre, conocimiento|Uoto|2022|historia|bachillerato
-Tokio día a día|Taiyô Matsumoto|2023|historia|bachillerato
-Torpe de nacimiento|Abe Yaro|2024|emocional|bachillerato
-Frieren|Kanehito Yamada|2021|emocional|bachillerato
-Black box Integral|Tsutomu Takahashi|2024|historia|bachillerato
-Pokémon y feminismo : la gran revolución transmedia|Héctor Hierro Bravo|2022|genero|bachillerato
-Flores de piedra|Hisashi Sakaguchi|2025|historia|bachillerato
-Historias color tierra|Dong-Hwa Kim|2024|emocional|secundaria
-Una mujer de espaldas|Yamada Murasaki|2024|genero|bachillerato
-Ikigami : Comunicado de muerte|Motoro Mase|2023|filosofia|bachillerato
-Blue Fighter|Jiro Taniguchi|2025|emocional|secundaria
-El pueblo de arena y escamas azules|Yôko Komori|2020|emocional|secundaria
-Helena y el Señor Lobo Malo|Bliss|2024|lenguas|primaria
-Dark Angel|Kia Asamiya|2024|ciencia|bachillerato
-Fireworks|Makoto Fügetsu|2018|emocional|secundaria
-Neo Fausto|Osamu Tezuka|2025|filosofia|bachillerato
-Nausicaä : del valle del viento|Hayao Miyazaki|2025|ciencia|bachillerato
-Okinawa|Susumu Higa|2025|historia|bachillerato
-Tombs|Junji Ito|2023|visual|bachillerato
-Cheat Sheets|Tiger Tateishi|2023|ciencia|secundaria
-El príncipe del mar|Kaori Ozaki|2016|emocional|secundaria
-Dororo|Osamu Tezuka|2025|emocional|secundaria
-La invasión de los hongos del espacio|Marina Shirakawa|2025|ciencia|secundaria
-Ruri la tatuadora : y otras historias de chicas malas.|Bonten Taro|2025|genero|bachillerato
-Santuario|Sho Fumimura|2025|filosofia|bachillerato
-Adiós, mi Odín|Chihiro Yoshioka|2025|emocional|bachillerato
-Gon|Masashi Tanaka|1991|visual|infantil
-Makanai: la cocina de las maiko|Aiko Koyama|2016|emocional|primaria
-Tengo cáncer terminal, pero estoy bien|Hilnama|2021|emocional|secundaria
-Patlabor|Masami Yuki|1988|ciencia|secundaria
-Sailor Moon|Naoko Takeuchi|1991|genero|primaria
-Nana|Ai Yazawa|2000|emocional|bachillerato
-Skip and Loafer|Misaki Takamatsu|2018|emocional|secundaria
-Hirayasumi|Shinzo Takamura|2020|emocional|secundaria
-La fortaleza de papel|Osamu Tezuka|1974|historia|secundaria
-Trágica derrota|Akiko Nozoe|2017|historia|secundaria
-Leviathan|Shiro Kuroi|2023|ciencia|bachillerato
-After School Dice Club|Hiroto Nakamichi|2019|emocional|secundaria
-`;
-
-  const CATALOG = CATALOG_RAW.trim().split('\n').map(l => {
-    const [title, author, year, uso, nivel] = l.split('|');
-    return { title, author, year, uso, nivel };
-  });
-
-  // ── Extract catalog dynamically from DOM ──────────────────
-  function extractCatalogContext(limit = 150) {
-    const cards = Array.from(document.querySelectorAll('.cat-card')).slice(0, limit);
-    if (!cards.length) return '';
-    return cards.map(card => {
-      const title  = card.querySelector('.cat-title')?.textContent?.trim() || '';
-      const author = card.querySelector('.cat-author')?.textContent?.trim() || '';
-      const usos   = Array.from(card.querySelectorAll('.cat-badge')).map(el => el.textContent.trim()).join(', ');
-      const nivels = Array.from(card.querySelectorAll('.niv-badge')).map(el => el.textContent.trim()).join(', ');
-      return `• ${title} — ${author}${usos ? ' — uso: '+usos : ''}${nivels ? ' — nivel: '+nivels : ''}`;
-    }).join('\n');
-  }
-
-  // ── System prompt ──────────────────────────────────────────
-  function buildSystemPrompt() {
-    const catalogContext = extractCatalogContext();
-    return `Eres el Asistente Pedagógico de la Biblioteca del Campus del Obelisco (ULPGC, Gran Canaria), especializado en el uso didáctico del manga.
-
-Tu función es ayudar a docentes y visitantes a:
-- Encontrar títulos del fondo de manga adecuados para sus necesidades educativas
-- Diseñar actividades y situaciones de aprendizaje con manga
-- Conectar títulos con el currículo LOMLOE y las competencias clave
-- Argumentar pedagógicamente el uso del manga en el aula
-- Adaptar propuestas a distintas etapas: Infantil, Primaria, Secundaria, Bachillerato, Universidad
-
-FONDO COMPLETO DE LA BIBLIOTECA (279 títulos):
-${catalogContext || 'Consulta el catálogo visible para seleccionar títulos reales.'}
-
-INSTRUCCIONES:
-- Responde siempre en español
-- Cita títulos reales del fondo cuando hagas recomendaciones
-- Cuando sugieras actividades, menciona etapa, competencia LOMLOE y duración aproximada
-- Usa un tono cercano, profesional y pedagógicamente fundamentado
-- Si te preguntan sobre un título que no está en el fondo, dilo claramente
-- Máximo 300 palabras salvo que pidan detalle`;
-  }
-
-  // ── DOM references ─────────────────────────────────────────
-  let panel, overlay, messages, input, sendBtn, keyInput, keyStatus, keyArea;
-  let conversationHistory = [];
-  let hasWelcomed = false;
-  let apiKey = sessionStorage.getItem(SESS_KEY) || '';
-
-  // ── Render markdown-lite ────────────────────────────────────
-  function renderMd(text) {
-    return text
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/\n/g, '<br>');
-  }
-
-  // ── Add message to chat ─────────────────────────────────────
-  function addMsg(role, text, typing) {
-    const div = document.createElement('div');
-    div.className = 'asist-msg ' + (typing ? 'typing' : role);
-    div.innerHTML = typing ? text : renderMd(text);
-    if (typing) div.id = 'asist-typing';
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-    return div;
-  }
-
-  // ── Remove typing indicator ─────────────────────────────────
-  function removeTyping() {
-    const t = document.getElementById('asist-typing');
-    if (t) t.remove();
-  }
-
-  // ── Add suggestion chips ────────────────────────────────────
-  function addSuggestions(items) {
-    const wrap = document.createElement('div');
-    wrap.style.cssText = 'align-self:flex-start;max-width:92%;margin-top:-.3rem';
-    items.forEach(s => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'asist-suggestion';
-      btn.textContent = s;
-      btn.onclick = () => { wrap.remove(); sendMessage(s); };
-      wrap.appendChild(btn);
-    });
-    messages.appendChild(wrap);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  // ── Show welcome message ───────────────────────────────────
-  function showWelcome() {
-    if (hasWelcomed) return;
-    hasWelcomed = true;
-    showWelcome();
-  }
-
-  // ── Send message ────────────────────────────────────────────
-  
-// ── Gemini API con retroceso exponencial ─────────────────────
-// Función reescrita para asegurar un retroceso exponencial limpio, sin colisiones
-async function geminiRequest(apiKey, body, maxRetries = 8) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-  let attempt = 0;
-  let baseDelay = 3000; // Empezamos en 3 segundos
-
-  while (attempt <= maxRetries) {
-    try {
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...body,
-          safetySettings: [
-            { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
-          ]
-        })
-      });
-
-      if (resp.ok) {
-        return await resp.json();
-      }
-
-      if (resp.status === 429 || resp.status >= 500) {
-        if (attempt === maxRetries) {
-          throw new Error(`Google API está saturada. Por favor, espera un minuto y vuelve a intentarlo (Error ${resp.status}).`);
-        }
-        const delay = baseDelay * Math.pow(2, attempt);
-        const jitter = Math.random() * 1000;
-        const waitTime = Math.min(delay + jitter, 60000);
-        console.warn(`[Intento ${attempt + 1}/${maxRetries}] Límite API de Google. Esperando ${Math.round(waitTime / 1000)}s antes de reintentar...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        attempt++;
-        continue;
-      }
-
-      const errText = await resp.text();
-      let errMsg = resp.statusText;
-      try { const errJson = JSON.parse(errText); errMsg = errJson.error?.message || errMsg; } catch (e) {}
-      throw new Error(`Error en la API de Google (${resp.status}): ${errMsg}`);
-
-    } catch (e) {
-      if (!e.message.includes('Error en la API de Google')) {
-        if (attempt === maxRetries) {
-          throw new Error(`Fallo de conexión a internet. Revisa tu red y vuelve a intentarlo.`);
-        }
-        const waitTime = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
-        console.warn(`[Intento ${attempt + 1}/${maxRetries}] Fallo de red. Esperando ${Math.round(waitTime / 1000)}s...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        attempt++;
-        continue;
-      } else {
-        throw e;
-      }
-    }
-  }
-}
-
-// ══ GENERADOR DE RÚBRICA (IA) ════════════════════════════════
-async function generarRubrica() {
-  const apiKey  = sessionStorage.getItem('manga_asist_apikey') || '';
-  const titulo  = document.getElementById('rubricaTitulo').value.trim();
-  const nivel   = document.getElementById('rubricaNivel').value;
-  const comp    = document.getElementById('rubricaComp').value;
-  const bodyEl  = document.getElementById('rubricaBody');
-  const btn     = document.getElementById('rubricaGenBtn');
-
-  if (!titulo) { bodyEl.innerHTML = '<p class="rubrica-placeholder">Introduce el título de un manga del fondo.</p>'; return; }
-  if (!apiKey) {
-    bodyEl.innerHTML = `<p class="rubrica-no-key">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio.<br>
-      <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Obtén tu clave gratis →</a></p>`;
-    return;
-  }
-
-  btn.disabled = true; btn.textContent = 'Generando…';
-  bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica… (puede tardar hasta 30-40 s si hay que esperar el turno de la API)</p>';
-
-  const prompt = `Eres un experto en evaluación educativa con el currículo de Canarias (LOMLOE).
-Genera una rúbrica de evaluación para trabajar el manga "${titulo}" en ${nivel}.
-Competencia clave principal: ${comp}.
-Normativa: currículo LOMLOE adaptado a Canarias (Decreto 83/2022 para Primaria, Decreto 196/2022 para Infantil).
-
-FORMATO: SOLO HTML. Sin explicaciones previas ni bloques markdown.
-La rúbrica debe incluir:
-- Un párrafo de contexto pedagógico que mencione la competencia LOMLOE y su relación con el manga (2-3 frases)
-- Una tabla HTML con 4 criterios de evaluación específicos para trabajar con manga y 4 niveles:
-  Nivel 1 (Inicial) · Nivel 2 (En proceso) · Nivel 3 (Conseguido) · Nivel 4 (Excelente)
-  Cada celda con 1-2 descriptores concretos y observables
-- Un párrafo final con instrucciones de aplicación y sugerencia de instrumento complementario
-Usa: <h3>, <table>, <thead>, <tbody>, <tr>, <th>, <td>, <p>. Solo HTML.`;
-
-  try {
-    const data = await geminiRequest(apiKey, {
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 1200, temperature: 0.6 }
-    });
-    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    html = html.replace(/```html?\n?/g, '').replace(/```\n?/g, '').trim();
-    bodyEl.innerHTML = `<div class="rubrica-content">${html}</div>`;
-  } catch(e) {
-    bodyEl.innerHTML = `<div style="color:#a00;padding:1rem"><strong>Error:</strong><br>${e.message}<br><br>
-      Si el error dice "saturada", espera unos segundos y vuelve a pulsar el botón.</div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = 'Generar rúbrica ✦';
-  }
-}
-
-// ══ GENERADOR DE SECUENCIA DIDÁCTICA ════════════════════════
-async function generarSecuencia() {
-  const apiKey   = sessionStorage.getItem('manga_asist_apikey') || '';
-  const titulo   = document.getElementById('secTitulo').value.trim();
-  const etapa    = document.getElementById('secEtapa').value;
-  const sesiones = document.getElementById('secSesiones').value;
-  const comp     = document.getElementById('secComp').value;
-  const bodyEl   = document.getElementById('secBody');
-  const btn      = document.getElementById('secGenBtn');
-
-  if (!titulo) { bodyEl.innerHTML = '<p class="sec-placeholder">Introduce el título de un manga del fondo.</p>'; return; }
-  if (!apiKey) {
-    bodyEl.innerHTML = '<p class="sec-placeholder">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio.<br><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style="color:#2a5a2a">Obtén tu clave gratis →</a></p>';
-    return;
-  }
-
-  btn.disabled = true; btn.textContent = 'Generando…';
-  bodyEl.innerHTML = '<p class="sec-placeholder">Generando secuencia didáctica con currículo de Canarias… (puede tardar hasta 30-40 s)</p>';
-
-  // Curriculum context by stage
-  const curriculumCtx = {
-    'Infantil (3-6 años)': `Decreto 196/2022 de Canarias (BOC n.º 212, 26/10/2022).
-Áreas: Crecimiento en Armonía · Descubrimiento y Exploración del Entorno · Comunicación y Representación de la Realidad.
-Competencias clave en Infantil: autonomía, lenguaje oral, iniciativa personal, vida en sociedad.
-Orientaciones metodológicas canarias: aprendizaje globalizado, rincones, ambientes, juego simbólico, rutinas.
-Evaluación: criterios descriptivos observacionales (no calificativos). Sin materias separadas.
-La actividad con el manga debe integrarse en una propuesta global: cuento visual, asamblea, creación plástica.`,
-
-    'Educación Primaria': `Real Decreto 157/2022 + Decreto 83/2022 de Canarias (BOC n.º 96, 19/05/2022).
-Áreas: Lengua Castellana y Literatura · Matemáticas · Ciencias Naturales · Ciencias Sociales · Ed. Artística · Ed. Física · Lengua Extranjera · Religión/Valores.
-Competencias clave LOMLOE: CCL, STEM, CD, CPAA, CC, CE, CCEC, CSC.
-Currículo de Canarias: énfasis en el entorno insular (biodiversidad canaria, patrimonio, identidad), 
-enfoque interdisciplinar, situaciones de aprendizaje contextualizadas en la realidad canaria.
-Evaluación: criterios de evaluación vinculados a competencias específicas por área.
-Instrumentos usuales en Canarias: portfolio, rúbrica, diario de aprendizaje, coevaluación.`,
-
-    'Educación Secundaria Obligatoria': `Real Decreto 217/2022 + Orden ECD/2023 Canarias.
-Materias: Lengua Castellana · Matemáticas · CC. Sociales, Geografía e Historia · Biología y Geología · Física y Química · Ed. Física · Lengua Extranjera · Optativas.
-Competencias clave LOMLOE: CCL, STEM, CD, CPAA, CC, CE, CCEC, CSC.
-Currículo de Canarias: transversalidad, situaciones de aprendizaje por ámbitos en 1.º y 2.º, 
-enfoque en ODS y ciudadanía global.
-Evaluación: criterios de evaluación → indicadores de logro → instrumentos (rúbrica, proyecto, prueba).`,
-
-    'Bachillerato': `Real Decreto 217/2022 bachillerato + normativa canaria.
-Modalidades: Ciencias y Tecnología · Humanidades y CC. Sociales · Artes.
-Competencias: CCL, STEM, CD, CPAA, CC, CE, CCEC, CSC + competencias específicas de materia.
-Currículo de Canarias: énfasis en el pensamiento crítico, investigación y preparación para la universidad.
-Evaluación: criterios de evaluación de la materia + vinculación con EBAU.`,
-
-    'Universidad (ULPGC)': `Educación universitaria. Grados del Campus del Obelisco: 
-Educación Primaria · Educación Infantil · Educación Social · Filología Española · Filología Inglesa · 
-Historia · Traducción e Interpretación · Geografía.
-Marco: MECES nivel 2 (Grado). Competencias transversales ULPGC + competencias específicas del grado.
-El manga como recurso: justificación pedagógica, alfabetización visual, intertextualidad, 
-didáctica de las Ciencias Sociales, literatura comparada.`
-  };
-
-  const ctx = curriculumCtx[etapa] || curriculumCtx['Educación Primaria'];
-
-  const prompt = `Eres un experto en didáctica y currículo escolar de Canarias (España). 
-Genera una secuencia didáctica completa y aplicable directamente en un aula canaria, 
-usando el manga "${titulo}" como recurso pedagógico principal.
-
-CONTEXTO CURRICULAR OBLIGATORIO:
-${ctx}
-
-PARÁMETROS:
-- Etapa: ${etapa}
-- Número de sesiones: ${sesiones} sesiones de 50 minutos
-- Competencia clave principal: ${comp}
-
-ESTRUCTURA REQUERIDA (en HTML, sin explicaciones previas ni bloques markdown):
-1. <h3>Título de la secuencia y justificación pedagógica</h3>
-   Párrafo que mencione explícitamente el decreto/normativa canaria aplicable y conecte el manga con el currículo.
-2. <h4>Objetivos didácticos</h4> — lista de 4-5 objetivos concretos y evaluables.
-3. <h4>Competencias clave trabajadas</h4> — lista con ${comp} como principal + 2 complementarias con breve justificación.
-4. <h4>Tabla de sesiones</h4> — tabla HTML con columnas: Sesión | Título | Actividad principal | Recursos | Indicador de evaluación.
-5. <h4>Metodología</h4> — párrafo mencionando metodologías activas canarias (aprendizaje basado en proyectos, trabajo cooperativo, situación de aprendizaje).
-6. <h4>Evaluación</h4> — criterios de evaluación vinculados al currículo canario + instrumentos (rúbrica, portfolio, etc.).
-${etapa.includes('Infantil') ? '7. <h4>Conexión con las tres áreas de Infantil</h4> — cómo el manga conecta con Crecimiento en Armonía, Descubrimiento del Entorno y Comunicación.' : ''}
-${etapa.includes('Primaria') ? '7. <h4>Interdisciplinariedad</h4> — conexiones con al menos 2 áreas de Primaria.' : ''}
-
-FORMATO: SOLO HTML. Usa <h3><h4><p><ul><li><table><thead><tbody><tr><th><td>. Sin markdown.`;
-
-  try {
-    const data = await geminiRequest(apiKey, {
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 2000, temperature: 0.6 }
-    });
-    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    html = html.replace(/```html?\n?/g, '').replace(/```\n?/g, '').trim();
-    bodyEl.innerHTML = `<div class="sec-content">${html}</div>`;
-    // Log AI use
-    if (typeof logActivity === 'function') logActivity('ai', { type: 'Secuencia', titulo });
-  } catch(e) {
-    bodyEl.innerHTML = `<div style="color:#a00;padding:1rem"><strong>Error:</strong><br>${e.message}<br><br>
-      Si el error dice "saturada", espera unos segundos y vuelve a pulsar el botón.</div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = 'Generar secuencia ✦';
-  }
-}
-async function sendMessage(text) {
-    if (!text.trim() || !apiKey) return;
-    input.value = '';
-    input.style.height = 'auto';
-    sendBtn.disabled = true;
-
-    addMsg('user', text);
-    conversationHistory.push({ role: 'user', content: text });
-
-    addMsg('assistant', 'Consultando el fondo…', true);
-
-    try {
-      // Build Gemini conversation format
-      const geminiContents = conversationHistory.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }]
-      }));
-
-      let data;
-      try {
-        data = await geminiRequest(apiKey, {
-          system_instruction: { parts: [{ text: buildSystemPrompt() }] },
-          contents: geminiContents,
-          generationConfig: { maxOutputTokens: 800, temperature: 0.7 }
-        });
-      } catch(fetchErr) {
-        removeTyping();
-        const msg = fetchErr.message || '';
-        if (msg.includes('400') || msg.includes('403') || msg.includes('API_KEY') || msg.includes('inválid')) {
-          addMsg('assistant', 'Clave de Google no válida. Obtén una nueva en <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#7AB4FF">Google AI Studio →</a>');
-          keyStatus.textContent = 'Clave inválida'; keyStatus.className = 'asist-key-status err';
-          apiKey = ''; sessionStorage.removeItem(SESS_KEY);
-        } else {
-          addMsg('assistant', msg || 'Error de red. Comprueba tu conexión e inténtalo de nuevo.');
-        }
-        return;
-      }
-      removeTyping();
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '(sin respuesta)';
-      conversationHistory.push({ role: 'assistant', content: reply });
-      addMsg('assistant', reply);
-
-      // Show suggestions after first exchange
-      if (conversationHistory.length === 2) {
-        addSuggestions([
-          'Dame un itinerario para Primaria',
-          'Recomiéndame manga para trabajar la empatía',
-          '¿Qué competencias LOMLOE trabaja Death Note?',
-          'Diseña una actividad de 50 min para ESO'
-        ]);
-      }
-
-    } catch (e) {
-      removeTyping();
-      addMsg('assistant', 'Error de red. Comprueba tu conexión e inténtalo de nuevo.');
-    } finally {
-      sendBtn.disabled = false;
-      input.focus();
-    }
-  }
-
-  // ── Save API key ────────────────────────────────────────────
-  function saveKey() {
-    const k = keyInput.value.trim();
-    if (!k.startsWith('AIza')) {
-      keyStatus.textContent = 'La clave de Google debe empezar por AIza…';
-      keyStatus.className = 'asist-key-status err';
-      return;
-    }
-    apiKeyGoogle = k; apiKey = k; activeProvider = 'google';
-    sessionStorage.setItem(SESS_KEY_G, k);
-    keyStatus.textContent = '✓ Clave de Google guardada para esta sesión';
-    keyStatus.className = 'asist-key-status ok';
-    keyInput.value = '';
-    setTimeout(() => {
-      keyArea.style.display = 'none';
-      if (conversationHistory.length === 0) {
-        showWelcome();
-      }
-    }, 800);
-  }
-
-  // ── Open / close panel ──────────────────────────────────────
-  function openPanel() {
-    overlay.classList.add('open');
-    panel.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    if (apiKey) {
-      keyArea.style.display = 'none';
-      if (conversationHistory.length === 0) {
-        showWelcome();
-      }
-    }
-    setTimeout(() => input.focus(), 300);
-  }
-
-  function closePanel() {
-    overlay.classList.remove('open');
-    panel.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // ── Build DOM ───────────────────────────────────────────────
-  function buildUI() {
-    overlay = document.createElement('div'); overlay.id = 'asist-overlay';
-    overlay.onclick = closePanel;
-    document.body.appendChild(overlay);
-
-    panel = document.createElement('div'); panel.id = 'asist-panel';
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', 'Asistente pedagógico de manga');
-    panel.innerHTML = `
-      <div id="asist-head">
-        <h2>✦ Asistente Pedagógico</h2>
-        <button type="button" id="asist-close" aria-label="Cerrar asistente">Cerrar ✕</button>
-      </div>
-      <div id="asist-key-area">
-        <p>Clave de <strong>Google AI Studio</strong> — gratuita, sin tarjeta de crédito.
-        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer"
-           style="color:#7AB4FF">Obtén tu clave gratis →</a><br>
-        La clave se guarda solo en esta pestaña del navegador y no se comparte con nadie.</p>
-        <div id="asist-key-row">
-          <input type="password" id="asist-key-input" placeholder="AIzaSy…"
-                 autocomplete="off" spellcheck="false">
-          <button type="button" id="asist-key-save">Activar</button>
-        </div>
-        <p id="asist-key-status" class="asist-key-status"></p>
-      </div>
-      <div id="asist-messages" role="log" aria-live="polite"></div>
-      <div id="asist-input-area">
-        <textarea id="asist-input" placeholder="Escribe tu consulta pedagógica…"
-                  rows="1" aria-label="Mensaje al asistente"></textarea>
-        <button type="button" id="asist-send" aria-label="Enviar">Enviar</button>
-      </div>
-      <div id="asist-disclaimer">
-        Respuestas generadas por IA · Verifica siempre la información pedagógica
-      </div>`;
-    document.body.appendChild(panel);
-
-    // ── DOM refs ──
-    messages  = document.getElementById('asist-messages');
-    input     = document.getElementById('asist-input');
-    sendBtn   = document.getElementById('asist-send');
-    keyInput  = document.getElementById('asist-key-input');
-    keyStatus = document.getElementById('asist-key-status');
-    keyArea   = document.getElementById('asist-key-area');
-
-    document.getElementById('asist-close').onclick = closePanel;
-    document.getElementById('asist-key-save').onclick = saveKey;
-
-    keyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
-
-    // Auto-resize textarea
-    input.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage(input.value);
-      }
-    });
-    sendBtn.onclick = () => sendMessage(input.value);
-
-    // Keyboard: Escape closes
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
-    });
-
-    // Show key area or not
-    if (apiKey) keyArea.style.display = 'none';
-
-    // ── Floating button now inside FAB — wire up asist-fab ──
-    const fabBtn = document.getElementById('asist-fab');
-    if (fabBtn) { fabBtn.onclick = openPanel; }
-  }
-
-  // Init after DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildUI);
-  } else {
-    buildUI();
-  }
-})();
-
-
-// ══ FICHA DE AULA ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 const USO_LABELS_F = {
   historia:'Historia', filosofia:'Filosofía y ética', emocional:'Educación emocional',
   lenguas:'Lengua extranjera', inclusion:'Inclusión', visual:'Alfabetización visual',
@@ -10678,7 +10153,6 @@ const NIV_LABELS_F = {
   bachillerato:'Bachillerato', universidad:'Universidad'
 };
 
-// Auto-generate 3 questions from the tip text
 function generateQuestions(tip, uso) {
   const base = {
     historia:   ['¿Qué contexto histórico refleja esta obra?',
@@ -10704,94 +10178,76 @@ function generateQuestions(tip, uso) {
                  '¿Qué implicaciones éticas plantea el avance tecnológico?'],
     genero:     ['¿Cómo se representan los roles de género en la obra?',
                  '¿Qué estereotipos aparecen o se cuestionan?',
-                 '¿Cómo se relaciona con los debates contemporáneos sobre igualdad?'],
+                 '¿Cómo se relaciona con los debates contemporáneos sobre igualdad?']
   };
-  return (base[uso] || base.visual).map((q, i) => `<li>${q}</li>`).join('');
+  return (base[uso] || base.visual).map(q => `<li>${q}</li>`).join('');
 }
 
-// LOMLOE connection by uso
-function lomloeConnection(uso, nivel) {
+function lomloeConnection(uso) {
   const map = {
-    historia:   'Competencia Social y Cívica (CSC) · Conciencia y expresión cultural (CCEC). Vinculación con Ciencias Sociales e Historia: fuentes primarias, memoria histórica y pensamiento crítico.',
+    historia:   'Competencia Social y Cívica (CSC) · Conciencia y expresión cultural (CCEC). Vinculación con Ciencias Sociales e Historia: fuentes, memoria histórica y pensamiento crítico.',
     filosofia:  'Competencia Personal, Social y de Aprender a Aprender (CPSAA) · CCL. Vinculación con Filosofía y Ética: argumentación, dilemas morales y ciudadanía crítica.',
-    emocional:  'Competencia Personal, Social y de Aprender a Aprender (CPSAA). Vinculación con tutoría, Educación Emocional y desarrollo de habilidades socioemocionales.',
-    lenguas:    'Comunicación Lingüística (CCL) · Plurilingüe (CP). Vinculación con Lengua y Literatura, Lengua Extranjera: análisis textual, mediación cultural y lectura literaria.',
+    emocional:  'Competencia Personal, Social y de Aprender a Aprender (CPSAA). Vinculación con tutoría, educación emocional y desarrollo de habilidades socioemocionales.',
+    lenguas:    'Comunicación Lingüística (CCL) · Plurilingüe (CP). Vinculación con Lengua y Literatura: análisis textual, mediación cultural y lectura literaria.',
     inclusion:  'Competencia Social y Cívica (CSC) · CPSAA. Vinculación transversal: convivencia, diversidad, educación en valores y tutoría.',
-    visual:     'Conciencia y expresión cultural (CCEC) · CCL. Vinculación con Educación Artística, Lengua y Literatura: análisis de imagen, narrativa visual y alfabetización mediática.',
+    visual:     'Conciencia y expresión cultural (CCEC) · CCL. Vinculación con Educación Artística, Lengua y Literatura: análisis de imagen y narrativa visual.',
     ciencia:    'Competencia Matemática y en Ciencia y Tecnología (STEM). Vinculación con Biología, Física, Tecnología e Informática: pensamiento científico y ética tecnológica.',
-    genero:     'Competencia Social y Cívica (CSC) · CPSAA. Vinculación con Igualdad de Género (materia transversal) y Educación para la Ciudadanía.',
+    genero:     'Competencia Social y Cívica (CSC) · CPSAA. Vinculación con igualdad de género y educación para la ciudadanía.'
   };
   return map[uso] || map.visual;
 }
 
 function openFicha(card) {
-  // Attach period to vitrina/ficha calls
-  const _periodo = card.querySelector('.periodo-badge')?.textContent || '';
-  card._periodo = _periodo;
-  const title  = card.querySelector('.cat-title')?.textContent || '';
-  const author = card.querySelector('.cat-author')?.textContent || '';
-  const tip    = card.getAttribute('data-tip') || '';
-  const uso    = (card.getAttribute('data-uso') || '').split(' ')[0];
-  const nivel  = card.getAttribute('data-nivel') || '';
+  if (!card) return;
+  const title  = card.querySelector('.cat-title')?.textContent?.trim() || '';
+  const author = card.querySelector('.cat-author')?.textContent?.trim() || '';
+  const tip    = card.getAttribute('data-tip') || 'Sin descripción disponible.';
+  const usos   = (card.getAttribute('data-uso') || '').split(/\s+/).filter(Boolean);
+  const uso1   = usos[0] || 'visual';
+  const niveles = (card.getAttribute('data-nivel') || '').split(/\s+/).filter(Boolean);
 
   document.getElementById('fichaTitleEl').textContent = title;
   document.getElementById('fichaAuthor').textContent  = author;
   document.getElementById('fichaDesc').textContent    = tip;
-
-  // Badges
-  const badgesEl = document.getElementById('fichaBadges');
-  badgesEl.innerHTML = uso.split(' ').map(u =>
-    `<span class="ficha-badge" style="background:${USO_COLORS_F[u]||'#5a3a1a'}">${USO_LABELS_F[u]||u}</span>`
+  document.getElementById('fichaBadges').innerHTML = usos.map(u =>
+    `<span class="ficha-badge" style="background:${USO_COLORS_F[u] || '#5a3a1a'}">${USO_LABELS_F[u] || u}</span>`
   ).join('');
+  document.getElementById('fichaNiv').textContent = niveles.map(n => NIV_LABELS_F[n] || n).join(' · ');
+  document.getElementById('fichaQuestions').innerHTML = generateQuestions(tip, uso1);
+  document.getElementById('fichaLomloe').textContent = lomloeConnection(uso1);
 
-  // Levels
-  document.getElementById('fichaNiv').textContent =
-    nivel.split(' ').map(n => NIV_LABELS_F[n] || n).filter(Boolean).join(' · ');
-
-  // Questions
-  document.getElementById('fichaQuestions').innerHTML = generateQuestions(tip, uso);
-
-  // LOMLOE
-  document.getElementById('fichaLomloe').textContent = lomloeConnection(uso, nivel);
-
-  // Open overlay
-  const ov = document.getElementById('fichaOverlay');
-  ov.classList.add('open');
+  document.getElementById('fichaOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeFicha() {
-  document.getElementById('fichaOverlay').classList.remove('open');
+  document.getElementById('fichaOverlay')?.classList.remove('open');
   document.body.style.overflow = '';
 }
 
-// ══ COMPARADOR REDISEÑADO ════════════════════════════════════
-const compSelection = new Map(); // title_key → card data
+const compSelection = new Map();
 
 function toggleComp(btn) {
-  const card   = btn.closest('.cat-card');
-  const title  = card.querySelector('.cat-title')?.textContent?.trim() || '';
-  const key    = title.slice(0, 30);
+  const card = btn?.closest('.cat-card');
+  if (!card) return;
+  const title = card.querySelector('.cat-title')?.textContent?.trim() || '';
+  const key = title.slice(0, 40);
 
   if (compSelection.has(key)) {
     compSelection.delete(key);
     btn.classList.remove('selected');
-    btn.textContent = '+ Comparar';
+    btn.textContent = '⊕ Comparar';
   } else {
-    if (compSelection.size >= 3) {
-      // Visual feedback — shake
-      btn.style.animation = 'none';
-      btn.offsetHeight;
-      return;
-    }
-    const uso    = card.getAttribute('data-uso') || '';
-    const nivel  = card.getAttribute('data-nivel') || '';
-    const tip    = card.getAttribute('data-tip') || '';
-    const author = card.querySelector('.cat-author')?.textContent || '';
-    const periodo= card.querySelector('.periodo-badge')?.textContent || '';
-    const opacUrl= card.querySelector('.cat-opac-link')?.href || '';
-    const uso1   = uso.split(' ')[0];
-    compSelection.set(key, { title, author, uso: uso1, nivel, tip, periodo, opacUrl });
+    if (compSelection.size >= 3) return;
+    compSelection.set(key, {
+      title,
+      author: card.querySelector('.cat-author')?.textContent?.trim() || '',
+      uso: (card.getAttribute('data-uso') || '').split(/\s+/)[0] || 'visual',
+      nivel: card.getAttribute('data-nivel') || '',
+      tip: card.getAttribute('data-tip') || '',
+      periodo: card.querySelector('.periodo-badge')?.textContent?.trim() || '—',
+      opacUrl: card.querySelector('.cat-opac-link')?.href || ''
+    });
     btn.classList.add('selected');
     btn.textContent = '✓ Añadido';
   }
@@ -10799,47 +10255,38 @@ function toggleComp(btn) {
 }
 
 function updateCompDrawer() {
-  const drawer  = document.getElementById('compDrawer');
-  const goBtn   = document.getElementById('compGoBtn');
-  const slots   = [
-    document.getElementById('compSlot0'),
-    document.getElementById('compSlot1'),
-    document.getElementById('compSlot2'),
-  ];
-  if (!drawer) return;
-
+  const drawer = document.getElementById('compDrawer');
+  const goBtn = document.getElementById('compGoBtn');
+  const slots = ['compSlot0','compSlot1','compSlot2'].map(id => document.getElementById(id));
   const items = [...compSelection.values()];
-  const count = items.length;
 
-  // Update slots
   slots.forEach((slot, i) => {
+    if (!slot) return;
     if (items[i]) {
       slot.textContent = items[i].title;
       slot.classList.add('filled');
-      slot.title = 'Clic para quitar';
       slot.onclick = () => removeFromComp(items[i].title);
+      slot.title = 'Clic para quitar';
     } else {
-      slot.textContent = `Título ${i + 1}`;
+      slot.textContent = i === 0 ? '+ Añade un título' : `Título ${i + 1}`;
       slot.classList.remove('filled');
-      slot.title = '';
       slot.onclick = null;
+      slot.title = '';
     }
   });
 
-  // Show/hide drawer
-  drawer.classList.toggle('visible', count > 0);
-  goBtn.disabled = count < 2;
+  if (drawer) drawer.classList.toggle('visible', items.length > 0);
+  if (goBtn) goBtn.disabled = items.length < 2;
 }
 
 function removeFromComp(title) {
-  const key = title.slice(0, 30);
+  const key = title.slice(0, 40);
   compSelection.delete(key);
-  // Unmark the card button
   document.querySelectorAll('.cat-comp-btn').forEach(btn => {
     const t = btn.closest('.cat-card')?.querySelector('.cat-title')?.textContent?.trim() || '';
-    if (t.slice(0, 30) === key) {
+    if (t.slice(0, 40) === key) {
       btn.classList.remove('selected');
-      btn.textContent = '+ Comparar';
+      btn.textContent = '⊕ Comparar';
     }
   });
   updateCompDrawer();
@@ -10847,9 +10294,9 @@ function removeFromComp(title) {
 
 function clearComp() {
   compSelection.clear();
-  document.querySelectorAll('.cat-comp-btn.selected').forEach(btn => {
+  document.querySelectorAll('.cat-comp-btn').forEach(btn => {
     btn.classList.remove('selected');
-    btn.textContent = '+ Comparar';
+    btn.textContent = '⊕ Comparar';
   });
   updateCompDrawer();
 }
@@ -10857,55 +10304,25 @@ function clearComp() {
 function openComp() {
   if (compSelection.size < 2) return;
   const items = [...compSelection.values()];
-  const USO_COLORS_C = {
-    historia:'#5A3A1A',filosofia:'#4A2A6A',emocional:'#7A5A0A',
-    lenguas:'#2E6E3A',inclusion:'#3A4A8A',visual:'#5E3A8A',
-    ciencia:'#1A5A8B',genero:'#8B1A4A'
-  };
-  const USO_LABELS_C = {
-    historia:'Historia',filosofia:'Filosofía',emocional:'Ed. emocional',
-    lenguas:'Lengua extranjera',inclusion:'Inclusión',visual:'Alfabetización visual',
-    ciencia:'Ciencia y tecnología',genero:'Género e identidad'
-  };
-  const NIV_LABELS_C = {
-    infantil:'Infantil',primaria:'Primaria',secundaria:'Secundaria',
-    bachillerato:'Bachillerato',universidad:'Universidad'
-  };
-
-  // Build card columns
   const cols = items.map(d => {
-    const color   = USO_COLORS_C[d.uso] || '#5a3a1a';
-    const usoLbl  = USO_LABELS_C[d.uso]  || d.uso;
-    const nivBadges = d.nivel.split(' ')
-      .map(n => `<span class="cc-niv">${NIV_LABELS_C[n]||n}</span>`).join('');
-    const slug  = encodeURIComponent(d.title.trim()).replace(/%20/g, '+');
-    const opac  = d.opacUrl || `https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3D${slug}`;
+    const color = USO_COLORS_F[d.uso] || '#5a3a1a';
+    const usoLbl = USO_LABELS_F[d.uso] || d.uso;
+    const nivBadges = (d.nivel || '').split(/\s+/).filter(Boolean)
+      .map(n => `<span class="cc-niv">${NIV_LABELS_F[n] || n}</span>`).join('');
+    const opac = d.opacUrl || '#';
     return `<div class="comp-card-col">
       <div style="height:4px;background:${color};border-radius:3px 3px 0 0;margin:-1.2rem -1.3rem 1rem"></div>
       <div class="cc-title">${d.title}</div>
       <div class="cc-author">${d.author}</div>
-      <div class="cc-row">
-        <span class="cc-label">Uso pedagógico</span>
-        <div><span class="cc-badge" style="background:${color}">${usoLbl}</span></div>
-      </div>
-      <div class="cc-row">
-        <span class="cc-label">Nivel educativo</span>
-        <div>${nivBadges}</div>
-      </div>
-      <div class="cc-row">
-        <span class="cc-label">Período histórico</span>
-        <div><span class="cc-periodo">${d.periodo||'—'}</span></div>
-      </div>
-      <div class="cc-row">
-        <span class="cc-label">Descripción didáctica</span>
-        <p class="cc-desc">${d.tip||'—'}</p>
-      </div>
+      <div class="cc-row"><span class="cc-label">Uso pedagógico</span><div><span class="cc-badge" style="background:${color}">${usoLbl}</span></div></div>
+      <div class="cc-row"><span class="cc-label">Nivel educativo</span><div>${nivBadges}</div></div>
+      <div class="cc-row"><span class="cc-label">Período histórico</span><div><span class="cc-periodo">${d.periodo || '—'}</span></div></div>
+      <div class="cc-row"><span class="cc-label">Descripción didáctica</span><p class="cc-desc">${d.tip || '—'}</p></div>
       <a class="cc-opac" href="${opac}" target="_blank" rel="noopener noreferrer">Ver en catálogo ULPGC →</a>
     </div>`;
   }).join('');
-
   document.getElementById('compCards').innerHTML = cols;
-  document.getElementById('compOverlay').classList.add('open');
+  document.getElementById('compOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
@@ -10914,702 +10331,669 @@ function closeComp() {
   document.body.style.overflow = '';
 }
 
-// ══ FILTRAR CATÁLOGO POR TÍTULO (desde índice LOMLOE) ════════
 function filterByTitle(title) {
-  // Close any open modal
   ['compOverlay','mapaOverlay','rubricaOverlay','fichaOverlay'].forEach(id => {
     document.getElementById(id)?.classList.remove('open');
   });
   document.body.style.overflow = '';
 
-  // Put the title in the search box and trigger search
   const searchInput = document.getElementById('catalogSearch');
   if (searchInput) {
     searchInput.value = title;
     if (typeof searchCatalog === 'function') searchCatalog(title);
+    searchInput.focus();
   }
-
-  // Scroll to catalog section smoothly
-  const catEl = document.getElementById('catalogo');
-  if (catEl) catEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const target = document.getElementById('catalogSearch') || document.getElementById('catalogo');
+  target?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
 }
 
-// ══ FAB TOGGLE ══════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  const toggle = document.getElementById('tools-fab-toggle');
-  const items  = document.getElementById('fabItems');
-  const gttBtn = document.getElementById('gtt-btn');
-  if (!toggle || !items) return;
+document.addEventListener('DOMContentLoaded', updateCompDrawer);
 
-  function openFab() {
-    items.classList.add('open');
-    toggle.classList.add('open');
-    toggle.setAttribute('aria-expanded', 'true');
-    toggle.textContent = '×';
-    if (gttBtn) gttBtn.classList.add('fab-open');
+// ══════════════════════════════════════════════════════════════════
+// CONEXIÓN API GEMINI 2.0 FLASH
+// ══════════════════════════════════════════════════════════════════
+async function geminiRequest(apiKey, bodyOrPrompt, maxRetries = 8) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  
+  // Accept either a string prompt or a full body object
+  const requestBody = typeof bodyOrPrompt === 'string'
+    ? {
+        contents: [{ role: 'user', parts: [{ text: bodyOrPrompt }] }],
+        generationConfig: { maxOutputTokens: 2000, temperature: 0.7 }
+      }
+    : bodyOrPrompt;
+
+  let attempt = 0;
+  let delay = 3000;
+  while (attempt <= maxRetries) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        // If caller passed a string, return text directly for backwards compat
+        if (typeof bodyOrPrompt === 'string') {
+          return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }
+        return data;
+      }
+      if (resp.status === 429 || resp.status >= 500) {
+        if (attempt === maxRetries) throw new Error(`API Google saturada (${resp.status}). Espera un minuto.`);
+        const wait = Math.min(delay * Math.pow(2, attempt) + Math.random() * 1000, 60000);
+        console.warn(`[Intento ${attempt+1}/${maxRetries}] Esperando ${Math.round(wait/1000)}s...`);
+        await new Promise(r => setTimeout(r, wait));
+        attempt++; continue;
+      }
+      const errText = await resp.text();
+      let errMsg = `Error ${resp.status}`;
+      try { errMsg = JSON.parse(errText).error?.message || errMsg; } catch(e) {}
+      throw new Error(errMsg);
+    } catch(e) {
+      if (!e.message.startsWith('Error ') && !e.message.startsWith('API')) {
+        if (attempt === maxRetries) throw new Error('Fallo de red. Revisa tu conexión.');
+        await new Promise(r => setTimeout(r, delay + Math.random() * 500));
+        attempt++; continue;
+      }
+      throw e;
+    }
   }
-  function closeFab() {
-    items.classList.remove('open');
-    toggle.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.textContent = '+';
-    if (gttBtn) gttBtn.classList.remove('fab-open');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// GENERADORES IA (Rúbricas y Secuencias)
+// ══════════════════════════════════════════════════════════════════
+async function generarRubrica() {
+  const apiKey  = sessionStorage.getItem('manga_asist_apikey') || '';
+  const titulo  = document.getElementById('rubricaTitulo').value.trim();
+  const nivel   = document.getElementById('rubricaNivel').value;
+  const comp    = document.getElementById('rubricaComp').value;
+  const bodyEl  = document.getElementById('rubricaBody');
+  const btn     = document.getElementById('rubricaGenBtn');
+
+  if (!titulo) {
+    bodyEl.innerHTML = '<p class="rubrica-placeholder">Introduce el título de un manga.</p>';
+    return;
   }
 
-  toggle.addEventListener('click', function() {
-    toggle.classList.contains('open') ? closeFab() : openFab();
-  });
+  if (!apiKey) {
+    bodyEl.innerHTML = '<p class="rubrica-no-key">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio para usar esta función.</p>';
+    return;
+  }
 
-  document.addEventListener('click', e => {
-    if (!e.target.closest('#tools-fab')) closeFab();
-  });
+  btn.disabled = true;
+  btn.textContent = 'Generando…';
+  bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica profesional con Gemini 2.0...</p>';
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeFab();
-  });
+  const prompt = `Actúa como experto en pedagogía LOMLOE. Genera una rúbrica de evaluación detallada para trabajar el manga "${titulo}" en ${nivel}. Competencia principal: ${comp}. Devuelve SOLO código HTML limpio (sin bloques de código markdown). Incluye un párrafo de contexto y una tabla 4x4 con niveles: Inicial, En desarrollo, Conseguido y Excelente.`;
+
+  try {
+    let html = await geminiRequest(apiKey, prompt);
+    html = String(html).replace(/```html?[\r\n]?/g, '').replace(/```[\r\n]?/g, '').trim();
+    if (!html) throw new Error('Google devolvió una respuesta vacía.');
+    bodyEl.innerHTML = `<div class="rubrica-content">${html}</div>`;
+  } catch (e) {
+    bodyEl.innerHTML = `<p style="color:#a00;padding:1rem;">Error: ${e.message}</p>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generar rúbrica ✦';
+  }
+}
+
+async function generarSecuencia() {
+  const apiKey   = sessionStorage.getItem('manga_asist_apikey') || '';
+  const titulo   = document.getElementById('secTitulo').value.trim();
+  const etapa    = document.getElementById('secEtapa').value;
+  const sesiones = document.getElementById('secSesiones').value;
+  const comp     = document.getElementById('secComp').value;
+  const bodyEl   = document.getElementById('secBody');
+  const btn      = document.getElementById('secGenBtn');
+
+  if (!titulo) {
+    bodyEl.innerHTML = '<p class="sec-placeholder">Introduce el título de un manga.</p>';
+    return;
+  }
+
+  if (!apiKey) {
+    bodyEl.innerHTML = '<p class="sec-placeholder">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio para usar esta función.</p>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Generando…';
+  bodyEl.innerHTML = '<p class="sec-placeholder">Diseñando secuencia didáctica...</p>';
+
+  const prompt = `Eres un experto en didáctica y currículo escolar de Canarias (España).
+Genera una secuencia didáctica completa y aplicable en un aula canaria usando el manga "${titulo}" como recurso principal.
+
+CONTEXTO CURRICULAR (${etapa}):
+${etapa.includes('Infantil') ? 'Decreto 196/2022 Canarias. Áreas: Crecimiento en Armonía · Descubrimiento del Entorno · Comunicación y Representación. Metodología: aprendizaje globalizado, rincones, juego simbólico.' : ''}${etapa.includes('Primaria') ? 'Decreto 83/2022 Canarias + RD 157/2022. Énfasis en entorno insular, situaciones de aprendizaje contextualizadas, interdisciplinariedad.' : ''}${(etapa.includes('ESO') || etapa.includes('Secundaria')) ? 'RD 217/2022 + normativa canaria. Situaciones de aprendizaje, ODS, ciudadanía global.' : ''}${etapa.includes('Bachillerato') ? 'RD 217/2022 bachillerato. Pensamiento crítico, investigación, preparación universitaria.' : ''}
+Competencia: ${comp}. Sesiones: ${sesiones} × 50 min.
+
+ESTRUCTURA HTML (sin markdown):
+1. <h3>Título y justificación</h3> — Cita la normativa canaria aplicable.
+2. <h4>Objetivos didácticos</h4> — 4-5 objetivos.
+3. <h4>Competencias clave</h4> — ${comp} como principal + 2 complementarias.
+4. <h4>Tabla de sesiones</h4> — Sesión|Título|Actividad|Recursos|Indicador evaluación.
+5. <h4>Metodología</h4> — Metodologías activas canarias.
+6. <h4>Evaluación</h4> — Criterios LOMLOE + instrumentos.
+${etapa.includes('Infantil') ? '7. <h4>Conexión áreas Infantil</h4>' : ''}${etapa.includes('Primaria') ? '7. <h4>Interdisciplinariedad</h4>' : ''}
+Solo HTML: <h3><h4><p><ul><li><table><thead><tbody><tr><th><td>`;
+
+  try {
+    let html = await geminiRequest(apiKey, prompt);
+    html = String(html).replace(/```html?[\r\n]?/g, '').replace(/```[\r\n]?/g, '').trim();
+    if (!html) throw new Error('Google devolvió una respuesta vacía.');
+    bodyEl.innerHTML = `<div class="sec-content">${html}</div>`;
+  } catch (e) {
+    bodyEl.innerHTML = `<p style="color:#a00;padding:1rem;">Error: ${e.message}</p>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generar secuencia ✦';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ASISTENTE PEDAGÓGICO IA (Chat)
+// ══════════════════════════════════════════════════════════════════
+(function() {
+  const SESS_KEY = 'manga_asist_apikey';
+
+  let panel, overlay, messages, input, sendBtn, keyInput, keyStatus, keyArea;
+  let conversationHistory = [];
+  let apiKey = sessionStorage.getItem(SESS_KEY) || '';
+  let hasWelcomed = false;
+
+  function extractCatalogContext(limit = 120) {
+    const cards = Array.from(document.querySelectorAll('.cat-card')).slice(0, limit);
+    if (!cards.length) return '';
+
+    return cards.map(card => {
+      const title = card.querySelector('.cat-title')?.textContent?.trim() || '';
+      const author = card.querySelector('.cat-author')?.textContent?.trim() || '';
+      const usos = Array.from(card.querySelectorAll('.cat-badge')).map(el => el.textContent.trim()).join(', ');
+      const niveles = Array.from(card.querySelectorAll('.niv-badge')).map(el => el.textContent.trim()).join(', ');
+      return `• ${title} — ${author}${usos ? ' — uso: ' + usos : ''}${niveles ? ' — nivel: ' + niveles : ''}`;
+    }).join('\n');
+  }
+
+  function buildSystemPrompt() {
+    const catalogContext = extractCatalogContext();
+    return `Eres el Asistente Pedagógico de la Biblioteca del Campus del Obelisco (ULPGC), especializado en el uso didáctico del manga.
+Tu función es ayudar a docentes y visitantes a:
+- encontrar títulos adecuados para sus necesidades educativas,
+- diseñar actividades, secuencias y situaciones de aprendizaje con manga,
+- conectar títulos con el currículo LOMLOE y las competencias clave,
+- justificar pedagógicamente el uso del manga en el aula.
+
+Responde siempre en español. Sé útil, concreto y profesional. Prioriza títulos reales del fondo mostrado en esta página.
+
+FONDO DISPONIBLE EN ESTA PÁGINA:
+${catalogContext || 'Consulta el catálogo visible de la página para seleccionar títulos reales.'}`;
+  }
+
+  function renderMd(text) {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function addMsg(role, text, typing) {
+    const div = document.createElement('div');
+    div.className = 'asist-msg ' + (typing ? 'typing' : role);
+    div.innerHTML = typing ? text : renderMd(text);
+    if (typing) div.id = 'asist-typing';
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('asist-typing');
+    if (t) t.remove();
+  }
+
+  function addSuggestions(items) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'align-self:flex-start;max-width:92%;margin-top:-.3rem';
+    items.forEach(s => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'asist-suggestion';
+      btn.textContent = s;
+      btn.onclick = () => { wrap.remove(); sendMessage(s); };
+      wrap.appendChild(btn);
+    });
+    messages.appendChild(wrap);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function showWelcome() {
+    if (hasWelcomed) return;
+    hasWelcomed = true;
+    addMsg('assistant', '¡Hola! Soy el asistente pedagógico de la **Biblioteca del Campus del Obelisco**. Puedo ayudarte a localizar títulos del fondo, proponer recorridos y diseñar actividades o secuencias alineadas con LOMLOE.');
+    addSuggestions([
+      'Busco manga para Infantil',
+      'Quiero trabajar memoria histórica en ESO',
+      'Recomiéndame algo para Filosofía'
+    ]);
+  }
+
+  async function sendMessage(text) {
+    if (!text.trim() || !apiKey) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+    addMsg('user', text);
+    conversationHistory.push({ role: 'user', content: text });
+    addMsg('assistant', 'Consultando el fondo…', true);
+
+    try {
+      let fullPrompt = buildSystemPrompt() + "\n\nHISTORIAL DE LA CONVERSACIÓN:\n";
+      conversationHistory.forEach(m => {
+        fullPrompt += `${m.role.toUpperCase()}: ${m.content}\n`;
+      });
+      fullPrompt += "\nResponde al último mensaje del usuario de forma útil, precisa y en español.";
+
+      const reply = await geminiRequest(apiKey, fullPrompt);
+      removeTyping();
+
+      const finalReply = String(reply || '').trim() || 'No he recibido texto de respuesta de Google.';
+      conversationHistory.push({ role: 'assistant', content: finalReply });
+      addMsg('assistant', finalReply);
+
+      if (conversationHistory.length === 2) {
+        addSuggestions([
+          'Dame un itinerario para Primaria',
+          'Recomiéndame manga para empatía',
+          '¿Qué puedo usar en la ULPGC?',
+          'Diseña una actividad para ESO'
+        ]);
+      }
+    } catch (e) {
+      removeTyping();
+      const errString = e.message || 'Error desconocido.';
+      addMsg('assistant', `<span style="color:#e06060">Respuesta de Google: ${errString}</span>`);
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  function saveKey() {
+    const k = keyInput.value.trim();
+    if (!k.startsWith('AIza')) {
+      keyStatus.textContent = 'La clave debe empezar por AIza…';
+      keyStatus.className = 'asist-key-status err';
+      return;
+    }
+
+    apiKey = k;
+    sessionStorage.setItem(SESS_KEY, k);
+    keyStatus.textContent = '✓ Clave guardada';
+    keyStatus.className = 'asist-key-status ok';
+    keyInput.value = '';
+
+    setTimeout(() => {
+      keyArea.style.display = 'none';
+      showWelcome();
+    }, 600);
+  }
+
+  function openPanel() {
+    overlay.classList.add('open');
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    if (apiKey) {
+      keyArea.style.display = 'none';
+      if (conversationHistory.length === 0) showWelcome();
+    }
+
+    setTimeout(() => input.focus(), 300);
+  }
+
+  function closePanel() {
+    overlay.classList.remove('open');
+    panel.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function buildUI() {
+    overlay = document.createElement('div');
+    overlay.id = 'asist-overlay';
+    overlay.onclick = closePanel;
+    document.body.appendChild(overlay);
+
+    panel = document.createElement('div');
+    panel.id = 'asist-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.innerHTML = `
+      <div id="asist-head"><h2>✦ Asistente Pedagógico</h2><button type="button" id="asist-close">Cerrar ✕</button></div>
+      <div id="asist-key-area"><p>Clave de <strong>Google AI Studio / Gemini</strong>. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#7AB4FF">Obtén tu clave →</a></p>
+        <div id="asist-key-row"><input type="password" id="asist-key-input" placeholder="AIzaSy…"><button type="button" id="asist-key-save">Activar</button></div>
+        <p id="asist-key-status" class="asist-key-status"></p></div>
+      <div id="asist-messages"></div>
+      <div id="asist-input-area"><textarea id="asist-input" placeholder="Escribe tu consulta…"></textarea><button type="button" id="asist-send">Enviar</button></div>`;
+    document.body.appendChild(panel);
+
+    messages = document.getElementById('asist-messages');
+    input = document.getElementById('asist-input');
+    sendBtn = document.getElementById('asist-send');
+    keyInput = document.getElementById('asist-key-input');
+    keyStatus = document.getElementById('asist-key-status');
+    keyArea = document.getElementById('asist-key-area');
+
+    document.getElementById('asist-close').onclick = closePanel;
+    document.getElementById('asist-key-save').onclick = saveKey;
+    keyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+    input.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(input.value);
+      }
+    });
+    sendBtn.onclick = () => sendMessage(input.value);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+    });
+
+    if (apiKey) keyArea.style.display = 'none';
+
+    const fabBtn = document.getElementById('asist-fab');
+    if (fabBtn) fabBtn.onclick = openPanel;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildUI);
+  } else {
+    buildUI();
+  }
+})();
+
+// ══ MODALES DE CIERRE ════════
+
+
+
+
+
+
+
+
+
+
+
+
+// ══ FAB TOGGLE ════════
+document.getElementById('tools-fab-toggle')?.addEventListener('click', function() {
+  this.classList.toggle('open');
+  document.getElementById('fabItems').classList.toggle('open');
+  this.setAttribute('aria-expanded', this.classList.contains('open') ? 'true' : 'false');
 });
 
-
-
-// ══ MODAL HELPERS (Rúbrica, Secuencia, Mapa) ════════════════════
-function closeRubrica() {
-  document.getElementById('rubricaOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
+function closeRubrica() { document.getElementById('rubricaOverlay').classList.remove('open'); }
 function openRubrica(card) {
-  const title = card?.querySelector?.('.cat-title')?.textContent || '';
+  const title = card.querySelector('.cat-title')?.textContent || '';
+  const nivel = card.getAttribute('data-nivel') || '';
+  document.getElementById('rubricaOverlay').classList.add('open');
   document.getElementById('rubricaTitulo').value = title;
-  document.getElementById('rubricaBody').innerHTML =
-    '<p class="rubrica-placeholder">Elige etapa y competencia, y pulsa Generar.</p>';
-  document.getElementById('rubricaOverlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.getElementById('rubricaBody').innerHTML = '<p class="rubrica-placeholder">Elige un título y etapa para generar la rúbrica.</p>';
 }
-function closeSec() {
-  document.getElementById('secOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
-function openSec(card) {
-  if (card?.querySelector) {
-    document.getElementById('secTitulo').value =
-      card.querySelector('.cat-title')?.textContent || '';
-  }
-  document.getElementById('secOverlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
+function closeSec() { document.getElementById('secOverlay').classList.remove('open'); }
+function openSec() { document.getElementById('secOverlay').classList.add('open'); }
+function openMapa() { document.getElementById('mapaOverlay').classList.add('open'); }
+function closeMapa() { document.getElementById('mapaOverlay').classList.remove('open'); }
 
-// ══ MAPA DE CONEXIONES — GRID ════════════════════════════════
+// ══ FAB TOGGLE ════════
+document.getElementById('tools-fab-toggle')?.addEventListener('click', function() {
+  this.classList.toggle('open');
+  document.getElementById('fabItems').classList.toggle('open');
+});
+
 function buildMapaGrid() {
   const container = document.getElementById('mapaContainer');
   if (!container || container.dataset.built) return;
-
-  const USO_COLORS_MG = {
-    historia:'#5A3A1A', filosofia:'#4A2A6A', emocional:'#7A5A0A',
-    lenguas:'#2E6E3A', inclusion:'#3A4A8A', visual:'#5E3A8A',
-    ciencia:'#1A5A8B', genero:'#8B1A4A'
-  };
-  const USO_LABELS_MG = {
-    historia:'Historia', filosofia:'Filosofía', emocional:'Ed. emocional',
-    lenguas:'Lengua extranjera', inclusion:'Inclusión',
-    visual:'Alfab. visual', ciencia:'Ciencia y tecnología', genero:'Género e identidad'
-  };
-
+  const USO_COLORS = {historia:'#5A3A1A',filosofia:'#4A2A6A',emocional:'#7A5A0A',
+    lenguas:'#2E6E3A',inclusion:'#3A4A8A',visual:'#5E3A8A',ciencia:'#1A5A8B',genero:'#8B1A4A'};
+  const USO_LABELS = {historia:'Historia',filosofia:'Filosofía',emocional:'Ed. emocional',
+    lenguas:'Lengua extranjera',inclusion:'Inclusión',visual:'Alfab. visual',
+    ciencia:'Ciencia y tecnología',genero:'Género e identidad'};
   const groups = {};
   document.querySelectorAll('.cat-card').forEach(card => {
-    const uso   = (card.getAttribute('data-uso') || '').split(' ')[0];
-    const title = card.querySelector('.cat-title')?.textContent || '';
-    if (!uso || !title) return;
-    if (!groups[uso]) groups[uso] = [];
+    const uso   = (card.getAttribute('data-uso')||'').split(' ')[0];
+    const title = card.querySelector('.cat-title')?.textContent||'';
+    if (!uso||!title) return;
+    if (!groups[uso]) groups[uso]=[];
     groups[uso].push(title);
   });
-
   let html = '';
   for (const [uso, titles] of Object.entries(groups)) {
-    const color = USO_COLORS_MG[uso] || '#5a5a5a';
-    const label = USO_LABELS_MG[uso] || uso;
-    const chips = titles.map(t =>
-      `<button type="button" class="mapa-chip"
-         style="border-color:${color}30"
-         onclick="filterByTitle('${t.replace(/'/g, "\'")}');closeMapa()"
-         title="${t}">${t}</button>`
-    ).join('');
-    html += `<div class="mapa-group">
-      <div class="mapa-group-header" style="background:${color}">
-        <span class="mapa-group-label">${label}</span>
-        <span class="mapa-group-count">${titles.length}</span>
-      </div>
-      <div class="mapa-chips">${chips}</div>
-    </div>`;
+    const color = USO_COLORS[uso]||'#5a5a5a';
+    const label = USO_LABELS[uso]||uso;
+    html += `<div class="mapa-group"><div class="mapa-group-header" style="background:${color}">
+      <span class="mapa-group-label">${label}</span><span class="mapa-group-count">${titles.length}</span></div>
+      <div class="mapa-chips">${titles.map(t=>`<button type="button" class="mapa-chip"
+        style="border-color:${color}30" onclick="filterByTitle('${t.replace(/'/g,"\\'")}');closeMapa()"
+        title="${t}">${t}</button>`).join('')}</div></div>`;
   }
   container.innerHTML = html;
   container.dataset.built = '1';
 }
 
-function openMapa() {
-  document.getElementById('mapaOverlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if (typeof buildMapaGrid === 'function') buildMapaGrid();
-}
-function closeMapa() {
-  document.getElementById('mapaOverlay')?.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ══ ESCAPE CLOSES ALL MODALS ════════════════════════════════════
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  ['rubricaOverlay','secOverlay','mapaOverlay','fichaOverlay','compOverlay',
-   'lecturaOverlay','histOverlay']
-    .forEach(id => document.getElementById(id)?.classList.remove('open'));
-  document.body.style.overflow = '';
-});
-
-
-// ══ HISTORIAL DE SESIÓN ══════════════════════════════════════
-const sessionLog = {
-  searches:   [],   // {term, time}
-  viewed:     [],   // {title, section, time}
-  compared:   [],   // {titles, time}
-  ai:         [],   // {type, titulo, time} — rubrica/secuencia/asistente
-};
-
-function logActivity(type, data) {
-  const time = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
-  sessionLog[type]?.push({ ...data, time });
-  // Show histBtn once there's any activity
-  const btn = document.getElementById('histBtn');
-  if (btn) btn.classList.add('visible');
-}
-
-function openHist() {
-  renderHistModal();
-  document.getElementById('histOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeHist() {
-  document.getElementById('histOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function renderHistModal() {
-  const body = document.getElementById('histBody');
-  const sections = [
-    { key: 'searches',  label: 'Búsquedas en el catálogo',
-      render: e => `<em>${e.term}</em>` },
-    { key: 'viewed',    label: 'Títulos consultados',
-      render: e => `<strong>${e.title}</strong>${e.section ? ' · ' + e.section : ''}` },
-    { key: 'compared',  label: 'Comparativas realizadas',
-      render: e => e.titles.join(' vs ') },
-    { key: 'ai',        label: 'Generaciones con IA',
-      render: e => `${e.type}: <em>${e.titulo || 'Asistente'}</em>` },
-  ];
-
-  const total = Object.values(sessionLog).reduce((s, a) => s + a.length, 0);
-  if (total === 0) {
-    body.innerHTML = '<p class="hist-empty">Aún no hay actividad registrada en esta sesión.</p>';
-    return;
-  }
-
-  body.innerHTML = sections.filter(s => sessionLog[s.key].length > 0).map(s => `
-    <div class="hist-section">
-      <span class="hist-section-title">${s.label} (${sessionLog[s.key].length})</span>
-      ${sessionLog[s.key].map(e => `
-        <div class="hist-item">
-          <span class="hist-item-time">${e.time}</span>
-          ${s.render(e)}
-        </div>`).join('')}
-    </div>`).join('');
-}
-
-function exportHist() {
-  const lines = ['HISTORIAL DE SESIÓN — Biblioteca del Campus del Obelisco · ULPGC',
-    'Fecha: ' + new Date().toLocaleDateString('es-ES', {day:'2-digit',month:'long',year:'numeric'}),
-    '═'.repeat(60), ''];
-
-  const labels = { searches: 'BÚSQUEDAS', viewed: 'TÍTULOS CONSULTADOS',
-                   compared: 'COMPARATIVAS', ai: 'GENERACIONES CON IA' };
-  for (const [key, items] of Object.entries(sessionLog)) {
-    if (!items.length) continue;
-    lines.push(labels[key]);
-    lines.push('─'.repeat(40));
-    items.forEach(e => {
-      if (key === 'searches') lines.push(`  [${e.time}] Búsqueda: "${e.term}"`);
-      if (key === 'viewed')   lines.push(`  [${e.time}] ${e.title}${e.section ? ' (' + e.section + ')' : ''}`);
-      if (key === 'compared') lines.push(`  [${e.time}] Comparativa: ${e.titles.join(' · ')}`);
-      if (key === 'ai')       lines.push(`  [${e.time}] ${e.type}${e.titulo ? ': ' + e.titulo : ''}`);
-    });
-    lines.push('');
-  }
-  lines.push('─'.repeat(60));
-  lines.push('Recurso generado por la Biblioteca del Campus del Obelisco (ULPGC)');
-
-  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = 'historial-manga-biblioteca.txt';
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-
-function clearHist() {
-  Object.keys(sessionLog).forEach(k => sessionLog[k] = []);
-  const btn = document.getElementById('histBtn');
-  if (btn) btn.classList.remove('visible');
-  closeHist();
-}
-
-// ── Intercept existing functions to log activity ──────────────
-// Patch searchCatalog to log searches
-const _origSearchCatalog = typeof searchCatalog === 'function' ? searchCatalog : null;
-if (_origSearchCatalog) {
-  window.searchCatalog = function(q) {
-    _origSearchCatalog(q);
-    if (q && q.trim().length > 1) logActivity('searches', { term: q.trim() });
-  };
-}
-
-// ══ FICHAS DE LECTURA GUIADA ══════════════════════════════════
 const LECTURA_TEMPLATES = {
-  infantil: {
-    label: 'Infantil',
-    comprension: [
-      '¿Qué personaje te ha gustado más y por qué?',
-      '¿Qué pasa al principio, en el medio y al final de la historia?',
-      '¿Cómo se siente el personaje principal? ¿Cómo lo sabes?',
-    ],
-    visual: 'Elige una imagen del manga que te haya llamado la atención. ¿Qué ves? ¿Qué colores usa el dibujante?',
-    reflexion: '¿Te recuerda esta historia a algo que te haya pasado a ti o a alguien que conoces?',
-  },
-  primaria: {
-    label: 'Primaria',
-    comprension: [
-      '¿Cuál es el problema principal de la historia? ¿Cómo se resuelve?',
-      '¿Qué características tiene el personaje protagonista? ¿Cambia a lo largo del relato?',
-      '¿En qué lugar y época ocurre la historia? ¿Cómo lo sabes?',
-    ],
-    visual: 'Observa cómo el dibujante usa los planos: ¿hay alguna imagen muy cercana (primer plano) y alguna muy lejana? ¿Qué efecto produce cada una?',
-    reflexion: '¿Qué mensaje crees que quiere transmitir el autor? Escribe una frase explicando si estás de acuerdo.',
-  },
-  secundaria: {
-    label: 'Secundaria',
-    comprension: [
-      '¿Cuál es el conflicto central y cómo evoluciona a lo largo de la obra?',
-      '¿Cómo se construye el personaje protagonista? Describe su arco de transformación.',
-      '¿Qué relación hay entre el dibujo y el texto? ¿Se complementan, se contradicen?',
-    ],
-    visual: 'Analiza una viñeta clave: encuadre, líneas de movimiento, expresión facial y uso del blanco y negro o el color. ¿Qué aporta visualmente lo que no dice el texto?',
-    reflexion: '¿Qué valores o dilemas éticos plantea la obra? Razona tu postura con ejemplos concretos del texto.',
-  },
-  bachillerato: {
-    label: 'Bachillerato',
-    comprension: [
-      '¿Qué posición ideológica o filosófica puede detectarse en la obra?',
-      'Analiza la estructura narrativa: tiempo, narrador, focalización y ritmo visual.',
-      '¿Cómo se relaciona la obra con su contexto histórico y cultural de producción?',
-    ],
-    visual: 'Aplica el concepto de "encuadre como argumento": ¿qué queda fuera del plano? ¿Qué decisiones visuales revelan la intención del autor?',
-    reflexion: '¿En qué tradición literaria o artística inscribirías esta obra? Justifica con al menos dos referencias externas.',
-  },
-  universidad: {
-    label: 'Universidad',
-    comprension: [
-      'Analiza el lenguaje visual desde la semiótica: línea, encuadre, color y ritmo narrativo.',
-      '¿Cómo dialoga la obra con el género (shōnen/shōjo/seinen/josei) al que pertenece?',
-      '¿Qué marcos teóricos de tu disciplina permiten leer esta obra de forma productiva?',
-    ],
-    visual: 'Elabora un análisis de la puesta en página (mise en page): distribución de viñetas, peso visual, dirección de lectura y uso del silencio gráfico.',
-    reflexion: 'Formula una hipótesis de investigación a partir de esta obra y señala las fuentes primarias y secundarias que utilizarías.',
-  },
+  infantil: { label:'Infantil', comprension:['¿Qué personaje te ha gustado más y por qué?','¿Qué pasa al principio, en el medio y al final?','¿Cómo se siente el personaje principal? ¿Cómo lo sabes?'], visual:'Elige una imagen que te haya llamado la atención. ¿Qué ves? ¿Qué colores usa el dibujante?', reflexion:'¿Te recuerda esta historia a algo que te haya pasado a ti o a alguien que conoces?' },
+  primaria: { label:'Primaria', comprension:['¿Cuál es el problema principal de la historia? ¿Cómo se resuelve?','¿Qué características tiene el protagonista? ¿Cambia a lo largo del relato?','¿En qué lugar y época ocurre la historia? ¿Cómo lo sabes?'], visual:'Observa cómo el dibujante usa los planos: ¿hay imágenes muy cercanas y muy lejanas? ¿Qué efecto produce cada una?', reflexion:'¿Qué mensaje crees que quiere transmitir el autor? ¿Estás de acuerdo?' },
+  secundaria: { label:'Secundaria', comprension:['¿Cuál es el conflicto central y cómo evoluciona?','¿Cómo se construye el protagonista? Describe su arco de transformación.','¿Qué relación hay entre el dibujo y el texto? ¿Se complementan o contradicen?'], visual:'Analiza una viñeta clave: encuadre, líneas de movimiento, expresión facial y uso del color. ¿Qué aporta lo visual que no dice el texto?', reflexion:'¿Qué valores o dilemas éticos plantea la obra? Razona con ejemplos concretos.' },
+  bachillerato: { label:'Bachillerato', comprension:['¿Qué posición ideológica o filosófica puede detectarse en la obra?','Analiza la estructura narrativa: tiempo, narrador, focalización y ritmo visual.','¿Cómo se relaciona la obra con su contexto histórico y cultural?'], visual:'Aplica el concepto de "encuadre como argumento": ¿qué queda fuera del plano? ¿Qué decisiones visuales revelan la intención del autor?', reflexion:'¿En qué tradición literaria o artística inscribirías esta obra? Justifica con referencias externas.' },
+  universidad: { label:'Universidad', comprension:['Analiza el lenguaje visual desde la semiótica: línea, encuadre, color y ritmo narrativo.','¿Cómo dialoga la obra con el género al que pertenece?','¿Qué marcos teóricos de tu disciplina permiten leer esta obra productivamente?'], visual:'Elabora un análisis de la puesta en página: distribución de viñetas, peso visual, dirección de lectura y uso del silencio gráfico.', reflexion:'Formula una hipótesis de investigación y señala las fuentes primarias y secundarias.' },
 };
 
 function openLectura(card) {
   if (!card) return;
-  const title  = card.querySelector('.cat-title')?.textContent || '';
-  const author = card.querySelector('.cat-author')?.textContent || '';
-  const nivel  = (card.getAttribute('data-nivel') || 'secundaria').split(' ').filter(Boolean);
-
+  const title  = card.querySelector('.cat-title')?.textContent||'';
+  const author = card.querySelector('.cat-author')?.textContent||'';
+  const nivel  = (card.getAttribute('data-nivel')||'secundaria').split(' ').filter(Boolean);
   document.getElementById('lecturaTitleEl').textContent  = title;
   document.getElementById('lecturaAuthorEl').textContent = author;
-
   const tabsEl    = document.getElementById('lecturaNivelTabs');
   const contentEl = document.getElementById('lecturaContent');
-  tabsEl.innerHTML = '';
-  contentEl.innerHTML = '';
-
-  // Use all available nivels, or default to secundaria
-  const niveles = nivel.length ? nivel : ['secundaria'];
-  niveles.forEach((n, idx) => {
-    const tpl = LECTURA_TEMPLATES[n];
-    if (!tpl) return;
+  tabsEl.innerHTML = ''; contentEl.innerHTML = '';
+  (nivel.length ? nivel : ['secundaria']).forEach((n, idx) => {
+    const tpl = LECTURA_TEMPLATES[n]; if (!tpl) return;
     const isFirst = idx === 0;
-
-    // Tab button
     const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'lectura-nivel-tab' + (isFirst ? ' active' : '');
-    btn.textContent = tpl.label;
-    btn.setAttribute('role', 'tab');
-    btn.setAttribute('aria-selected', isFirst ? 'true' : 'false');
+    btn.type='button'; btn.className='lectura-nivel-tab'+(isFirst?' active':'');
+    btn.textContent=tpl.label; btn.setAttribute('role','tab');
     btn.onclick = () => {
-      tabsEl.querySelectorAll('.lectura-nivel-tab').forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      contentEl.querySelectorAll('.lectura-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      document.getElementById('lectura-panel-' + n)?.classList.add('active');
+      tabsEl.querySelectorAll('.lectura-nivel-tab').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+      contentEl.querySelectorAll('.lectura-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active'); document.getElementById('lectura-panel-'+n)?.classList.add('active');
     };
     tabsEl.appendChild(btn);
-
-    // Panel
     const panel = document.createElement('div');
-    panel.className = 'lectura-panel' + (isFirst ? ' active' : '');
-    panel.id = 'lectura-panel-' + n;
-    panel.setAttribute('role', 'tabpanel');
-    panel.innerHTML = `
-      <div class="lectura-body">
-        <span class="lectura-section-lbl">Comprensión lectora</span>
-        <div class="lectura-qs"><ol>${tpl.comprension.map(q => `<li>${q}</li>`).join('')}</ol></div>
-        <span class="lectura-section-lbl">Alfabetización visual</span>
-        <div class="lectura-visual-box">${tpl.visual}</div>
-        <span class="lectura-section-lbl">Reflexión personal</span>
-        <div class="lectura-reflection">${tpl.reflexion}</div>
-      </div>`;
+    panel.className='lectura-panel'+(isFirst?' active':''); panel.id='lectura-panel-'+n;
+    panel.innerHTML=`<div class="lectura-body">
+      <span class="lectura-section-lbl">Comprensión lectora</span>
+      <div class="lectura-qs"><ol>${tpl.comprension.map(q=>`<li>${q}</li>`).join('')}</ol></div>
+      <span class="lectura-section-lbl">Alfabetización visual</span>
+      <div class="lectura-visual-box">${tpl.visual}</div>
+      <span class="lectura-section-lbl">Reflexión personal</span>
+      <div class="lectura-reflection">${tpl.reflexion}</div>
+    </div>`;
     contentEl.appendChild(panel);
   });
-
   document.getElementById('lecturaOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-
-  // Log activity
-  logActivity('viewed', { title, section: 'Ficha de lectura' });
+  if (typeof logActivity==='function') logActivity('viewed',{title,section:'Ficha de lectura'});
 }
-
 function closeLectura() {
   document.getElementById('lecturaOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
 
-// ── Wire histBtn and overlay close ────────────────────────────
+const sessionLog = { searches:[], viewed:[], compared:[], ai:[] };
+function logActivity(type, data) {
+  const time = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  sessionLog[type]?.push({...data, time});
+}
+function openHist() { renderHistModal(); document.getElementById('histOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeHist() { document.getElementById('histOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function renderHistModal() {
+  const body = document.getElementById('histBody');
+  const total = Object.values(sessionLog).reduce((s,a)=>s+a.length,0);
+  if (!total) { body.innerHTML='<p class="hist-empty">Aún no hay actividad registrada.</p>'; return; }
+  const sections=[
+    {key:'searches',label:'Búsquedas',render:e=>`<em>${e.term}</em>`},
+    {key:'viewed',label:'Títulos consultados',render:e=>`<strong>${e.title}</strong>${e.section?' · '+e.section:''}`},
+    {key:'compared',label:'Comparativas',render:e=>e.titles.join(' vs ')},
+    {key:'ai',label:'Generaciones IA',render:e=>`${e.type}${e.titulo?': '+e.titulo:''}`},
+  ];
+  body.innerHTML = sections.filter(s=>sessionLog[s.key].length>0).map(s=>`
+    <div class="hist-section"><span class="hist-section-title">${s.label} (${sessionLog[s.key].length})</span>
+    ${sessionLog[s.key].map(e=>`<div class="hist-item"><span class="hist-item-time">${e.time}</span>${s.render(e)}</div>`).join('')}</div>`).join('');
+}
+function exportHist() {
+  const lines = ['HISTORIAL — Biblioteca Campus Obelisco ULPGC', new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), '═'.repeat(50),''];
+  const labels = {searches:'BÚSQUEDAS',viewed:'TÍTULOS CONSULTADOS',compared:'COMPARATIVAS',ai:'GENERACIONES IA'};
+  for (const [key,items] of Object.entries(sessionLog)) {
+    if (!items.length) continue;
+    lines.push(labels[key]); lines.push('─'.repeat(30));
+    items.forEach(e => {
+      if (key==='searches') lines.push(`  [${e.time}] "${e.term}"`);
+      if (key==='viewed')   lines.push(`  [${e.time}] ${e.title}${e.section?' ('+e.section+')':''}`);
+      if (key==='compared') lines.push(`  [${e.time}] ${e.titles.join(' · ')}`);
+      if (key==='ai')       lines.push(`  [${e.time}] ${e.type}${e.titulo?': '+e.titulo:''}`);
+    });
+    lines.push('');
+  }
+  const blob = new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='historial-manga.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function clearHist() { Object.keys(sessionLog).forEach(k=>sessionLog[k]=[]); closeHist(); }
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('histOverlay')?.addEventListener('click',e=>{if(e.target.id==='histOverlay')closeHist();});
+  document.getElementById('lecturaOverlay')?.addEventListener('click',e=>{if(e.target.id==='lecturaOverlay')closeLectura();});
+  const _orig = window.searchCatalog;
+  if (typeof _orig==='function') window.searchCatalog=function(q){_orig(q);if(q&&q.trim().length>1)logActivity('searches',{term:q.trim()});};
+});
+
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('histBtn')?.addEventListener('click', openHist);
-  document.getElementById('histOverlay')?.addEventListener('click', e => {
-    if (e.target.id === 'histOverlay') closeHist();
+  document.querySelectorAll('a.wr[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      const target = document.getElementById(this.getAttribute('href').slice(1));
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior:'smooth', block:'start' });
+      target.style.transition = 'box-shadow .3s';
+      target.style.boxShadow  = '0 0 0 3px rgba(184,134,11,.4)';
+      setTimeout(() => { target.style.boxShadow = ''; }, 1800);
+    });
   });
-  document.getElementById('lecturaOverlay')?.addEventListener('click', e => {
-    if (e.target.id === 'lecturaOverlay') closeLectura();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const toggle = document.getElementById('tools-fab-toggle');
+  const items  = document.getElementById('fabItems');
+  if (!toggle || !items) return;
+
+  toggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isOpen = items.classList.toggle('open');
+    toggle.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    toggle.textContent = isOpen ? '×' : '+';
   });
 
-  // Log vitrina views
-  document.addEventListener('click', e => {
-    const card = e.target.closest('.card[data-vitrina]');
-    if (card) {
-      const title = card.querySelector('.ct')?.textContent || '';
-      if (title) logActivity('viewed', { title, section: 'Línea del tiempo' });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#tools-fab')) {
+      items.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '+';
     }
   });
 
-  // Log comp activity
-  const _origOpenComp = window.openComp;
-  if (typeof _origOpenComp === 'function') {
-    window.openComp = function() {
-      const titles = [...(typeof compSelection !== 'undefined' ? compSelection.values() : [])].map(d => d.title);
-      if (titles.length >= 2) logActivity('compared', { titles });
-      _origOpenComp();
-    };
-  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      items.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '+';
+    }
+  });
 });
+
+// ══ CATÁLOGO — COLAPSO/EXPANSIÓN ════════════════════════════
+let catalogExpanded = false;
+
+function toggleCatalogExplore() {
+  catalogExpanded = !catalogExpanded;
+  const sec = document.getElementById('catalogo');
+  const btn = document.getElementById('exploreBtn');
+  if (catalogExpanded) {
+    sec.classList.remove('catalog-collapsed');
+    btn.textContent = 'Ocultar todos los títulos ↑';
+    btn.classList.add('expanded');
+  } else {
+    sec.classList.add('catalog-collapsed');
+    btn.textContent = 'Ver todos los títulos →';
+    btn.classList.remove('expanded');
+  }
+}
+
+// When user searches: show grid regardless of collapsed state
+const _origSearch = typeof searchCatalog === 'function' ? searchCatalog : null;
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.getElementById('catalogSearch');
+  if (!input) return;
+  input.addEventListener('input', function() {
+    const sec = document.getElementById('catalogo');
+    const hasQuery = this.value.trim().length > 0;
+    sec.classList.toggle('catalog-searching', hasQuery);
+    if (!hasQuery && !catalogExpanded) {
+      sec.classList.add('catalog-collapsed');
+    }
+  });
+});
+
+// When user clicks a filter button: expand
+const _origFilterUso = typeof filterUso === 'function' ? filterUso : null;
+if (typeof filterUso === 'function') {
+  const __origFU = filterUso;
+  filterUso = function(v) {
+    __origFU(v);
+    if (v !== 'all') {
+      document.getElementById('catalogo')?.classList.remove('catalog-collapsed');
+      catalogExpanded = true;
+      const btn = document.getElementById('exploreBtn');
+      if (btn) { btn.textContent = 'Ocultar todos ↑'; btn.classList.add('expanded'); }
+    }
+  };
+}
+const _origFilterNivel = typeof filterNivel === 'function' ? filterNivel : null;
+if (typeof filterNivel === 'function') {
+  const __origFN = filterNivel;
+  filterNivel = function(v) {
+    __origFN(v);
+    if (v !== 'all') {
+      document.getElementById('catalogo')?.classList.remove('catalog-collapsed');
+      catalogExpanded = true;
+    }
+  };
+}
 </script>
-<!-- ══════════════════ VITRINA MODAL ══════════════════ -->
-<div class="vitrina-overlay" id="vitrineOverlay" role="presentation"
-     onclick="closeVitrina()"></div>
-<aside class="vitrina-drawer" id="vitrineDrawer"
-       role="dialog" aria-modal="true" aria-labelledby="vitrineTitle"
-       aria-hidden="true">
-  <div class="vitrina-era-stripe" id="vitrineStripe"></div>
-  <div class="vitrina-header">
-    <button type="button" class="vitrina-close" onclick="closeVitrina()"
-            aria-label="Cerrar panel de detalle">✕ Cerrar</button>
-    <span class="vitrina-era-tag" id="vitrineEraTag"></span>
-    <div class="vitrina-title" id="vitrineTitle"></div>
-    <div class="vitrina-author" id="vitrineAuthor"></div>
-  </div>
-  <div class="vitrina-body">
-    <div class="vitrina-desc" id="vitrineDesc"></div>
-    <div class="vitrina-meta" id="vitrineMeta"></div>
-    <div style="margin-top:.7rem;">
-      <button type="button" class="vitrina-catalog-btn" id="vitrineCatalogBtn"
-              onclick="vitrineSearchCatalog()"
-              aria-label="Buscar este título en el catálogo">
-        🔍 Buscar en el catálogo
-      </button>
-      <a id="vitrineOpacLink" class="vitrina-catalog-btn" href="#"
-         target="_blank" rel="noopener noreferrer"
-         style="display:none;text-align:center;text-decoration:none;margin-top:.4rem;
-                background:rgba(42,90,42,.12);border-color:rgba(42,90,42,.4);color:#2a5a2a">
-        📚 Ver en catálogo ULPGC →
-      </a>
-    </div>
-    <div class="vitrina-ficha" id="vitrineFicha">
-      <div class="vitrina-ficha-label">Llévalo al aula</div>
-      <div class="vitrina-ficha-steps" id="vitrineSteps"></div>
-      <div class="vitrina-ficha-tarea" id="vitrineTarea"></div>
-    </div>
-    <div class="vitrina-related" id="vitrineRelated" style="display:none">
-      <span class="vitrina-section-label">Otros títulos relacionados</span>
-      <div id="vitrineRelatedList"></div>
-    </div>
-  </div>
-</aside>
-
-<button type="button" class="proyeccion-btn" onclick="toggleProyeccion()" aria-label="Activar modo proyección: pantalla completa con la línea del tiempo">⊞ Modo proyección</button>
-<button type="button" class="proyeccion-exit" onclick="toggleProyeccion()" aria-label="Salir del modo proyección (también puedes pulsar Escape)">✕ Salir de proyección</button>
-<button type="button" class="fab-action modo-aula-btn" onclick="toggleModoAula()" aria-pressed="false" aria-label="Modo aula: oculta los 21 títulos con contenido adulto o sensible del catálogo">🏫 Modo aula</button>
-<button type="button" class="print-btn" onclick="printAll()">⎙ Versión imprimible</button>
-
-<!-- ══ FICHA DE AULA MODAL ══════════════════════════════════ -->
-<div id="fichaOverlay" role="dialog" aria-modal="true" aria-labelledby="fichaTitleEl">
-  <div id="fichaModal">
-    <div class="ficha-header">
-      <span class="ficha-label">⊕ Ficha de aula — Biblioteca Campus del Obelisco · ULPGC</span>
-      <div class="ficha-title" id="fichaTitleEl"></div>
-      <div class="ficha-author" id="fichaAuthor"></div>
-    </div>
-    <div class="ficha-body">
-      <div class="ficha-section">
-        <span class="ficha-section-label">Uso pedagógico · Nivel</span>
-        <div class="ficha-badges" id="fichaBadges"></div>
-        <div class="ficha-niv" id="fichaNiv"></div>
-      </div>
-      <div class="ficha-section">
-        <span class="ficha-section-label">Descripción didáctica</span>
-        <p class="ficha-desc" id="fichaDesc"></p>
-      </div>
-      <div class="ficha-section ficha-questions">
-        <span class="ficha-section-label">Preguntas para el aula</span>
-        <ol id="fichaQuestions"></ol>
-      </div>
-      <div class="ficha-section">
-        <span class="ficha-section-label">Conexión curricular LOMLOE</span>
-        <p class="ficha-desc" id="fichaLomloe"></p>
-      </div>
-    </div>
-    <div class="ficha-actions">
-      <button type="button" class="ficha-print-btn" onclick="document.body.classList.add('printing-ficha');window.print();setTimeout(()=>document.body.classList.remove('printing-ficha'),500)">⎙ Imprimir ficha</button>
-      <button type="button" class="ficha-close-btn" onclick="closeFicha()">Cerrar</button>
-    </div>
-  </div>
 </div>
 
-<!-- ══ COMPARADOR MODAL ══════════════════════════════════════ -->
-<div id="compOverlay" role="dialog" aria-modal="true" aria-labelledby="compTitle">
-  <div id="compModal">
-    <div class="comp-header">
-      <h2 id="compTitle">⊕ Comparativa de títulos</h2>
-      <button type="button" class="comp-close" onclick="closeComp()">Cerrar ✕</button>
-    </div>
-    <div id="compCards"></div>
-    <div class="comp-footer">
-      <button type="button" class="comp-close-btn2" onclick="closeComp()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ RÚBRICA MODAL ═════════════════════════════════════════ -->
-<div id="rubricaOverlay" role="dialog" aria-modal="true" aria-labelledby="rubricaTitle">
-  <div id="rubricaModal">
-    <div class="rubrica-header">
-      <h2 id="rubricaTitle">⊕ Generador de rúbrica</h2>
-      <button type="button" class="rubrica-close" onclick="closeRubrica()">Cerrar ✕</button>
-    </div>
-    <div class="rubrica-controls">
-      <div>
-        <label for="rubricaTitulo">Título de manga</label>
-        <input type="text" id="rubricaTitulo" placeholder="Escribe un título del fondo…" style="width:180px">
-      </div>
-      <div>
-        <label for="rubricaNivel">Etapa educativa</label>
-        <select id="rubricaNivel">
-          <option value="Educación Infantil">Infantil</option>
-          <option value="Educación Primaria">Primaria</option>
-          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
-          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
-          <option value="Bachillerato">Bachillerato</option>
-          <option value="Universidad">Universidad</option>
-        </select>
-      </div>
-      <div>
-        <label for="rubricaComp">Competencia principal</label>
-        <select id="rubricaComp">
-          <option value="CCL">CCL — Comunicación lingüística</option>
-          <option value="CPAA">CPAA — Aprender a aprender</option>
-          <option value="CSC">CSC — Social y cívica</option>
-          <option value="CCEC">CCEC — Expresión cultural</option>
-          <option value="CD">CD — Competencia digital</option>
-          <option value="CPSAA">CPSAA — Personal y social</option>
-        </select>
-      </div>
-      <button type="button" class="rubrica-gen-btn" id="rubricaGenBtn" onclick="generarRubrica()">
-        Generar rúbrica ✦
-      </button>
-    </div>
-    <div class="rubrica-body" id="rubricaBody">
-      <p class="rubrica-placeholder">Elige un título y etapa, y el asistente IA generará una rúbrica de evaluación LOMLOE lista para usar.</p>
-    </div>
-    <div class="rubrica-actions">
-      <button type="button" class="rubrica-print-btn" onclick="document.body.classList.add('printing-rubrica');window.print();setTimeout(()=>document.body.classList.remove('printing-rubrica'),500)">⎙ Imprimir rúbrica</button>
-      <button type="button" class="rubrica-close2" onclick="closeRubrica()">Cerrar</button>
-    </div>
-  </div>
-</div>
-<!-- ── FIN MODALES FICHA / COMPARADOR / RÚBRICA ── -->
-
-
-
-<!-- ══ GENERADOR DE SECUENCIA DIDÁCTICA ══════════════════════ -->
-<div id="secOverlay" role="dialog" aria-modal="true" aria-labelledby="secTitle">
-  <div id="secModal">
-    <div class="sec-header">
-      <h2 id="secTitle">⊕ Secuencia didáctica</h2>
-      <button type="button" class="sec-close" onclick="closeSec()">Cerrar ✕</button>
-    </div>
-    <div class="sec-controls">
-      <div>
-        <label for="secTitulo">Título de manga</label>
-        <input type="text" id="secTitulo" placeholder="Título del fondo…" style="width:160px">
-      </div>
-      <div>
-        <label for="secEtapa">Etapa</label>
-        <select id="secEtapa">
-          <option value="Educación Infantil">Infantil</option>
-          <option value="Educación Primaria">Primaria</option>
-          <option value="1.º–2.º ESO" selected>1.º–2.º ESO</option>
-          <option value="3.º–4.º ESO">3.º–4.º ESO</option>
-          <option value="Bachillerato">Bachillerato</option>
-          <option value="Universidad">Universidad</option>
-        </select>
-      </div>
-      <div>
-        <label for="secSesiones">N.º de sesiones</label>
-        <select id="secSesiones">
-          <option value="2">2 sesiones</option>
-          <option value="4" selected>4 sesiones</option>
-          <option value="6">6 sesiones</option>
-          <option value="8">8 sesiones</option>
-        </select>
-      </div>
-      <div>
-        <label for="secComp">Competencia principal</label>
-        <select id="secComp">
-          <option value="CCL">CCL — Lingüística</option>
-          <option value="CPSAA">CPSAA — Personal y social</option>
-          <option value="CSC">CSC — Social y cívica</option>
-          <option value="CCEC">CCEC — Expresión cultural</option>
-          <option value="STEM">STEM — Científica</option>
-        </select>
-      </div>
-      <button type="button" class="sec-gen-btn" id="secGenBtn" onclick="generarSecuencia()">
-        Generar secuencia ✦
-      </button>
-    </div>
-    <div class="sec-body" id="secBody">
-      <p class="sec-placeholder">Elige un título, la etapa, el número de sesiones y la competencia principal.
-      El asistente IA generará una secuencia didáctica completa lista para llevar al aula.</p>
-    </div>
-    <div class="sec-actions">
-      <button type="button" class="sec-print-btn"
-        onclick="document.body.classList.add('printing-sec');window.print();setTimeout(()=>document.body.classList.remove('printing-sec'),500)">
-        ⎙ Imprimir secuencia
-      </button>
-      <button type="button" class="sec-close2" onclick="closeSec()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MAPA DE CONEXIONES ══════════════════════════════════════ -->
-<div id="mapaOverlay" role="dialog" aria-modal="true" aria-labelledby="mapaTitle">
-  <div id="mapaModal">
-    <div class="mapa-header">
-      <h2 id="mapaTitle">⊕ Mapa de conexiones entre títulos</h2>
-      <button type="button" class="mapa-close" onclick="closeMapa()">Cerrar ✕</button>
-    </div>
-    <div id="mapaContainer" class="mapa-container" 
-         aria-label="Títulos del fondo agrupados por temática pedagógica"></div>
-  </div>
-</div>
-
-<!-- ── FIN MODALES NUEVAS FUNCIONALIDADES ── -->
-
-
-<button type="button" id="gtt-btn" aria-label="Volver al inicio de la página" title="Volver arriba">↑</button>
-
-<!-- ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ -->
-<div id="tools-fab" role="toolbar" aria-label="Herramientas">
-  <div class="fab-items" id="fabItems">
-    <div class="fab-item">
-      <span class="fab-item-label">Secuencia didáctica</span>
-      <button type="button" class="fab-action" onclick="openSec()" aria-label="Generador de secuencia didáctica" title="Secuencia didáctica">✦</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Mapa de títulos</span>
-      <button type="button" class="fab-action" onclick="openMapa()" aria-label="Mapa de conexiones entre títulos" title="Mapa de títulos">⊞</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Asistente IA</span>
-      <button type="button" class="fab-action" id="asist-fab" onclick="openPanel()" aria-label="Asistente pedagógico IA" title="Asistente IA">✧</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Modo proyección</span>
-      <button type="button" class="fab-action proyeccion-btn" onclick="toggleProyeccion()" aria-label="Activar modo proyección" title="Modo proyección">⛶</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Modo aula</span>
-      <button type="button" class="fab-action modo-aula-btn" onclick="toggleModoAula()" aria-pressed="false" aria-label="Activar modo aula" title="Modo aula">⊞</button>
-    </div>
-    <div class="fab-item">
-      <span class="fab-item-label">Imprimir</span>
-      <button type="button" class="fab-action print-btn" onclick="window.print()" aria-label="Imprimir" title="Imprimir">⎙</button>
-    </div>
-  </div>
-  <button type="button" id="tools-fab-toggle" aria-label="Abrir herramientas" aria-expanded="false" title="Herramientas">+</button>
-</div>
-
-<!-- ══ COMP DRAWER ══════════════════════════════════════════ -->
-<div id="compDrawer" role="status" aria-live="polite" aria-label="Títulos seleccionados para comparar">
-  <span class="comp-drawer-title">Comparar:</span>
-  <div id="compSlots">
-    <span class="comp-slot empty" id="compSlot0">+ Añade un título</span>
-    <span class="comp-slot empty" id="compSlot1">+ Añade un título</span>
-    <span class="comp-slot empty" id="compSlot2">+ Añade un título</span>
-  </div>
-  <div class="comp-drawer-actions">
-    <button type="button" class="comp-drawer-btn comp-go-btn" id="compGoBtn" onclick="openComp()" disabled>Ver comparativa ▶</button>
-    <button type="button" class="comp-drawer-btn comp-clear-btn" onclick="clearComp()">✕ Vaciar</button>
-  </div>
-</div>
-
-
-<!-- ══ HISTORIAL DE SESIÓN ══════════════════════════════════ -->
-<button type="button" id="histBtn" aria-label="Ver historial de la sesión" title="Historial de consultas">⊕ Historial</button>
-
-<div id="histOverlay" role="dialog" aria-modal="true" aria-labelledby="histTitle">
-  <div id="histModal">
-    <div class="hist-header">
-      <h2 id="histTitle">Historial de la sesión</h2>
-      <button type="button" class="hist-close" onclick="closeHist()">Cerrar ✕</button>
-    </div>
-    <div id="histBody">
-      <p class="hist-empty">Aún no hay actividad registrada en esta sesión.</p>
-    </div>
-    <div class="hist-actions">
-      <button type="button" class="hist-export-btn" onclick="exportHist()">⬇ Exportar como texto</button>
-      <button type="button" class="hist-clear-btn" onclick="clearHist()">✕ Limpiar historial</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══ FICHAS DE LECTURA GUIADA ══════════════════════════════ -->
 <div id="lecturaOverlay" role="dialog" aria-modal="true" aria-labelledby="lecturaTitleEl">
   <div id="lecturaModal">
     <div class="lectura-header">
@@ -11618,13 +11002,23 @@ document.addEventListener('DOMContentLoaded', function() {
       <p class="lectura-author-el" id="lecturaAuthorEl"></p>
     </div>
     <div class="lectura-nivel-tabs" id="lecturaNivelTabs" role="tablist"></div>
-    <div class="lectura-body" id="lecturaContent"></div>
+    <div id="lecturaContent"></div>
     <div class="lectura-actions">
-      <button type="button" class="lectura-print-btn"
-        onclick="document.body.classList.add('printing-lectura');window.print();setTimeout(()=>document.body.classList.remove('printing-lectura'),600)">
-        ⎙ Imprimir ficha
-      </button>
+      <button type="button" class="lectura-print-btn" onclick="document.body.classList.add('printing-lectura');window.print();setTimeout(()=>document.body.classList.remove('printing-lectura'),600)">⎙ Imprimir ficha</button>
       <button type="button" class="lectura-close-btn" onclick="closeLectura()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="histOverlay" role="dialog" aria-modal="true" aria-labelledby="histTitle">
+  <div id="histModal">
+    <div class="hist-header"><h2 id="histTitle">Historial de la sesión</h2>
+      <button type="button" class="hist-close" onclick="closeHist()">Cerrar ✕</button></div>
+    <div id="histBody"><p class="hist-empty">Aún no hay actividad registrada.</p></div>
+    <div class="hist-actions">
+      <button type="button" class="hist-export-btn" onclick="exportHist()">⬇ Exportar como texto</button>
+      <button type="button" class="hist-clear-btn" onclick="clearHist()">✕ Limpiar</button>
     </div>
   </div>
 </div>
