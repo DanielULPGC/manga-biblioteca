@@ -2738,7 +2738,7 @@ p.sa-alternatives strong { color: var(--ink); }
 /* ── BOTÓN VOLVER ARRIBA ─────────────────────────────────── */
 #gtt-btn {
   position: fixed; bottom: 1.4rem; left: 1.4rem;
-  z-index: 9999; width: 44px; height: 44px;
+  z-index: 10000; width: 44px; height: 44px;
   background: var(--ink); color: var(--gold);
   border: 2px solid var(--gold); border-radius: 50%;
   font-size: 1.2rem; font-weight: 700; cursor: pointer;
@@ -2747,74 +2747,74 @@ p.sa-alternatives strong { color: var(--ink); }
   transition: background .15s, transform .15s;
   pointer-events: all;
 }
+#gtt-btn.fab-open {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
 #gtt-btn:hover { background: var(--gold); color: var(--ink); transform: translateY(-2px); }
 
 /* ══ SPEED DIAL — HERRAMIENTAS ══════════════════════════════ */
+/* ══ FAB — BARRA DE HERRAMIENTAS FLOTANTE ══════════════════ */
 #tools-fab {
   position: fixed; bottom: 1.4rem; right: 1.4rem;
-  z-index: 1001; display: flex; flex-direction: column-reverse;
-  align-items: flex-end; gap: .5rem;
+  z-index: 1001;
+  display: flex; flex-direction: column-reverse; align-items: flex-end; gap: .45rem;
 }
 #tools-fab-toggle {
   width: 48px; height: 48px; border-radius: 50%;
   background: var(--ink); color: var(--gold);
   border: 2px solid var(--gold); cursor: pointer;
-  font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
   box-shadow: 0 3px 14px rgba(0,0,0,.4);
   transition: background .15s, transform .2s;
-  z-index: 2; position: relative;
-  font-family: 'Cinzel', serif; font-weight: 700;
+  flex-shrink: 0;
 }
-#tools-fab-toggle:hover { background: #2a1a08; transform: rotate(45deg); }
+#tools-fab-toggle:hover,
 #tools-fab-toggle.open { background: #2a1a08; transform: rotate(45deg); }
 
 .fab-items {
-  display: flex; flex-direction: column-reverse; gap: .4rem;
+  display: flex; flex-direction: column-reverse; gap: .35rem;
   align-items: flex-end;
   max-height: 0; overflow: hidden;
-  transition: max-height .28s cubic-bezier(.4,0,.2,1),
-              opacity .22s ease;
   opacity: 0;
+  transition: max-height .3s cubic-bezier(.4,0,.2,1), opacity .2s ease;
 }
-.fab-items.open { max-height: 400px; opacity: 1; }
+.fab-items.open { max-height: 500px; opacity: 1; overflow: visible; }
 
 .fab-item {
-  display: flex; align-items: center; gap: .5rem;
+  display: flex; align-items: center; gap: .45rem;
   justify-content: flex-end;
 }
+/* Tooltip label — appears to LEFT of circular button */
 .fab-item-label {
-  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
-  letter-spacing: .05em; color: var(--paper);
-  background: rgba(26,16,8,.88); border: 1px solid rgba(184,134,11,.3);
-  border-radius: 3px; padding: 3px 9px; white-space: nowrap;
-  pointer-events: none;
-  opacity: 0; transform: translateX(8px);
-  transition: opacity .15s, transform .15s;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
+  letter-spacing: .05em; color: #f5efe0;
+  background: rgba(20,12,4,.95); border: 1px solid rgba(184,134,11,.4);
+  border-radius: 3px; padding: 3px 8px;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transform: translateX(6px);
+  transition: opacity .15s .05s, transform .15s .05s;
 }
 .fab-items.open .fab-item-label {
   opacity: 1; transform: translateX(0);
 }
-.fab-items.open .fab-item:nth-child(1) .fab-item-label { transition-delay: .05s; }
-.fab-items.open .fab-item:nth-child(2) .fab-item-label { transition-delay: .08s; }
-.fab-items.open .fab-item:nth-child(3) .fab-item-label { transition-delay: .11s; }
-.fab-items.open .fab-item:nth-child(4) .fab-item-label { transition-delay: .14s; }
-.fab-items.open .fab-item:nth-child(5) .fab-item-label { transition-delay: .17s; }
-.fab-items.open .fab-item:nth-child(6) .fab-item-label { transition-delay: .20s; }
 
 .fab-action {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 1.5px solid rgba(184,134,11,.4);
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid rgba(184,134,11,.45);
   background: rgba(26,16,8,.92); color: var(--gold);
-  font-size: .85rem; cursor: pointer;
+  font-size: .88rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
   transition: background .12s, border-color .12s, transform .12s;
-  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
 }
 .fab-action:hover { background: #2a1a08; border-color: var(--gold); transform: scale(1.08); }
 .fab-action.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 
-@media print { #tools-fab, #gtt-btn { display: none !important; } }
+@media print { #tools-fab, #histBtn { display: none !important; } }
+
 
 /* ══ COMPARADOR REDISEÑADO ══════════════════════════════════ */
 /* Replace ⊕ with a clean toggle chip at card bottom */
@@ -3324,6 +3324,39 @@ p.sa-alternatives strong { color: var(--ink); }
   body.printing-lectura #lecturaModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
   body.printing-lectura .lectura-actions, body.printing-lectura .lectura-nivel-tabs { display: none !important; }
 }
+
+/* ══ CHIP IN-CATALOG vs SUGGESTION ─────────────────────────── */
+.comp-title-chip[data-incatalog="1"] {
+  background: rgba(46,110,58,.12);
+  border-color: rgba(46,110,58,.5);
+  color: #1a4a24;
+}
+.comp-title-chip[data-incatalog="1"]::before {
+  content: '✓ ';
+  font-size: .55rem;
+  opacity: .8;
+}
+.comp-title-chip[data-incatalog="0"] {
+  background: rgba(90,70,10,.08);
+  border-color: rgba(184,134,11,.35);
+  color: #5a4a10;
+  font-style: italic;
+}
+.comp-title-chip[data-incatalog="0"]::after {
+  content: ' ↗';
+  font-size: .55rem;
+  opacity: .65;
+}
+/* Legend */
+.lomloe-legend {
+  display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+  font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .04em;
+}
+.lomloe-legend span {
+  display: flex; align-items: center; gap: .3rem; color: var(--grey);
+}
+.lomloe-legend .leg-cat  { color: #1a4a24; }
+.lomloe-legend .leg-sug  { color: #5a4a10; font-style: italic; }
 </style>
 </head>
 <body>
@@ -7480,6 +7513,10 @@ p.sa-alternatives strong { color: var(--ink); }
       Índice inverso del catálogo: desde cada competencia clave LOMLOE, accede a los títulos 
       del fondo que la trabajan de forma más directa. Pulsa un título para buscarlo en el catálogo.
     </p>
+    <div class="lomloe-legend">
+      <span class="leg-cat">✓ En el fondo de la biblioteca</span>
+      <span class="leg-sug"><em>En cursiva ↗</em> Sugerencia de uso (no disponible en el fondo)</span>
+    </div>
     <div class="comp-grid">
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7487,7 +7524,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Comunicación Lingüística</span>
     </div>
     <p class="comp-desc">Lectura literaria, análisis textual, narración visual y mediación cultural.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Frieren: más allá del fin del viaje')">Frieren: más allá del fin del viaje</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Frieren')">Frieren: más allá del fin del viaje</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7495,7 +7532,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Matemática y Científico-Tecnológica</span>
     </div>
     <p class="comp-desc">Pensamiento científico, ética tecnológica, robótica y ecología.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Patlabor')">Patlabor</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Ghost in the Shell')">Ghost in the Shell</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Dr. Stone')">Dr. Stone</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Planetes')">Planetes</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Patlabor')">Patlabor</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('The ghost in the shell')">Ghost in the Shell</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Dr. Stone')">Dr. Stone</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Planetes :integral')">Planetes</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7503,7 +7540,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Digital</span>
     </div>
     <p class="comp-desc">Alfabetización mediática, análisis de imagen y cultura digital.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Nausicaä del Valle del Viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Serial Experiments Lain')">Serial Experiments Lain</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Leviathan')">Leviathan</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Patlabor')">Patlabor</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Akira')">Akira</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Nausicaä : del valle del viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Serial Experiments Lain')">Serial Experiments Lain</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Leviathan')">Leviathan</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Patlabor')">Patlabor</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7511,7 +7548,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Personal, Social y Aprender a Aprender</span>
     </div>
     <p class="comp-desc">Autoconocimiento, gestión emocional, bienestar y metacognición.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Nana')">Nana</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Tengo cáncer terminal, pero estoy bien')">Tengo cáncer terminal, pero estoy bien</button><button type="button" class="comp-title-chip" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Nana')">Nana</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Tengo cáncer terminal, pero estoy bien')">Tengo cáncer terminal, pero estoy bien</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7519,7 +7556,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Ciudadanía</span>
     </div>
     <p class="comp-desc">Memoria histórica, valores democráticos y pensamiento crítico.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Adolf')">Adolf</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Barefoot Gen')">Barefoot Gen</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Vagabond')">Vagabond</button><button type="button" class="comp-title-chip" onclick="filterByTitle('La época de Botchan')">La época de Botchan</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Vinland Saga')">Vinland Saga</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Adolf')">Adolf</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Barefoot Gen')">Barefoot Gen</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Vagabond')">Vagabond</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('La época de Botchan')">La época de Botchan</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Vinland Saga')">Vinland Saga</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7527,7 +7564,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Emprendedora</span>
     </div>
     <p class="comp-desc">Iniciativa, creatividad, vocación y resolución de problemas.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Bakuman')">Bakuman</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Atelier of witch hat')">Atelier of witch hat</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Bakuman')">Bakuman</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Atelier of witch hat = El atelier de sombreros de mago')">Atelier of witch hat</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Hirayasumi')">Hirayasumi</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Skip and Loafer')">Skip and Loafer</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7535,7 +7572,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Conciencia y Expresión Cultural</span>
     </div>
     <p class="comp-desc">Patrimonio cultural, expresión artística y diversidad cultural.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('Gon')">Gon</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Nausicaä del Valle del Viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Chōjū-giga')">Chōjū-giga</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Gon')">Gon</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Nausicaä : del valle del viento')">Nausicaä del Valle del Viento</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Blue Period')">Blue Period</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Gráfica. El ABC del cómic')">Gráfica. El ABC del cómic</button><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('Chōjū-giga')">Chōjū-giga</button></div>
   </div>
   <div class="comp-card">
     <div class="comp-card-header">
@@ -7543,7 +7580,7 @@ p.sa-alternatives strong { color: var(--ink); }
       <span class="comp-name">Social y Cívica</span>
     </div>
     <p class="comp-desc">Inclusión, igualdad, identidad y convivencia intercultural.</p>
-    <div class="comp-titles-list"><button type="button" class="comp-title-chip" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Trágica derrota')">Trágica derrota</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Sailor Moon')">Sailor Moon</button><button type="button" class="comp-title-chip" onclick="filterByTitle('Adolf')">Adolf</button></div>
+    <div class="comp-titles-list"><button type="button" class="comp-title-chip" data-incatalog="0" onclick="filterByTitle('A Silent Voice')">A Silent Voice</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('After School Dice Club')">After School Dice Club</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Trágica derrota')">Trágica derrota</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Sailor Moon')">Sailor Moon</button><button type="button" class="comp-title-chip" data-incatalog="1" onclick="filterByTitle('Adolf')">Adolf</button></div>
   </div>
 </div>
 
@@ -7787,7 +7824,8 @@ p.sa-alternatives strong { color: var(--ink); }
 </div>
 
 
-<!-- ══════════════════ ITINERARIOS UNIVERSITARIOS ═════════════class="univ-section" id="universidad">
+<!-- ══════════════════ ITINERARIOS UNIVERSITARIOS ════════════════ -->
+<div class="univ-section" id="universidad">
   <h2>⊕ Recorridos didácticos universitarios — ULPGC · Campus del Obelisco</h2>
   <p class="univ-intro">Propuestas de uso del fondo de manga para la docencia universitaria en los grados del Campus del Obelisco.
   Cada recorrido propone ejes de trabajo, títulos relevantes del fondo y posibles articulaciones con los contenidos de grado.
@@ -8268,6 +8306,7 @@ p.sa-alternatives strong { color: var(--ink); }
     </div>
   </div>
 
+</div>
 <!-- ── FIN ITINERARIOS UNIVERSITARIOS ── -->
 
 
@@ -8279,7 +8318,7 @@ p.sa-alternatives strong { color: var(--ink); }
   Bachillerato). Cada situación incluye su contexto, competencias clave, competencias específicas, saberes básicos
   movilizados, descripción de la tarea y criterios de evaluación.
   &nbsp;·&nbsp;
-  <a href="ficha" target="_blank" rel="noopener noreferrer"
+  <a href="ficha_trabajo_manga.pdf" target="_blank" rel="noopener noreferrer"
      style="font-family:'Cinzel',serif; font-size:.8rem; font-weight:700;
             color:#2a3a7a; border:1.5px solid #2a3a7a; border-radius:3px;
             padding:3px 10px; text-decoration:none; white-space:nowrap;">
@@ -10120,7 +10159,11 @@ Sailor Moon|Naoko Takeuchi|1991|genero|primaria
 Nana|Ai Yazawa|2000|emocional|bachillerato
 Skip and Loafer|Misaki Takamatsu|2018|emocional|secundaria
 Hirayasumi|Shinzo Takamura|2020|emocional|secundaria
-La fortaleza de papel|Osamu Tezuka|1974|historia|secundaria`;
+La fortaleza de papel|Osamu Tezuka|1974|historia|secundaria
+Trágica derrota|Akiko Nozoe|2017|historia|secundaria
+Leviathan|Shiro Kuroi|2023|ciencia|bachillerato
+After School Dice Club|Hiroto Nakamichi|2019|emocional|secundaria
+`;
 
   const CATALOG = CATALOG_RAW.trim().split('\n').map(l => {
     const [title, author, year, uso, nivel] = l.split('|');
@@ -10895,33 +10938,38 @@ function filterByTitle(title) {
 document.addEventListener('DOMContentLoaded', function() {
   const toggle = document.getElementById('tools-fab-toggle');
   const items  = document.getElementById('fabItems');
+  const gttBtn = document.getElementById('gtt-btn');
   if (!toggle || !items) return;
 
+  function openFab() {
+    items.classList.add('open');
+    toggle.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.textContent = '×';
+    if (gttBtn) gttBtn.classList.add('fab-open');
+  }
+  function closeFab() {
+    items.classList.remove('open');
+    toggle.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.textContent = '+';
+    if (gttBtn) gttBtn.classList.remove('fab-open');
+  }
+
   toggle.addEventListener('click', function() {
-    const isOpen = items.classList.toggle('open');
-    toggle.classList.toggle('open', isOpen);
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    toggle.textContent = isOpen ? '×' : '+';
+    toggle.classList.contains('open') ? closeFab() : openFab();
   });
 
   document.addEventListener('click', e => {
-    if (!e.target.closest('#tools-fab')) {
-      items.classList.remove('open');
-      toggle.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = '+';
-    }
+    if (!e.target.closest('#tools-fab')) closeFab();
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      items.classList.remove('open');
-      toggle.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = '+';
-    }
+    if (e.key === 'Escape') closeFab();
   });
 });
+
+
 
 // ══ MODAL HELPERS (Rúbrica, Secuencia, Mapa) ════════════════════
 function closeRubrica() {
