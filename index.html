@@ -10369,6 +10369,7 @@ async function geminiRequest(apiKey, bodyOrPrompt, maxRetries = 8) {
     try {
       const resp = await fetch(url, {
         method: 'POST',
+        mode: 'cors', // Forzamos el modo CORS
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
