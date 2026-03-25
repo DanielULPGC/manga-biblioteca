@@ -592,36 +592,36 @@ h1 em { color: var(--red); font-style: normal; }
 /* ── PREGUNTA DETONADORA ─────────────────────────────────────── */
 .era-q-btn {
   position: absolute;
-  top: 6px; right: 6px;
-  width: 20px; height: 20px;
+  top: 5px; right: 5px;
+  width: 18px; height: 18px;
   border-radius: 50%;
-  background: rgba(184,134,11,.85);
-  border: 1.5px solid rgba(255,210,80,.6);
+  background: rgba(184,134,11,.75);
+  border: 1px solid rgba(255,210,80,.5);
   color: #fff;
-  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 900;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 900;
   cursor: pointer; z-index: 10;
   display: flex; align-items: center; justify-content: center;
   transition: background .15s, transform .1s;
   line-height: 1;
-  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  opacity: .7;
 }
-.era-q-btn:hover   { background: var(--gold); transform: scale(1.15); }
-.era-q-btn.active  { background: var(--gold); transform: scale(1.1); }
+.bar:hover .era-q-btn,
+.era-q-btn:hover { opacity: 1; background: var(--gold); }
+.era-q-btn.active { opacity: 1; background: var(--gold); transform: scale(1.05); }
 
-/* Panel flotante */
+/* Panel flotante — fixed position set by JS */
 .era-q-panel {
   display: none;
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%; transform: translateX(-50%);
-  width: 240px;
+  position: fixed; /* JS sets top/left */
+  width: 260px;
   background: var(--ink);
   color: var(--paper);
   border: 1px solid var(--gold);
-  border-radius: 5px;
-  padding: 10px 13px 12px;
-  z-index: 9999;
-  box-shadow: 0 6px 24px rgba(0,0,0,.55);
+  border-radius: 6px;
+  padding: 11px 14px 13px;
+  z-index: 9000;
+  box-shadow: 0 8px 28px rgba(0,0,0,.6);
   pointer-events: auto;
 }
 .era-q-panel.open { display: block; }
@@ -644,19 +644,19 @@ h1 em { color: var(--red); font-style: normal; }
 .era-q-label {
   font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   letter-spacing: .1em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: .45rem; display: block;
+  color: var(--gold); margin-bottom: .4rem; display: block;
 }
 .era-q-nivel {
   font-family: 'Cinzel', serif; font-size: .55rem;
   color: rgba(245,239,224,.45); letter-spacing: .06em;
-  margin-bottom: .55rem; display: block;
+  margin-bottom: .5rem; display: block;
 }
 .era-q-list {
   list-style: none; padding: 0; margin: 0;
-  display: flex; flex-direction: column; gap: .4rem;
+  display: flex; flex-direction: column; gap: .45rem;
 }
 .era-q-list li {
-  font-family: 'EB Garamond', serif; font-size: .85rem;
+  font-family: 'EB Garamond', serif; font-size: .86rem;
   line-height: 1.45; color: var(--paper);
   padding-left: .9rem; position: relative;
 }
@@ -667,14 +667,13 @@ h1 em { color: var(--red); font-style: normal; }
   top: .28rem;
 }
 
-/* Modo proyección — panel más grande y visible */
+/* Modo proyección */
 body.modo-proyeccion .era-q-panel {
-  width: 300px; font-size: 1.05rem;
-  padding: 14px 18px 16px;
+  width: 310px;
 }
 body.modo-proyeccion .era-q-list li { font-size: 1rem; }
-body.modo-proyeccion .era-q-label   { font-size: .7rem; }
-body.modo-proyeccion .era-q-btn     { width: 26px; height: 26px; font-size: .8rem; }
+body.modo-proyeccion .era-q-label   { font-size: .68rem; }
+body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .7rem; }
 
 /* ─── DIVIDER between eras ───────────────── */
 .sep {
@@ -732,18 +731,24 @@ body.modo-proyeccion .era-q-btn     { width: 26px; height: 26px; font-size: .8re
 #gtt {
   display: none;
   position: fixed;
-  width: 280px;
+  width: 260px;
+  max-width: calc(100vw - 20px);
+  max-height: 280px;
+  overflow-y: auto;
   background: var(--ink);
   color: var(--paper);
-  padding: 10px 14px;
-  border-radius: 5px;
-  font-size: .84rem;
+  padding: 10px 13px;
+  border-radius: 6px;
+  font-family: 'EB Garamond', serif;
+  font-size: .86rem;
   line-height: 1.55;
   text-align: left;
-  z-index: 99999;
+  z-index: 9500;        /* encima de sticky (500) pero debajo de modales (4000) */
   pointer-events: none;
-  box-shadow: 0 6px 24px rgba(0,0,0,.42);
+  box-shadow: 0 6px 24px rgba(0,0,0,.45);
   white-space: normal;
+  word-break: break-word;
+  border: 1px solid rgba(255,255,255,.08);
 }
 #gtt::after {
   content: '';
@@ -885,7 +890,85 @@ body.filtering-uso.filtering-nivel .card.match-uso:not(.match-nivel) { opacity: 
 body.filtering-uso.filtering-nivel .card:not(.match-uso).match-nivel { opacity: .15; }
 
 
-/* ── CATALOG SECTION ── */
+/* ── CONTADOR DE EXPLORACIÓN ─────────────────────────────────── */
+#explorerCounter {
+  display: none; /* shown by JS when data exists */
+  margin: .8rem 3rem .2rem;
+  padding: .7rem 1rem .65rem;
+  background: rgba(184,134,11,.06);
+  border: 1px solid rgba(184,134,11,.22);
+  border-radius: 5px;
+  font-family: 'EB Garamond', serif;
+}
+#explorerCounter.has-data { display: block; }
+
+.exc-header {
+  display: flex; align-items: center; gap: .7rem;
+  margin-bottom: .55rem;
+}
+.exc-label {
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--gold);
+  flex: 1;
+}
+.exc-total {
+  font-family: 'Cinzel', serif; font-size: .62rem;
+  color: var(--grey); letter-spacing: .05em;
+}
+.exc-reset {
+  font-family: 'Cinzel', serif; font-size: .56rem; font-weight: 700;
+  color: var(--grey); background: none;
+  border: 1px solid var(--rule); border-radius: 3px;
+  padding: 1px 6px; cursor: pointer; letter-spacing: .04em;
+  transition: all .15s;
+}
+.exc-reset:hover { color: var(--red); border-color: var(--red); }
+
+/* Area bars */
+.exc-bars {
+  display: flex; flex-direction: column; gap: .32rem;
+}
+.exc-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 28px;
+  align-items: center; gap: .5rem;
+}
+.exc-uso-name {
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
+  letter-spacing: .04em; color: var(--grey); text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.exc-bar-track {
+  height: 7px; background: rgba(200,184,154,.25);
+  border-radius: 4px; overflow: hidden;
+}
+.exc-bar-fill {
+  height: 100%; border-radius: 4px;
+  transition: width .5s ease;
+}
+.exc-count {
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
+  color: var(--ink); text-align: right;
+}
+
+/* ODS mini summary */
+.exc-ods-row {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  margin-top: .5rem; padding-top: .45rem;
+  border-top: 1px dashed rgba(200,184,154,.4);
+}
+.exc-ods-chip {
+  font-family: 'Cinzel', serif; font-size: .54rem; font-weight: 700;
+  color: #fff; padding: 1px 5px; border-radius: 2px;
+  letter-spacing: .02em; opacity: .85;
+}
+.exc-ods-label {
+  font-family: 'Cinzel', serif; font-size: .57rem;
+  color: var(--grey); letter-spacing: .05em; align-self: center;
+  margin-right: 3px;
+}
+
+@media print { #explorerCounter { display: none !important; } }
 .catalog-section {
   padding: 2.5rem 3rem 3rem;
   border-top: 2px solid var(--rule);
@@ -1567,92 +1650,6 @@ body.filtering-ods #odsCounter { display:inline-block; }
 }
 
 /* ══ RESPONSIVE / MOBILE ══════════════════════════════════════════ */
-@media (max-width: 768px) {
-
-  /* Header */
-  h1 { font-size: clamp(1.1rem, 5vw, 1.8rem) !important; }
-
-  /* Welcome panel */
-  .welcome-panel { padding: 1rem 1.2rem; }
-  .welcome-routes { grid-template-columns: 1fr; gap: .5rem; }
-
-  /* Filter bars — stack vertically, wrap buttons */
-  .filter-bar { padding: .5rem 1rem; }
-  .fb-row { gap: .3rem; }
-  .fb { font-size: .62rem; padding: .22rem .55rem; }
-  .fb-label { font-size: .65rem; width: 100%; margin-bottom: .2rem; }
-
-  /* Search bar */
-  .search-bar { flex-direction: column; align-items: flex-start; gap: .4rem; }
-  #catalogSearch { width: 100% !important; }
-
-  /* Timeline — hint bar */
-  .hint { font-size: .75rem; padding: .3rem .5rem; }
-
-  /* Catalog grid — single column on very small screens */
-  .cat-grid { gap: .5rem; }
-  .cat-card { width: calc(50% - .25rem); min-width: 140px; }
-
-  /* Tab bars — all tab systems */
-  .cur-tabs, .itin-tabs, .sa-tabs, .rec-tabs {
-    gap: .3rem;
-  }
-  .cur-tab, .itin-tab, .sa-tab, .rec-tab {
-    font-size: .65rem; padding: .28rem .6rem;
-  }
-
-  /* Currículo table — make it scrollable */
-  .cur-panel { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .cur-table { font-size: .78rem; min-width: 600px; }
-  .cur-table td:first-child { width: auto; }
-
-  /* SA cards — full width */
-  .sa-two-col { grid-template-columns: 1fr !important; }
-  .sa-body { padding: .8rem 1rem; }
-  .sa-header { padding: .8rem 1rem .6rem; }
-  .sa-header h3 { font-size: .9rem; }
-
-  /* Itinerary grid — single column */
-  .itin-grid { grid-template-columns: 1fr !important; }
-
-  /* Recursos grid — single column */
-  .rec-grid { grid-template-columns: 1fr !important; }
-
-  /* Resources section padding */
-  .curriculo-section, .sa-section, .itin-section,
-  .recursos-section, .catalog-section, .adapt, .notes {
-    padding-left: 1.2rem; padding-right: 1.2rem;
-  }
-
-  /* Print + compact buttons */
-  .print-btn { bottom: .8rem; right: .8rem; font-size: .65rem; padding: .3rem .7rem; }
-  .compact-btn { top: .5rem; right: .8rem; font-size: .65rem; padding: .3rem .7rem; }
-
-  /* Adapt grid */
-  .adapt-grid { gap: .5rem; }
-  .ac { min-width: 140px; }
-
-  /* Welcome routes */
-  .wr { padding: .5rem .8rem; }
-  .wr .wr-do { font-size: .85rem; }
-}
-
-@media (max-width: 480px) {
-  .cat-card { width: 100%; }
-  h1 { font-size: 1.1rem !important; }
-  .cur-table { font-size: .72rem; }
-  header { padding: 1.5rem 1rem 1rem; }
-}
-
-/* Touch devices — larger tap targets */
-@media (hover: none) and (pointer: coarse) {
-  .fb, .cur-tab, .sa-tab, .itin-tab, .rec-tab {
-    min-height: 36px; display: inline-flex; align-items: center;
-  }
-  .cat-card { cursor: default; }
-  .wr { min-height: 60px; }
-}
-
 /* ── CITA ACADÉMICA ───────────────────────────────────────────── */
 .citation-bar {
   background: rgba(26,16,8,.06);
@@ -3912,15 +3909,238 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 .rec-tab:hover:not(.active)  { background: rgba(122,74,10,.1); color: var(--ink); }
 
 /* Responsive */
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE MÓVIL — BLOQUE CONSOLIDADO
+   Cubre todos los elementos añadidos durante el desarrollo:
+   filtros ODS, tarjetas catálogo, modales, FAB, itinerarios,
+   contador exploración, era-by-era bar, preguntas detonadoras.
+══════════════════════════════════════════════════════════════ */
+
+/* ── 768px — tablet y móvil horizontal ─────────────────────── */
 @media (max-width: 768px) {
-  #catGrid { padding: .75rem 1rem; gap: .6rem; }
-  .cat-card { width: calc(50% - .45rem) !important; min-width: 155px; }
-  .search-bar { padding: .6rem 1rem; }
-  #catalogSearch { max-width: none; }
+
+  /* CABECERA */
+  header { padding: 1.4rem 1rem .9rem; }
+  h1 { font-size: clamp(1rem, 5.5vw, 1.7rem) !important; }
+  .sub { font-size: .78rem !important; }
+  .jp  { font-size: 1.2rem !important; }
+  .kamon { font-size: 2rem; }
+  .visit-counter { font-size: .72rem; }
+
+  /* BARRA DE FILTROS — compactar y hacer colapsable el ODS */
+  .filter-bar { padding: .4rem .8rem .5rem; gap: .3rem; }
+  .fb-row { gap: .25rem; }
+  .fb { font-size: .6rem; padding: .2rem .45rem; }
+  .fb-label { font-size: .6rem; width: 100%; margin-bottom: .15rem; }
+
+  /* Fila ODS: colapsar en acordeón en móvil */
+  #ods-filter-row { flex-direction: column; align-items: flex-start; }
+  #ods-filter-row .fb-label { cursor: pointer; user-select: none; }
+  #ods-filter-row .fb-label::after { content: ' ▾'; font-size: .55rem; }
+  #ods-filter-row .fb-ods-icon,
+  #ods-filter-row .fb-all-ods,
+  #ods-filter-row #odsCounter {
+    display: none;
+  }
+  #ods-filter-row.ods-open .fb-ods-icon,
+  #ods-filter-row.ods-open .fb-all-ods {
+    display: inline-flex;
+  }
+  #ods-filter-row.ods-open #odsCounter { display: inline-block; }
+  #ods-filter-row.ods-open .fb-label::after { content: ' ▴'; }
+  #ods-filter-row.ods-open { flex-direction: row; flex-wrap: wrap; align-items: center; }
+
+  /* HINT BAR */
+  .hint { font-size: .72rem; padding: .28rem .6rem; }
+
+  /* CATÁLOGO — búsqueda */
+  .search-bar { flex-direction: column; align-items: flex-start; gap: .35rem;
+    padding: .5rem .8rem; }
+  #catalogSearch { width: 100% !important; }
+
+  /* CATÁLOGO — tarjetas */
+  .cat-grid { gap: .5rem; padding: .6rem .8rem; }
+  .cat-card { width: calc(50% - .25rem); min-width: 140px; }
+  .cat-card-body { padding: 8px 9px 6px; gap: 3px; }
+  .cat-title { font-size: .86rem; -webkit-line-clamp: 2; }
+  .cat-author { font-size: .68rem; }
+  .cat-badge { font-size: .56rem; padding: 1px 4px; }
+  .niv-badge { font-size: .6rem; }
+  .periodo-badge { font-size: .52rem; padding: 1px 4px; }
+
+  /* ODS badges en tarjeta: mostrar solo 1 */
+  .ods-badges { gap: 2px; margin-top: 3px; }
+  .ods-badge { font-size: .52rem; padding: 1px 4px; }
+  .ods-badge:nth-child(n+3) { display: none; }
+
+  /* Acciones tarjeta: 2 filas de 2 */
+  .cat-card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .cat-expres-btn { grid-column: 1 / -1; }
+
+  /* EXPLORADOR COUNTER */
+  #explorerCounter { margin: .6rem .8rem .2rem; padding: .55rem .8rem .6rem; }
+  .exc-header { flex-wrap: wrap; gap: .3rem; }
+  .exc-row { grid-template-columns: 90px 1fr 22px; gap: .3rem; }
+  .exc-uso-name { font-size: .54rem; }
+  .exc-count { font-size: .58rem; }
+  .exc-ods-chip { font-size: .5rem; }
+
+  /* BARRA DE PROGRESO ITINERARIO */
+  .itin-progress-bar-wrap {
+    flex-wrap: wrap; gap: .4rem; padding: .4rem .6rem;
+  }
+  .itin-progress-label { font-size: .6rem; order: 3; width: 100%; }
+  .itin-reset-btn { font-size: .54rem; margin-left: 0; }
+
+  /* ITINERARIO — tarjetas */
+  .itin-grid { grid-template-columns: 1fr !important; gap: .8rem; }
+  .itin-card { padding: .8rem .9rem; }
+  .itin-card h3 { font-size: .78rem; }
+  .itin-card ul li { font-size: .8rem; }
+  .itin-titles { font-size: .74rem; }
+  .itin-progress-btn { font-size: .58rem; padding: .22rem .6rem; margin-top: .5rem; }
+
+  /* TABS universales */
+  .cur-tabs, .itin-tabs, .sa-tabs, .rec-tabs, .univ-tabs { gap: .3rem; }
+  .cur-tab, .itin-tab, .sa-tab, .rec-tab, .univ-tab {
+    font-size: .62rem; padding: .26rem .55rem;
+  }
+
+  /* SITUACIONES DE APRENDIZAJE */
+  .sa-two-col { grid-template-columns: 1fr !important; }
+  .sa-body { padding: .7rem .9rem; }
+  .sa-header { padding: .7rem .9rem .5rem; }
+  .sa-header h3 { font-size: .86rem; }
+
+  /* SECCIONES — padding lateral */
+  .curriculo-section, .sa-section, .itin-section,
+  .recursos-section, .catalog-section, .adapt, .notes,
+  .univ-section { padding-left: 1rem; padding-right: 1rem; }
+  .itin-section h2, .sa-section h2 { font-size: .95rem; }
+
+  /* TABLA CURRÍCULO */
+  .cur-panel { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .cur-table { font-size: .75rem; min-width: 540px; }
+
+  /* GLOSARIO */
+  .adapt-grid { gap: .45rem; }
+  .ac { min-width: 130px; }
+
+  /* MODALES — reducir padding interior */
+  #fichaModal, #compModal, #rubricaModal,
+  #secModal, #expresModal, #mapaModal { border-radius: 4px; }
+  .ficha-body, .rubrica-body, .sec-body, .expres-body { padding: .8rem 1rem; }
+  .ficha-header { padding: .8rem 1rem .6rem; }
+  .rubrica-header, .sec-header, .expres-header,
+  .mapa-header { padding: .65rem 1rem; }
+  .rubrica-controls { flex-wrap: wrap; gap: .4rem .6rem; padding: .6rem 1rem; }
+  .rubrica-controls label { font-size: .62rem; }
+  .rubrica-controls input[type="text"],
+  .rubrica-controls select { font-size: .82rem; }
+  .ficha-notas-title { font-size: .62rem; }
+  .ficha-nota-field textarea { min-height: 44px; font-size: .86rem; }
+  .ficha-implicacion-label { font-size: .56rem; }
+  .ficha-star { font-size: 1rem; }
+
+  /* ERA DISCOVERY BAR */
+  #eraDiscoveryBar { padding: .45rem .8rem; gap: .6rem; }
+  #eraDiscPrev, #eraDiscNext { padding: .25rem .6rem; font-size: .95rem; }
+  #eraDiscName { font-size: .82rem; }
+  #eraDiscJp   { font-size: .95rem; }
+  #eraDiscDates { display: none; }
+  #eraDiscExit { font-size: .58rem; padding: .2rem .55rem; }
+  #eraDiscCounter { font-size: .58rem; }
+
+  /* COMP DRAWER */
+  #compDrawer { padding: .5rem 1rem; }
+  .comp-slot { min-width: 80px; max-width: 140px; font-size: .78rem; }
+  .comp-drawer-btn { font-size: .62rem; padding: .32rem .7rem; }
+
+  /* FAB — ligeramente más pequeño */
+  #tools-fab { bottom: 1rem; right: 1rem; }
+  #tools-fab-toggle { width: 44px; height: 44px; font-size: 1.2rem; }
+  .fab-action { width: 36px; height: 36px; font-size: .8rem; }
+
+  /* WELCOME PANEL */
+  .welcome-panel { padding: .9rem 1rem; }
+  .welcome-routes { grid-template-columns: 1fr; gap: .4rem; }
+  .wr { padding: .45rem .7rem; }
+  .wr .wr-do { font-size: .82rem; }
+
+  /* PREGUNTA DETONADORA — panel más estrecho */
+  .era-q-panel { width: min(240px, 90vw) !important; font-size: .82rem; }
+  .era-q-list li { font-size: .82rem; }
 }
+
+/* ── 480px — móvil vertical ─────────────────────────────────── */
 @media (max-width: 480px) {
-  .cat-card { width: 100% !important; }
-  #catGrid { padding: .5rem .75rem; gap: .5rem; }
+
+  header { padding: 1.1rem .9rem .7rem; }
+  h1 { font-size: 1.05rem !important; }
+  .sub { font-size: .72rem !important; letter-spacing: .1em !important; }
+
+  /* Una columna en catálogo */
+  .cat-card { width: 100% !important; min-width: 0; }
+  #catGrid { padding: .4rem .6rem; gap: .4rem; }
+
+  /* Acciones vuelven a fila única en pantalla muy estrecha */
+  .cat-card-actions { grid-template-columns: repeat(3, 1fr); }
+  .cat-expres-btn { grid-column: auto; }
+
+  /* Tabla currículo */
+  .cur-table { font-size: .7rem; }
+
+  /* Modales a pantalla completa */
+  #fichaOverlay, #compOverlay, #rubricaOverlay,
+  #secOverlay, #expresOverlay { align-items: flex-end; padding: 0; }
+  #fichaModal, #compModal, #rubricaModal,
+  #secModal, #expresModal {
+    width: 100vw !important; max-height: 93vh;
+    border-radius: 12px 12px 0 0 !important;
+  }
+
+  /* Mapa: a pantalla completa */
+  #mapaOverlay { align-items: flex-end; padding: 0; }
+  #mapaModal {
+    width: 100vw; max-height: 85vh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* Era discovery bar más compacta */
+  #eraDiscInfo { gap: .3rem; }
+  #eraDiscJp { display: none; }
+
+  /* FAB más pequeño */
+  #tools-fab-toggle { width: 40px; height: 40px; font-size: 1.1rem; }
+  .fab-action { width: 34px; height: 34px; }
+
+  /* Explorer counter columna única */
+  .exc-row { grid-template-columns: 80px 1fr 20px; }
+
+  /* Itin progress label siempre en su propia línea */
+  .itin-progress-bar-wrap { flex-direction: column; align-items: stretch; gap: .35rem; }
+  .itin-progress-track { flex: none; }
+
+  /* Texto hint */
+  .hint { font-size: .68rem; }
+}
+
+/* ── Dispositivos táctiles — áreas mínimas de toque ────────── */
+@media (hover: none) and (pointer: coarse) {
+  .fb, .cur-tab, .sa-tab, .itin-tab, .rec-tab, .univ-tab {
+    min-height: 36px; display: inline-flex; align-items: center;
+  }
+  .cat-card { cursor: default; }
+  .wr { min-height: 56px; }
+  .cat-ficha-btn, .cat-lectura-btn, .cat-expres-btn, .cat-comp-btn {
+    min-height: 30px;
+  }
+  .era-q-btn { width: 24px; height: 24px; opacity: 1; }
+  .fab-action { min-width: 34px; min-height: 34px; }
 }
 </style>
 </head>
@@ -4539,6 +4759,41 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       <i>Sistema sonoro visual único</i>
       <s>El manga japonés usa onomatopeyas no solo para ruidos sino para estados emocionales (ドキドキ, corazón acelerado) y ambientales (しーん, silencio absoluto). Sistema sin equivalente en el cómic occidental.</s>
     </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-koma">Koma (コマ)</b>
+      <i>La viñeta</i>
+      <s>Unidad mínima de narración en el manga. A diferencia del cómic occidental, el koma puede variar radicalmente de tamaño dentro de una misma página para marcar el ritmo. Una viñeta a página completa se llama <em>tobikomi</em>.</s>
+    </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-fukidashi">Fukidashi (吹き出し)</b>
+      <i>El bocadillo de texto</i>
+      <s>Existe más de una docena de formas distintas, cada una con un significado preciso: redondo (voz normal), dentado (grito o sorpresa), nube (pensamiento), rectángulo (voz en off o narrador). La forma comunica tanto como las palabras.</s>
+    </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-ma">Ma (間)</b>
+      <i>El espacio entre viñetas</i>
+      <s>El espacio en blanco entre dos koma que el lector rellena mentalmente. Es donde ocurre la acción invisible — la «clausura» en términos de Scott McCloud. Concepto fundamental para enseñar lectura multimodal e inferencia narrativa.</s>
+    </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-chibi">Chibi (ちび)</b>
+      <i>Estilo de proporción exagerada</i>
+      <s>Personaje con cabeza desproporcionadamente grande y cuerpo pequeño. Se usa para expresar emoción intensa (ternura, vergüenza, humor) y está presente en el manga infantil y en los momentos cómicos del manga adulto. Muy reconocible por el alumnado de Infantil y Primaria.</s>
+    </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-mangaka">Mangaka (漫画家)</b>
+      <i>Autor o autora de manga</i>
+      <s>Término para designar a quien crea manga profesionalmente. A diferencia del cómic europeo, muchos mangaka trabajan solos guion y dibujo; otros trabajan con un asistente (<em>assistant</em>) o con un equipo. El ritmo de publicación semanal en revista impone condiciones de trabajo muy exigentes.</s>
+    </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-jidaigeki">Jidaigeki (時代劇)</b>
+      <i>Drama histórico</i>
+      <s>Género ambientado en el Japón preindustrial, especialmente en el período Edo. Equivale al <em>western</em> o al drama de época europeo. Muy presente en el fondo: Vagabond, Dororo, Usagi Yojimbo, El Lobo solitario y su cachorro.</s>
+    </div>
+    <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
+      <b id="gloss-nichijokei">Nichijō-kei (日常系)</b>
+      <i>La historia de lo cotidiano</i>
+      <s>Subgénero centrado en la vida ordinaria sin conflicto central ni resolución dramática. El valor narrativo está en los momentos pequeños. Ejemplos en el fondo: Yotsuba!, Hirayasumi, El gourmet solitario. Muy accesible como entrada al manga para lectores nuevos.</s>
+    </div>
   </div>
 </div>
 
@@ -4578,6 +4833,17 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <label>🔍 Buscar en el catálogo →</label>
   <input type="search" id="catalogSearch" aria-label="Buscar en el catálogo" aria-controls="catGrid" autocomplete="off" placeholder="título, autor, tema…" oninput="searchCatalog(this.value)">
   <span id="searchCount" role="status" aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<!-- ── CONTADOR DE EXPLORACIÓN ── -->
+<div id="explorerCounter" aria-live="polite" aria-label="Títulos explorados por área">
+  <div class="exc-header">
+    <span class="exc-label">✦ Títulos explorados esta sesión</span>
+    <span class="exc-total" id="excTotal"></span>
+    <button type="button" class="exc-reset" onclick="resetExplorerCounter()" title="Limpiar contador de esta sesión">↺ Limpiar</button>
+  </div>
+  <div class="exc-bars" id="excBars"></div>
+  <div class="exc-ods-row" id="excOdsRow"></div>
 </div>
   <div class="modo-aula-notice" role="status" aria-live="polite"></div>
   <div class="cat-grid" id="catGrid">
@@ -8231,6 +8497,38 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         </div>
       </div>
 
+      <div class="itin-card">
+        <h3>Hago mi viñeta</h3>
+        <div class="itin-meta">Ámbito: Comunicación y Representación · Eje: Escritura emergente y expresión gráfica</div>
+        <ul>
+          <li><strong>Punto de partida:</strong> Un koma (viñeta) es como una ventana: muestra un momento. Hoy cada uno dibuja su propio momento favorito de la mañana dentro de un recuadro.</li>
+          <li><strong>Actividad 1:</strong> El docente dibuja en la pizarra su propio koma del desayuno. Muestra que no hace falta dibujar bien: la intención narrativa importa más que el resultado.</li>
+          <li><strong>Actividad 2:</strong> Cada alumno recibe un recuadro en papel y dibuja «lo más importante que ha pasado hoy». Sin palabras obligatorias — quien quiera escribe una o dos.</li>
+          <li><strong>Actividad 3:</strong> Se pegan todos los koma en orden cronológico en la pared. La clase «lee» juntos el día como si fuera un manga colectivo.</li>
+          <li><strong>Conexión LOMLOE:</strong> CE Comunicación · Expresión artística · Escritura emergente · Decreto 196/2022 Canarias: representación y comunicación.</li>
+        </ul>
+        <div class="itin-titles">
+          <strong>Títulos del fondo</strong>
+          ¡Kota, ven! · Mascotas · Yotsuba&!
+        </div>
+      </div>
+
+      <div class="itin-card">
+        <h3>¿Qué sonido hace este dibujo?</h3>
+        <div class="itin-meta">Ámbito: Comunicación y Representación · Eje: Alfabetización visual y educación musical</div>
+        <ul>
+          <li><strong>Punto de partida:</strong> En el manga los dibujos tienen sonido propio: ドキドキ (corazón acelerado), ドーン (explosión), しーん (silencio total). ¿Podemos hacer esos sonidos con el cuerpo?</li>
+          <li><strong>Actividad 1:</strong> El docente muestra 4 onomatopeyas manga en tarjetas grandes. El grupo decide qué sonido corporal le corresponde a cada una (palmada, susurro, golpe en la mesa, silencio).</li>
+          <li><strong>Actividad 2:</strong> Se proyecta una página de manga sin audio. El grupo la «sonoriza» en directo: cada viñeta tiene un sonido asignado y se ejecuta al pasarla.</li>
+          <li><strong>Actividad 3:</strong> Cada alumno inventa una onomatopeya nueva para un sonido canario (el viento en el barranco, las olas, el silbido gomero) y la dibuja en estilo manga.</li>
+          <li><strong>Conexión LOMLOE:</strong> CE Comunicación · Expresión musical · Lenguaje no verbal · Identidad cultural canaria.</li>
+        </ul>
+        <div class="itin-titles">
+          <strong>Títulos del fondo</strong>
+          Gon · El zorro y el pequeño tanuki · ¡Kota, ven!
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -8283,6 +8581,22 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         <div class="itin-titles">
           <strong>Títulos del fondo</strong>
           Helena y el Señor Lobo Malo · La pequeña forastera · El ratón de biblioteca
+        </div>
+      </div>
+
+      <div class="itin-card">
+        <h3>La tira de la semana</h3>
+        <div class="itin-meta">Área: Lengua Castellana y Literatura · Eje: Escritura funcional y memoria narrativa</div>
+        <ul>
+          <li><strong>Punto de partida:</strong> Los mangaka publican sus historias semana a semana en revistas. Nosotros también vamos a publicar: cada lunes, la clase hace una tira de 4 viñetas sobre algo que pasó la semana anterior.</li>
+          <li><strong>Actividad 1:</strong> El grupo elige en asamblea el «momento de la semana» más interesante. El docente modera: ¿cuál tiene más acción, emoción o sorpresa?</li>
+          <li><strong>Actividad 2:</strong> Se distribuyen los 4 koma entre 4 grupos. Cada uno dibuja y escribe su viñeta. Se juntan en orden: inicio, nudo, clímax, final.</li>
+          <li><strong>Actividad 3:</strong> La tira se expone en el «mural del fondo» de la clase. Al cabo del trimestre, se encuaderna como el «manga de nuestra clase».</li>
+          <li><strong>Conexión LOMLOE:</strong> CCL · Escritura funcional · Secuenciación temporal · Trabajo cooperativo · Memoria colectiva.</li>
+        </ul>
+        <div class="itin-titles">
+          <strong>Títulos del fondo</strong>
+          Yotsuba&! · El ratón de biblioteca · ¡Kota, ven!
         </div>
       </div>
 
@@ -8341,6 +8655,38 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         </div>
       </div>
 
+      <div class="itin-card">
+        <h3>Traduce sin palabras</h3>
+        <div class="itin-meta">Área: Lengua Castellana y Literatura · Eje: Comprensión lectora multimodal y comunicación oral</div>
+        <ul>
+          <li><strong>Punto de partida:</strong> <em>Gon</em> no tiene ni una sola palabra de texto. ¿Cómo cuenta su historia? ¿Qué herramientas usa el dibujo cuando las palabras desaparecen?</li>
+          <li><strong>Actividad 1:</strong> En grupos de 3, cada grupo recibe las mismas 6 páginas de <em>Gon</em> y las narra en voz alta sin mirarse. Puesta en común: ¿coincidieron las versiones? ¿En qué diferían?</li>
+          <li><strong>Actividad 2:</strong> ¿Qué información da el dibujo que las palabras no podrían dar? Listad al menos 5 ejemplos concretos con número de página.</li>
+          <li><strong>Actividad 3:</strong> Dibujad una tira de 4 viñetas sin texto que cuente algo que os haya pasado esta semana. Intercambiadla con otro grupo: ¿lo entendieron?</li>
+          <li><strong>Conexión LOMLOE:</strong> CCL · CCEC · Comunicación oral · Lectura multimodal · Comprensión inferencial.</li>
+        </ul>
+        <div class="itin-titles">
+          <strong>Títulos del fondo</strong>
+          Gon · Mascotas · ¡Kota, ven!
+        </div>
+      </div>
+
+      <div class="itin-card">
+        <h3>El manga de Canarias</h3>
+        <div class="itin-meta">Área: Conocimiento del Medio / Ciencias Sociales · Eje: Identidad local, naturaleza y expresión creativa</div>
+        <ul>
+          <li><strong>Punto de partida:</strong> El manga nació en Japón pero sus temas son universales: la naturaleza, los animales, la familia, el barrio. ¿Cómo sería un manga ambientado en Canarias?</li>
+          <li><strong>Actividad 1:</strong> Cada alumno diseña un personaje manga cuyo mundo sea canario: paisaje volcánico, fauna endémica (lagarto gigante, canario, viñátigo), gastronomía, música. Boceto + ficha del personaje.</li>
+          <li><strong>Actividad 2:</strong> En parejas, los personajes se conocen. Dibujar la escena del encuentro en 3 viñetas. ¿Dónde ocurre? ¿En un barrancos, en la playa, en el mercado?</li>
+          <li><strong>Actividad 3:</strong> Exposición en la biblioteca del centro: «Manga Canario — Temporada 1». Cada obra lleva título, autores y sinopsis.</li>
+          <li><strong>Conexión LOMLOE:</strong> CCEC · CE Ciencias Sociales · Identidad canaria · Biodiversidad local · Escritura creativa.</li>
+        </ul>
+        <div class="itin-titles">
+          <strong>Títulos del fondo</strong>
+          Gon · Dinosan · Yotsuba&!
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -8395,6 +8741,23 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
           Chōjū-giga (s. XII) · El ratón de biblioteca · La posada de los objetos perdidos
         </div>
       </div>
+
+      <div class="itin-card">
+        <h3>Antes y después del manga</h3>
+        <div class="itin-meta">Área: Lengua y Literatura · Eje: Adaptación, intertextualidad y lectura comparada</div>
+        <ul>
+          <li><strong>Punto de partida:</strong> Muchos clásicos de la literatura universal existen también en versión manga. ¿Qué cambia cuando una novela se convierte en imagen? ¿Se pierde algo? ¿Se gana algo?</li>
+          <li><strong>Actividad 1:</strong> Leer el mismo fragmento en texto original (adaptado a la edad) y en su versión manga (Don Quijote, Romeo y Julieta, La metamorfosis…). En parejas: anotad 3 diferencias concretas.</li>
+          <li><strong>Actividad 2:</strong> Debate estructurado: ¿cuál versión te ha ayudado más a entender la historia? ¿Por qué? Cada grupo defiende una postura con argumentos del texto.</li>
+          <li><strong>Actividad 3:</strong> Elegid un momento de una obra que hayáis leído este año y adaptadlo a 4 viñetas manga. Comparad con los compañeros: ¿eligieron el mismo momento? ¿Por qué?</li>
+          <li><strong>Conexión LOMLOE:</strong> CCL · CCEC · Literatura comparada · Comprensión lectora · Escritura creativa.</li>
+        </ul>
+        <div class="itin-titles">
+          <strong>Títulos del fondo</strong>
+          Don Quijote de la Mancha : el manga · Romeo y Julieta · La metamorfosis : el manga
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -10125,47 +10488,67 @@ const gtt = document.createElement('div');
 gtt.id = 'gtt';
 document.body.appendChild(gtt);
 
+// ── Tooltip mejorado ────────────────────────────────────────────
+let _tipTimer = null;
+
 function showTip(card) {
+  clearTimeout(_tipTimer);
+  _tipTimer = setTimeout(() => _doShowTip(card), 80); // pequeño delay anti-parpadeo
+}
+
+function _doShowTip(card) {
   const text = card.getAttribute('data-tip');
   if (!text) return;
+
   gtt.innerHTML = text;
-
-  const r = card.getBoundingClientRect();
-  const spaceBelow = window.innerHeight - r.bottom;
-  const spaceAbove = r.top;
-
   gtt.style.display = 'block';
-  gtt.style.width = '260px';
+  gtt.style.width   = '260px';
 
-  // Position: prefer below, flip above if not enough room
-  if (spaceBelow >= 230 || spaceBelow >= spaceAbove) {
-    // Open below
+  const r    = card.getBoundingClientRect();
+  const W    = window.innerWidth;
+  const H    = window.innerHeight;
+  const TW   = 260;
+
+  // Altura real de la barra sticky de filtros (puede variar con 3 filas)
+  const filterBar   = document.getElementById('filterBar');
+  const stickyH     = filterBar ? filterBar.getBoundingClientRect().bottom : 0;
+  const MARGIN      = 10;
+  const ARROW_H     = 14; // altura de la flecha del tooltip
+
+  // Medir altura real del tooltip
+  const TH = gtt.offsetHeight;
+
+  // Calcular left centrado sobre la tarjeta, clampeado al viewport
+  let left = r.left + r.width / 2 - TW / 2;
+  left = Math.max(MARGIN, Math.min(left, W - TW - MARGIN));
+
+  // Decidir si va arriba o abajo
+  const spaceBelow = H - r.bottom - MARGIN;
+  const spaceAbove = r.top - stickyH - MARGIN;
+
+  let top;
+  if (spaceBelow >= TH + ARROW_H || spaceBelow >= spaceAbove) {
+    // Debajo
+    top = r.bottom + ARROW_H;
+    // Si se sale por abajo, recortar
+    if (top + TH > H - MARGIN) top = H - TH - MARGIN;
     gtt.classList.remove('above');
     gtt.classList.add('below');
-    let top = r.bottom + 8;
-    let left = r.left;
-    // keep within viewport
-    if (left + 260 > window.innerWidth - 10) left = window.innerWidth - 270;
-    if (left < 8) left = 8;
-    gtt.style.top  = top + 'px';
-    gtt.style.left = left + 'px';
   } else {
-    // Open above
+    // Arriba
+    top = r.top - TH - ARROW_H;
+    // No tapar la barra sticky
+    if (top < stickyH + MARGIN) top = stickyH + MARGIN;
     gtt.classList.remove('below');
     gtt.classList.add('above');
-    gtt.style.display = 'block';
-    const h = gtt.offsetHeight;
-    let top = r.top - h - 8;
-    let left = r.left;
-    if (left + 260 > window.innerWidth - 10) left = window.innerWidth - 270;
-    if (left < 8) left = 8;
-    if (top < 8) top = 8;
-    gtt.style.top  = top + 'px';
-    gtt.style.left = left + 'px';
   }
+
+  gtt.style.top  = top  + 'px';
+  gtt.style.left = left + 'px';
 }
 
 function hideTip() {
+  clearTimeout(_tipTimer);
   gtt.style.display = 'none';
 }
 
@@ -10887,6 +11270,7 @@ function openFicha(card) {
 
   document.getElementById('fichaOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
+  if (typeof logActivity === 'function') logActivity('viewed', { title, section: 'Ficha de aula' });
 }
 
 // ── Clave de almacenamiento por título ────────────────────────
@@ -11129,55 +11513,41 @@ function filterByTitle(title) {
 document.addEventListener('DOMContentLoaded', updateCompDrawer);
 
 // ══════════════════════════════════════════════════════════════════
-// CONEXIÓN API GEMINI 2.0 FLASH
+// CONEXIÓN API GEMINI 1.5 FLASH
 // ══════════════════════════════════════════════════════════════════
-async function geminiRequest(apiKey, bodyOrPrompt, maxRetries = 8) {
-const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
-  
-  // Accept either a string prompt or a full body object
-  const requestBody = typeof bodyOrPrompt === 'string'
-    ? {
-        contents: [{ role: 'user', parts: [{ text: bodyOrPrompt }] }],
-        generationConfig: { maxOutputTokens: 2000, temperature: 0.7 }
-      }
-    : bodyOrPrompt;
+async function geminiRequest(apiKey, promptText) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-  let attempt = 0;
-  let delay = 3000;
-  while (attempt <= maxRetries) {
-    try {
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-      if (resp.ok) {
-        const data = await resp.json();
-        // If caller passed a string, return text directly for backwards compat
-        if (typeof bodyOrPrompt === 'string') {
-          return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        }
-        return data;
-      }
-      if (resp.status === 429 || resp.status >= 500) {
-        if (attempt === maxRetries) throw new Error(`API Google saturada (${resp.status}). Espera un minuto.`);
-        const wait = Math.min(delay * Math.pow(2, attempt) + Math.random() * 1000, 60000);
-        console.warn(`[Intento ${attempt+1}/${maxRetries}] Esperando ${Math.round(wait/1000)}s...`);
-        await new Promise(r => setTimeout(r, wait));
-        attempt++; continue;
-      }
-      const errText = await resp.text();
-      let errMsg = `Error ${resp.status}`;
-      try { errMsg = JSON.parse(errText).error?.message || errMsg; } catch(e) {}
-      throw new Error(errMsg);
-    } catch(e) {
-      if (!e.message.startsWith('Error ') && !e.message.startsWith('API')) {
-        if (attempt === maxRetries) throw new Error('Error real: ' + e.message);
-        await new Promise(r => setTimeout(r, delay + Math.random() * 500));
-        attempt++; continue;
-      }
-      throw e;
+  const body = {
+    contents: [{ role: 'user', parts: [{ text: promptText }] }],
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+    ],
+    generationConfig: { temperature: 0.7, maxOutputTokens: 2000 }
+  };
+
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await resp.json();
+
+    if (resp.ok) {
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
+
+    const errorMsg = data.error?.message || `Error ${resp.status}`;
+    throw new Error(errorMsg);
+
+  } catch (e) {
+    console.error('Error real:', e);
+    throw new Error(`Fallo en la comunicación: ${e.message}`);
   }
 }
 
@@ -11204,7 +11574,7 @@ async function generarRubrica() {
 
   btn.disabled = true;
   btn.textContent = 'Generando…';
-  bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica profesional con Gemini 2.0...</p>';
+  bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica profesional con Gemini…</p>';
 
   const prompt = `Actúa como experto en pedagogía LOMLOE. Genera una rúbrica de evaluación detallada para trabajar el manga "${titulo}" en ${nivel}. Competencia principal: ${comp}. Devuelve SOLO código HTML limpio (sin bloques de código markdown). Incluye un párrafo de contexto y una tabla 4x4 con niveles: Inicial, En desarrollo, Conseguido y Excelente.`;
 
@@ -11720,9 +12090,19 @@ function exportHist() {
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 function clearHist() { Object.keys(sessionLog).forEach(k=>sessionLog[k]=[]); closeHist(); }
-document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('histOverlay')?.addEventListener('click',e=>{if(e.target.id==='histOverlay')closeHist();});
-  document.getElementById('lecturaOverlay')?.addEventListener('click',e=>{if(e.target.id==='lecturaOverlay')closeLectura();});
+document.addEventListener('DOMContentLoaded', function() {
+  // ODS filter row — mobile accordion
+  const odsRow = document.getElementById('ods-filter-row');
+  const odsLabel = odsRow?.querySelector('.fb-label');
+  if (odsRow && odsLabel) {
+    odsLabel.style.cursor = 'pointer';
+    odsLabel.addEventListener('click', function() {
+      if (window.innerWidth <= 768) {
+        odsRow.classList.toggle('ods-open');
+      }
+    });
+  }
+  // Patch searchCatalog to log activity
   const _orig = window.searchCatalog;
   if (typeof _orig==='function') window.searchCatalog=function(q){_orig(q);if(q&&q.trim().length>1)logActivity('searches',{term:q.trim()});};
 });
@@ -11772,6 +12152,199 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// ══════════════════════════════════════════════════════════════════
+// CONTADOR DE TÍTULOS EXPLORADOS POR ÁREA
+// ══════════════════════════════════════════════════════════════════
+(function() {
+
+  const USO_CONFIG = {
+    historia:  { label: 'Historia',        color: '#5A3A1A' },
+    filosofia: { label: 'Filosofía',       color: '#4A2A6A' },
+    emocional: { label: 'Ed. emocional',   color: '#7A5A0A' },
+    lenguas:   { label: 'Lenguas',         color: '#2E6E3A' },
+    inclusion: { label: 'Inclusión',       color: '#3A4A8A' },
+    visual:    { label: 'Alfab. visual',   color: '#5E3A8A' },
+    ciencia:   { label: 'Ciencia',         color: '#1A5A8B' },
+    genero:    { label: 'Género',          color: '#8B1A4A' },
+  };
+
+  const ODS_COLORS = {
+    3:'#4C9F38', 4:'#C5192D', 5:'#FF3A21', 8:'#A21942',
+    9:'#FD6925', 10:'#DD1367', 11:'#FD9D24', 13:'#3F7E44',
+    15:'#56C02B', 16:'#00689D'
+  };
+
+  // ── Título → uso + ods (leído del DOM) ───────────────────────
+  function getCardIndex() {
+    const idx = {};
+    document.querySelectorAll('.cat-card').forEach(card => {
+      const title = card.querySelector('.cat-title')?.textContent?.trim();
+      if (!title) return;
+      const uso = (card.getAttribute('data-uso') || '').split(/\s+/)[0] || 'visual';
+      const ods = (card.getAttribute('data-ods') || '').split(/\s+/).filter(Boolean).map(Number);
+      idx[title] = { uso, ods };
+    });
+    return idx;
+  }
+
+  // ── Recopilar títulos explorados ─────────────────────────────
+  // Fuente 1: sessionLog.viewed (sesión actual)
+  // Fuente 2: manga_notas__* en localStorage (sesiones anteriores)
+  function getExploredTitles() {
+    const titles = new Set();
+
+    // Session titles
+    if (typeof sessionLog !== 'undefined') {
+      (sessionLog.viewed || []).forEach(e => { if (e.title) titles.add(e.title); });
+    }
+
+    // localStorage notes (cross-session)
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('manga_notas__')) {
+          // Reverse-engineer title from key (best effort)
+          const raw = key.replace('manga_notas__', '').replace(/_/g, ' ');
+          // Match against known card titles
+          titles.add('__ls__' + raw); // mark as localStorage-sourced
+        }
+      }
+    } catch(e) {}
+
+    return titles;
+  }
+
+  // ── Render ────────────────────────────────────────────────────
+  function renderCounter() {
+    const widget = document.getElementById('explorerCounter');
+    const barsEl = document.getElementById('excBars');
+    const odsEl  = document.getElementById('excOdsRow');
+    const totalEl= document.getElementById('excTotal');
+    if (!widget || !barsEl) return;
+
+    const cardIdx = getCardIndex();
+
+    // Session titles only (precise matching)
+    const sessionTitles = new Set();
+    if (typeof sessionLog !== 'undefined') {
+      (sessionLog.viewed || []).forEach(e => { if (e.title) sessionTitles.add(e.title); });
+    }
+
+    // localStorage titles (cross-session) — matched against card index
+    const lsTitles = new Set();
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k?.startsWith('manga_notas__')) {
+          const raw = k.replace('manga_notas__', '').replace(/_/g, ' ');
+          // Find best match in cardIdx
+          for (const t of Object.keys(cardIdx)) {
+            if (t.slice(0, 80).replace(/\s+/g, ' ') === raw) {
+              lsTitles.add(t); break;
+            }
+          }
+        }
+      }
+    } catch(e) {}
+
+    // Union
+    const allTitles = new Set([...sessionTitles, ...lsTitles]);
+    const total = allTitles.size;
+
+    if (total === 0) {
+      widget.classList.remove('has-data');
+      return;
+    }
+    widget.classList.add('has-data');
+
+    // Count per uso
+    const usoCounts  = {};
+    const odsSeen    = new Set();
+    for (const t of allTitles) {
+      const info = cardIdx[t];
+      if (!info) continue;
+      usoCounts[info.uso] = (usoCounts[info.uso] || 0) + 1;
+      info.ods.forEach(n => odsSeen.add(n));
+    }
+
+    const maxCount = Math.max(...Object.values(usoCounts), 1);
+    const sessionOnly = sessionTitles.size;
+    const lsOnly = lsTitles.size - [...lsTitles].filter(t => sessionTitles.has(t)).length;
+
+    // Label
+    let subtitle = `${total} título${total !== 1 ? 's' : ''}`;
+    if (lsOnly > 0) subtitle += ` · ${sessionOnly} esta sesión · ${lsOnly} de sesiones anteriores`;
+    totalEl.textContent = subtitle;
+
+    // Bars — sorted by count desc
+    const sorted = Object.entries(usoCounts).sort((a, b) => b[1] - a[1]);
+    barsEl.innerHTML = sorted.map(([uso, count]) => {
+      const cfg = USO_CONFIG[uso] || { label: uso, color: '#666' };
+      const pct  = Math.round((count / maxCount) * 100);
+      return `<div class="exc-row">
+        <span class="exc-uso-name" style="color:${cfg.color}">${cfg.label}</span>
+        <div class="exc-bar-track">
+          <div class="exc-bar-fill" style="width:${pct}%;background:${cfg.color}"></div>
+        </div>
+        <span class="exc-count">${count}</span>
+      </div>`;
+    }).join('');
+
+    // ODS chips
+    if (odsSeen.size > 0) {
+      const sortedOds = [...odsSeen].sort((a,b) => a-b);
+      odsEl.innerHTML =
+        `<span class="exc-ods-label">ODS cubiertos</span>` +
+        sortedOds.map(n =>
+          `<span class="exc-ods-chip" style="background:${ODS_COLORS[n]||'#666'}" title="ODS ${n}">ODS ${n}</span>`
+        ).join('');
+      odsEl.style.display = 'flex';
+    } else {
+      odsEl.style.display = 'none';
+    }
+  }
+
+  // ── Reset (solo sesión, no borra notas) ───────────────────────
+  window.resetExplorerCounter = function() {
+    if (typeof sessionLog !== 'undefined') {
+      sessionLog.viewed = [];
+    }
+    renderCounter();
+  };
+
+  // ── Hook: actualizar cada vez que logActivity registra viewed ─
+  const _origLog = window.logActivity;
+  document.addEventListener('DOMContentLoaded', function() {
+    // Patch logActivity after DOM ready (when it's defined)
+    const patchInterval = setInterval(() => {
+      if (typeof logActivity === 'function' && !logActivity._patched) {
+        const __orig = logActivity;
+        window.logActivity = function(type, data) {
+          __orig(type, data);
+          if (type === 'viewed') setTimeout(renderCounter, 50);
+        };
+        window.logActivity._patched = true;
+        clearInterval(patchInterval);
+      }
+    }, 100);
+
+    // Also hook openFicha, openLectura, openExpres directly
+    ['openFicha', 'openLectura', 'openExpres'].forEach(fn => {
+      const orig = window[fn];
+      if (typeof orig === 'function') {
+        window[fn] = function(...args) {
+          orig.apply(this, args);
+          setTimeout(renderCounter, 150);
+        };
+      }
+    });
+
+    // Initial render (picks up localStorage notes)
+    renderCounter();
+  });
+
+})();
 
 // ══════════════════════════════════════════════════════════════════
 // ACTIVIDAD EXPRÉS (5 min)
@@ -12027,12 +12600,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── Panel activo (solo uno a la vez) ─────────────────────────
   let activePanel = null;
+  let activeBtn   = null;
 
   function closeActive() {
     if (!activePanel) return;
     activePanel.classList.remove('open');
-    activePanel.closest('.bar')?.querySelector('.era-q-btn')?.classList.remove('active');
+    if (activeBtn) activeBtn.classList.remove('active');
     activePanel = null;
+    activeBtn   = null;
   }
 
   // ── Inyectar botón + panel en cada .bar ───────────────────────
@@ -12049,46 +12624,67 @@ document.addEventListener('DOMContentLoaded', function() {
       btn.type = 'button';
       btn.className = 'era-q-btn';
       btn.textContent = '?';
-      btn.setAttribute('aria-label', `Pregunta detonadora: era ${eraName}`);
+      btn.setAttribute('aria-label', `Pregunta detonadora: ${eraName}`);
       btn.setAttribute('title', 'Pregunta detonadora para el aula');
 
-      // Panel
+      // Panel — appended to body so it escapes overflow:hidden scroll
       const panel = document.createElement('div');
       panel.className = 'era-q-panel';
-      panel.setAttribute('role', 'tooltip');
+      panel.setAttribute('role', 'dialog');
       panel.innerHTML = `
-        <span class="era-q-label">✦ Pregunta detonadora</span>
+        <span class="era-q-label">✦ Pregunta detonadora · ${eraName}</span>
         <span class="era-q-nivel">${data.nivel}</span>
         <ul class="era-q-list">
           ${data.preguntas.map(q => `<li>${q}</li>`).join('')}
         </ul>`;
+      document.body.appendChild(panel);
+
+      function positionPanel() {
+        const r = btn.getBoundingClientRect();
+        const pw = 260;
+        panel.style.width = pw + 'px';
+        panel.style.display = 'block';
+        const ph = panel.offsetHeight;
+        panel.style.display = '';
+
+        // Try above first, fall back to below
+        let top, left;
+        if (r.top - ph - 10 > 60) {
+          top = r.top - ph - 10;
+        } else {
+          top = r.bottom + 10;
+          // Flip arrow to point up
+          panel.classList.add('arrow-down-off');
+        }
+        left = r.left + r.width / 2 - pw / 2;
+        // Keep within viewport
+        left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+        top  = Math.max(8, top);
+
+        panel.style.top  = top + 'px';
+        panel.style.left = left + 'px';
+      }
 
       btn.onclick = function(e) {
         e.stopPropagation();
-        if (activePanel === panel) {
-          closeActive();
-          return;
-        }
+        if (activePanel === panel) { closeActive(); return; }
         closeActive();
+        positionPanel();
         panel.classList.add('open');
         btn.classList.add('active');
         activePanel = panel;
+        activeBtn   = btn;
       };
 
-      // Prevent panel clicks from bubbling to document
       panel.addEventListener('click', e => e.stopPropagation());
-
       bar.appendChild(btn);
-      bar.appendChild(panel);
     });
 
     // Close on click outside
     document.addEventListener('click', closeActive);
-
-    // Close on Escape
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeActive();
-    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeActive(); });
+    // Reposition on scroll
+    document.getElementById('sc')?.addEventListener('scroll', () => { if (activePanel) closeActive(); });
   }
 
   if (document.readyState === 'loading') {
@@ -12118,112 +12714,144 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   // ── Mapeo título → ODS (precisión por obra) ─────────────────
+  // ── Mapa preciso título → ODS (auditado contra el catálogo real) ──
+  // Claves verificadas contra los <span class="cat-title"> del HTML.
+  // Títulos sin entrada usan USO_DEFAULT como fallback.
   const TITLE_ODS = {
-    'Nausicaä : del valle del viento':          [13,15],
-    'Nausicaä del Valle del Viento':            [13,15],
-    'Planetes :integral':                        [9,13],
-    'Planetes':                                  [9,13],
-    'Dr. Stone':                                 [9,4],
-    'Akira':                                    [11,16],
-    'The ghost in the shell':                    [9,16],
-    'Ghost in the Shell':                        [9,16],
-    'A Silent Voice':                            [3,10],
-    'Sailor Moon':                               [5,10],
-    'Skip and Loafer':                           [5,10],
-    'Nana':                                      [5,3],
-    'Adolf':                                    [16,10],
-    'Barefoot Gen':                             [16,3],
-    'Okinawa':                                  [16,3],
-    'Vinland Saga':                             [16,11],
-    'Vagabond':                                 [16,4],
-    'Thermae Romae':                            [11,4],
-    'Pokémon y feminismo : la gran revolución transmedia': [5,4],
-    'Tengo cáncer terminal, pero estoy bien':    [3,10],
-    'Black Jack':                                [3,8],
-    'Team medical dragon':                       [3,8],
-    'X-venture : el cuerpo en crisis : story':   [3,4],
-    'Yotsuba!':                                 [15,4],
-    'Gon':                                      [15,4],
-    'Dinosan : Dinosaurs Sanctuary':            [15,13],
-    'Devorar la Tierra':                        [13,15],
-    'Devorar la tierra':                        [13,15],
-    'Crónicas de la era glacial':               [13,15],
-    'Buda':                                     [16,4],
-    'Blue Period':                              [4,11],
-    'Bakuman':                                   [4,8],
-    'Eagle':                                    [16,10],
-    'Patlabor':                                  [9,11],
-    'El capital : el manga':                    [8,10],
-    'El manifiesto comunista : el manga':       [10,16],
-    'La riqueza de las naciones : el manga':    [8,10],
-    'Sobre la libertad : el manga':            [16,10],
-    'El contrato social : el manga':           [16,10],
-    'Crimen y castigo : el manga':             [16,10],
-    'La muerte de Sócrates : el manga':        [16,4],
-    'La enfermedad mortal : el manga':          [3,16],
-    'Hirayasumi':                               [3,11],
-    'Solanin : Integral':                        [3,10],
-    'Trágica derrota':                         [10,5],
-    'After School Dice Club':                   [4,10],
-    'La pequeña forastera : Siúil, a Rún':     [10,4],
-    'Bride stories.':                           [5,11],
-    'Frieren: más allá del fin del viaje':      [3,16],
-    'Yona : Princesa del Amanecer':             [5,16],
-    'Sailor Moon':                              [5,10],
-    'Lady Snowblood':                           [5,16],
-    'Mujeres del Zodíaco':                      [5,16],
-    'Ruri la tatuadora : y otras historias de chicas malas.': [5,10],
-    'Una mujer y la guerra':                    [5,16],
-    'Una mujer de la era Shôwa':               [5,16],
-    'Makanai: la cocina de las maiko':          [5,11],
-    'Amor es cuando cesa la lluvia':            [3,5],
-    'Los años dulces':                          [3,5],
-    'El almanaque de mi padre':                [3,11],
-    'El gourmet solitario':                    [3,11],
-    'Paseos de un gourmet solitario':          [3,11],
-    'Tabi no sakana = Bocados de un viaje gourmet': [3,11],
-    'Tokio día a día':                         [11,3],
-    'Venecia':                                 [11,16],
-    'Los guardianes del Louvre':               [11,4],
-    'Mujirushi : el signo de los sueños':      [11,4],
-    'Barrio lejano':                            [3,11],
-    'Pluto':                                    [9,16],
-    'Astroboy':                                 [9,16],
-    'Ambassador Magma':                         [9,13],
-    'Seraphim 266613336 Wings':                [13,15],
-    'Death Note Edición integral':             [16,10],
-    'Monster : [Kanzenban I]':                 [16,3],
-    'Uzumaki : espiral':                        [3,16],
-    'Sick':                                     [3,10],
-    'El bosque milenario':                     [15,3],
-    'El viaje de Shuna':                       [15,13],
-    'El Viaje De Shuna':                       [15,13],
+
+    // ── CIENCIA Y TECNOLOGÍA ─────────────────────────────────
+    'Nausicaä : del valle del viento':   [13,15], // ecología, futuro
+    'Planetes :integral':                [9,13],  // exploración espacial, clima
+    'Akira':                             [11,16], // ciudad, poder y violencia
+    'The ghost in the shell':            [9,16],  // IA, identidad, justicia
+    'Astroboy':                          [9,16],  // robótica, derechos
+    'Pluto':                             [9,16],  // IA, ética tecnológica
+    'Ambassador Magma':                  [9,13],  // ciencia ficción ecológica
+    'Seraphim 266613336 Wings':          [13,15], // colapso ambiental
+    'Patlabor':                          [9,11],  // tecnología urbana
+    'X-venture : el cuerpo en crisis : story': [3,4], // salud, ed. científica
+    'Dinosan : Dinosaurs Sanctuary':     [15,13], // biodiversidad, ecosistemas
+    'Devorar la Tierra':                 [13,15], // crisis ecológica
+    'Devorar la tierra':                 [13,15], // crisis ecológica (alias)
+    'Crónicas de la era glacial':        [13,15], // cambio climático
+    'Team medical dragon':               [3,8],   // medicina, trabajo
+    'Black Jack':                        [3,8],   // ética médica, trabajo
+    'Frankenstein':                      [3,9],   // ética científica, vida
+    'I am a hero':                       [3,16],  // pandemia, supervivencia
+    'Gantz':                             [16,9],  // violencia, ética ciencia ficción
+    'Gyo':                               [13,3],  // horror ambiental marino
+    'La invasión de los hongos del espacio': [13,15], // ecología, amenaza natural
+    'Grashros':                          [15,13], // naturaleza prehistórica
+    'La casa de los insectos':           [15,9],  // entomología, biodiversidad
+    'Les envahisseurs':                  [9,16],  // ciencia ficción, paz
+    'Big X':                             [16,9],  // guerra, experimentos
+    'Dark Angel':                        [9,16],  // ciencia ficción, futuro
+    'Leviathan':                         [13,16], // ecología y conflicto
+    'Adam y Eve':                        [9,3],   // clonación, bioética
+    'Mundo salvaje':                     [15,13], // naturaleza, ecosistemas
+    'Mundo perdido':                     [15,13], // naturaleza, biodiversidad
+    'Cielos radiantes':                  [15,13], // naturaleza, paisaje
+    'El País de Tanabata':               [15,11], // naturaleza, comunidad
+
+    // ── HISTORIA ─────────────────────────────────────────────
+    'Adolf':                             [16,10], // WWII, derechos humanos
+    'Okinawa':                           [16,3],  // guerra, trauma
+    'Vinland Saga':                      [16,11], // guerra medieval, comunidad
+    'Vagabond':                          [16,4],  // samurái, aprendizaje
+    'Thermae Romae':                     [11,4],  // ciudad romana, cultura
+    'Eagle':                             [16,10], // política, democracia
+    'Buda':                              [16,4],  // filosofía, paz
+    'NeuN':                              [16,10], // WWII, resistencia
+    'Ataque a los titanes':              [16,10], // libertad, opresión
+    'Tokyo revengers':                   [16,10], // violencia, redención
+    'Santuario':                         [16,8],  // política, corrupción
+    'MW':                                [16,3],  // armas, crimen
+    'Death Note Edición integral':       [16,10], // justicia, poder
     'Cuentos de un pasado lejano : konjaku monogatari': [16,11],
-    'Opus':                                     [4,16],
-    'Torpe de nacimiento':                     [10,3],
-    'NeuN':                                    [16,10],
-    'Ataque a los titanes':                    [16,10],
-    'Tokyo revengers':                         [16,10],
-    'Santuario':                               [16,8],
-    'MW':                                      [16,3],
-    'Rainbow Parakeet':                        [10,5],
-    'Cielos radiantes':                        [15,13],
-    'El País de Tanabata':                     [15,11],
-    'Mundo salvaje':                           [15,13],
-    'Mundo perdido':                           [15,13],
-    'La leyenda de madre Sarah':               [16,5],
-    'Leviathan':                               [13,16],
-    'Serial Experiments Lain':                  [9,16],
+    'El capital : el manga':             [8,10],  // economía, desigualdad
+    'El manifiesto comunista : el manga':[10,16], // desigualdad, política
+    'La riqueza de las naciones : el manga': [8,10],
+    'Sobre la libertad : el manga':      [16,10], // libertad, justicia
+    'El contrato social : el manga':     [16,10], // democracia, justicia
+    'La divina comedia : el manga':      [16,4],  // filosofía, educación
+    'Don Quijote de la Mancha : el manga': [4,16],
+    'Ayako. 1':                          [16,5],  // Japón posguerra, género
+    'Ayako. 2':                          [16,5],  // Japón posguerra, género
+    'Innocent':                          [16,5],  // Revolución Francesa, género
+    'Innocent rouge':                    [16,5],  // Revolución Francesa, género
+    'La cruzada de los inocentes':       [16,3],  // Cruzadas, violencia
+    'Nieve roja':                        [16,5],  // guerra, género
+    'Flores de piedra':                  [16,3],  // guerra, memoria
+    'Golden Kamuy':                      [15,16], // naturaleza, pueblos indígenas
+    'Venecia':                           [11,16], // patrimonio, ciudad
+    'Los guardianes del Louvre':         [11,4],  // arte, patrimonio
+    'Mujirushi : el signo de los sueños':[11,4],  // arte, ciudad
+    'Tokio día a día':                   [11,3],  // ciudad, vida cotidiana
+
+    // ── FILOSOFÍA Y ÉTICA ────────────────────────────────────
+    'Crimen y castigo : el manga':       [16,10], // justicia, moral
+    'La muerte de Sócrates : el manga':  [16,4],  // filosofía, educación
+    'La enfermedad mortal : el manga':   [3,16],  // existencialismo, salud mental
+    'Monster : [Kanzenban I]':           [16,3],  // justicia, trauma
+    'Opus':                              [4,16],  // meta-narrativa, educación
+    'Fénix':                             [15,16], // ciclo de la vida, naturaleza
+    'Ikigami : Comunicado de muerte':    [16,3],  // ética política, vida
+    'La Bestia':                         [16,10], // violencia, justicia
+    'Grand dolls':                       [10,16], // desigualdad, género
+
+    // ── EDUCACIÓN EMOCIONAL ───────────────────────────────────
+    'Solanin : Integral':                [3,10],  // salud mental, juventud
+    'Tengo cáncer terminal, pero estoy bien': [3,10],
+    'Hirayasumi':                        [3,11],  // bienestar, comunidad
+    'After School Dice Club':            [4,10],  // educación, inclusión
+    'La pequeña forastera : Siúil, a Rún': [10,4],
+    'Amor es cuando cesa la lluvia':     [3,5],   // bienestar, relaciones
+    'Los años dulces':                   [3,5],   // bienestar, identidad
+    'El almanaque de mi padre':          [3,11],  // familia, comunidad
+    'El gourmet solitario':              [3,11],  // bienestar, vida cotidiana
+    'Paseos de un gourmet solitario':    [3,11],
+    'Tabi no sakana = Bocados de un viaje gourmet': [3,11],
+    'Barrio lejano':                     [3,11],  // familia, memoria
+    'Torpe de nacimiento':               [10,3],  // inclusión, salud
+    'Sick':                              [3,10],  // salud mental, inclusión
+    'Rainbow Parakeet':                  [10,5],  // desigualdad, género
+    'Trágica derrota':                   [10,5],  // desigualdad, identidad
+    'Dororo':                            [16,3],  // guerra, trauma, cuerpo
+    'Dororon Enma-Kun':                  [16,11], // folklore, comunidad
+    'La cumbre de los dioses':           [15,3],  // naturaleza, resiliencia
+    'Saint Seiya : los caballeros del Zodíaco': [10,4], // amistad, lucha
+
+    // ── GÉNERO E IDENTIDAD ────────────────────────────────────
+    'Sailor Moon':                       [5,10],  // género, igualdad
+    'Skip and Loafer':                   [5,10],  // identidad, inclusión
+    'Nana':                              [5,3],   // género, salud emocional
+    'Yona : Princesa del Amanecer':      [5,16],  // género, poder
+    'Lady Snowblood':                    [5,16],  // género, justicia
+    'Mujeres del Zodíaco':               [5,16],  // género, historia
+    'Ruri la tatuadora : y otras historias de chicas malas.': [5,10],
+    'Una mujer y la guerra':             [5,16],  // género, conflicto
+    'Una mujer de la era Shôwa':         [5,16],  // género, historia
+    'Makanai: la cocina de las maiko':   [5,11],  // género, tradición
+    'Pokémon y feminismo : la gran revolución transmedia': [5,4],
+    'Anna Karenina: el manga':           [5,16],  // género, literatura
+    'Orgullo y prejuicio':               [5,16],  // género, sociedad
+    'Bride stories.':                    [5,11],  // género, matrimonio
+    'La leyenda de madre Sarah':         [16,5],  // guerra, género
+
+    // ── LENGUAS Y LITERATURA ─────────────────────────────────
+    'Yotsuba!':                          [15,4],  // naturaleza, aprendizaje
+    'Moby Dick: el manga':               [15,16], // naturaleza, obsesión
+    'Romeo y Julieta':                   [3,16],  // conflicto, paz
+    'Romeo y Julieta.':                  [3,16],
+    'La metamorfosis : el manga':        [3,16],  // alienación, identidad
+    'Ilíada y Odisea : el manga':        [16,4],  // guerra, educación clásica
+
+    // ── ALFABETIZACIÓN VISUAL ────────────────────────────────
+    'Gon':                               [15,4],  // naturaleza, sin texto
+    'Uzumaki : espiral':                 [3,16],  // horror, cuerpo
     'Atelier of witch hat = El atelier de sombreros de mago': [4,5],
-    'Hirayasumi':                               [3,11],
-    'La hora del té de la pequeña forastera':  [10,4],
-    'Anna Karenina: el manga':                 [5,16],
-    'Orgullo y prejuicio':                     [5,16],
-    'Don Quijote de la Mancha : el manga':     [4,16],
-    'La divina comedia : el manga':            [16,4],
-    'Moby Dick: el manga':                     [15,16],
-    'Romeo y Julieta':                         [3,16],
-    'Romeo y Julieta.':                        [3,16],
+    'El bosque milenario':               [15,3],  // naturaleza, salud
+
   };
 
   // ── Fallback por uso pedagógico ──────────────────────────────
