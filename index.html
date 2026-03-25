@@ -121,14 +121,120 @@ document.addEventListener('keydown', e => {
 // Sync state if browser exits fullscreen via its own UI (F11, Escape, etc.)
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement && modoProyeccionActive) {
-    // Browser exited fullscreen — update our state without calling exitFullscreen again
     modoProyeccionActive = false;
     document.body.classList.remove('modo-proyeccion');
     const exitBtn = document.querySelector('.proyeccion-exit');
     if (exitBtn) exitBtn.style.display = 'none';
     document.title = 'Las eras de Japón y el manga — Recurso didáctico · Biblioteca ULPGC';
+    // Also exit discovery if active
+    if (modoDescubrimientoActive) exitEraDiscovery(true);
   }
 });
+
+// ── MODO DESCUBRIMIENTO ERA POR ERA ─────────────────────────────
+let modoDescubrimientoActive = false;
+let eraColumns = [];
+let eraIndex   = 0;
+
+function getEraColumns() {
+  return Array.from(document.querySelectorAll('#tl .col'));
+}
+
+function toggleEraDiscovery() {
+  if (!modoDescubrimientoActive) {
+    // Activar modo proyección si no está activo
+    if (!modoProyeccionActive) toggleProyeccion();
+    startEraDiscovery();
+  } else {
+    exitEraDiscovery();
+  }
+}
+
+function startEraDiscovery() {
+  eraColumns = getEraColumns();
+  if (!eraColumns.length) return;
+  modoDescubrimientoActive = true;
+  eraIndex = 0;
+  document.body.classList.add('modo-descubrimiento');
+  // Show/hide FAB button
+  const btn = document.getElementById('eraDiscBtn');
+  if (btn) btn.textContent = '⊟';
+  showEra(0);
+}
+
+function exitEraDiscovery(silent) {
+  modoDescubrimientoActive = false;
+  document.body.classList.remove('modo-descubrimiento');
+  // Remove active class from all
+  eraColumns.forEach(c => c.classList.remove('era-active'));
+  const btn = document.getElementById('eraDiscBtn');
+  if (btn) btn.textContent = '▶';
+  updateEraDiscBar();
+}
+
+function showEra(idx) {
+  eraColumns = getEraColumns();
+  if (!eraColumns.length) return;
+  idx = Math.max(0, Math.min(idx, eraColumns.length - 1));
+  eraIndex = idx;
+
+  // Swap active class
+  eraColumns.forEach((c, i) => {
+    c.classList.toggle('era-active', i === idx);
+  });
+
+  // Update nav bar info
+  const col      = eraColumns[idx];
+  const nameEl   = col.querySelector('.era-name');
+  const jpEl     = col.querySelector('.era-jp');
+  const datesEl  = col.querySelector('.era-dates');
+  document.getElementById('eraDiscCounter').textContent = `${idx + 1} / ${eraColumns.length}`;
+  document.getElementById('eraDiscName').textContent    = nameEl?.textContent  || '';
+  document.getElementById('eraDiscJp').textContent      = jpEl?.textContent    || '';
+  document.getElementById('eraDiscDates').textContent   = datesEl?.textContent || '';
+
+  // Disable/enable prev-next
+  document.getElementById('eraDiscPrev').disabled = idx === 0;
+  document.getElementById('eraDiscNext').disabled = idx === eraColumns.length - 1;
+
+  updateEraDiscBar();
+}
+
+function eraNav(dir) {
+  if (!modoDescubrimientoActive) return;
+  showEra(eraIndex + dir);
+}
+
+function updateEraDiscBar() {
+  // The bar visibility is controlled by CSS body class,
+  // but keep prev/next state consistent
+}
+
+// Keyboard navigation in discovery mode
+document.addEventListener('keydown', function(e) {
+  if (!modoDescubrimientoActive) return;
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    eraNav(1);
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    eraNav(-1);
+  } else if (e.key === 'Escape') {
+    exitEraDiscovery();
+  }
+});
+
+// Show era-by-era button only when projection mode is active
+const _origToggleProyeccion = toggleProyeccion;
+toggleProyeccion = function() {
+  _origToggleProyeccion();
+  const btn = document.getElementById('eraDiscBtn');
+  if (btn) btn.style.display = modoProyeccionActive ? 'flex' : 'none';
+  // If exiting projection, also exit discovery
+  if (!modoProyeccionActive && modoDescubrimientoActive) {
+    exitEraDiscovery(true);
+  }
+};
 
 
 // ══════════════════════════════════════════════════════════════════
@@ -483,6 +589,93 @@ h1 em { color: var(--red); font-style: normal; }
 .era-dates { font-size:.65rem; color:rgba(255,255,255,.7); display:block; margin-top:2px; }
 .era-dur   { font-size:.6rem; color:rgba(255,210,80,.65); display:block; margin-top:1px; font-style:italic; letter-spacing:.04em; }
 
+/* ── PREGUNTA DETONADORA ─────────────────────────────────────── */
+.era-q-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(184,134,11,.85);
+  border: 1.5px solid rgba(255,210,80,.6);
+  color: #fff;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 900;
+  cursor: pointer; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .1s;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+.era-q-btn:hover   { background: var(--gold); transform: scale(1.15); }
+.era-q-btn.active  { background: var(--gold); transform: scale(1.1); }
+
+/* Panel flotante */
+.era-q-panel {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 240px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--gold);
+  border-radius: 5px;
+  padding: 10px 13px 12px;
+  z-index: 9999;
+  box-shadow: 0 6px 24px rgba(0,0,0,.55);
+  pointer-events: auto;
+}
+.era-q-panel.open { display: block; }
+/* Arrow pointing down */
+.era-q-panel::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%; transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: var(--gold);
+}
+.era-q-panel::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 1px); left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--ink);
+  z-index: 1;
+}
+.era-q-label {
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: .45rem; display: block;
+}
+.era-q-nivel {
+  font-family: 'Cinzel', serif; font-size: .55rem;
+  color: rgba(245,239,224,.45); letter-spacing: .06em;
+  margin-bottom: .55rem; display: block;
+}
+.era-q-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: .4rem;
+}
+.era-q-list li {
+  font-family: 'EB Garamond', serif; font-size: .85rem;
+  line-height: 1.45; color: var(--paper);
+  padding-left: .9rem; position: relative;
+}
+.era-q-list li::before {
+  content: '✦';
+  position: absolute; left: 0;
+  font-size: .5rem; color: var(--gold);
+  top: .28rem;
+}
+
+/* Modo proyección — panel más grande y visible */
+body.modo-proyeccion .era-q-panel {
+  width: 300px; font-size: 1.05rem;
+  padding: 14px 18px 16px;
+}
+body.modo-proyeccion .era-q-list li { font-size: 1rem; }
+body.modo-proyeccion .era-q-label   { font-size: .7rem; }
+body.modo-proyeccion .era-q-btn     { width: 26px; height: 26px; font-size: .8rem; }
+
 /* ─── DIVIDER between eras ───────────────── */
 .sep {
   width: 1px;
@@ -720,6 +913,33 @@ body.filtering-uso.filtering-nivel .cat-card.match-uso.match-nivel { opacity: 1;
 body.filtering-uso.filtering-nivel .cat-card.match-uso:not(.match-nivel) { opacity: .12; }
 body.filtering-uso.filtering-nivel .cat-card:not(.match-uso).match-nivel { opacity: .12; }
 
+/* ── ODS FILTER ─────────────────────────────────────────────── */
+body.filtering-ods .cat-card { opacity: .1; transition: opacity .2s; }
+body.filtering-ods .cat-card.match-ods { opacity: 1; }
+body.filtering-uso.filtering-ods .cat-card.match-uso { opacity: .1; }
+body.filtering-uso.filtering-ods .cat-card.match-uso.match-ods { opacity: 1; }
+body.filtering-nivel.filtering-ods .cat-card.match-nivel { opacity: .1; }
+body.filtering-nivel.filtering-ods .cat-card.match-nivel.match-ods { opacity: 1; }
+body.filtering-uso.filtering-nivel.filtering-ods .cat-card.match-uso.match-nivel.match-ods { opacity: 1; }
+
+.ods-badges { display:flex; flex-wrap:wrap; gap:3px; margin-top:4px; }
+.ods-badge {
+  font-family:'Cinzel',serif; font-size:.56rem; font-weight:700;
+  color:#fff; padding:1px 5px; border-radius:2px;
+  letter-spacing:.03em; white-space:nowrap; cursor:default;
+  transition: transform .1s;
+}
+.ods-badge:hover { transform: scale(1.1); }
+.fb-all-ods { background: var(--ink) !important; }
+.fb-ods-icon { display:inline-flex; align-items:center; gap:3px; }
+#odsCounter {
+  display:none; font-family:'Cinzel',serif; font-size:.72rem;
+  color:var(--gold); letter-spacing:.06em;
+  padding:.2rem .7rem; border:1px solid rgba(184,134,11,.35);
+  border-radius:3px; background:rgba(184,134,11,.07);
+}
+body.filtering-ods #odsCounter { display:inline-block; }
+
 /* ── CATALOG CARD ── */
 .cat-card {
   display: flex; flex-direction: column;
@@ -841,6 +1061,74 @@ body.filtering-uso.filtering-nivel .cat-card:not(.match-uso).match-nivel { opaci
   margin-top: .6rem; padding-top: .5rem;
   border-top: 1px dashed var(--rule);
   font-size: .78rem; color: var(--grey);
+
+/* ── PROGRESS — estado de la tarjeta ──────────────────────── */
+/* Botón "Trabajado" */
+.itin-card .itin-progress-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  margin-top: .75rem;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+  padding: .28rem .75rem; border-radius: 3px; cursor: pointer;
+  border: 1.5px solid #2a5a2a; color: #2a5a2a;
+  background: rgba(42,90,42,.06);
+  transition: all .18s;
+}
+.itin-card .itin-progress-btn:hover {
+  background: rgba(42,90,42,.15);
+}
+/* Estado: trabajado */
+.itin-card.itin-done {
+  border-left-color: #1a7a1a;
+  background: rgba(42,90,42,.04);
+}
+.itin-card.itin-done .itin-progress-btn {
+  background: #2a5a2a; color: #fff;
+  border-color: #2a5a2a;
+}
+.itin-card.itin-done .itin-progress-btn::before {
+  content: '✓ ';
+}
+/* Sello visual sobre la tarjeta trabajada */
+.itin-card.itin-done::after {
+  content: '✓ Trabajado';
+  position: absolute; top: .5rem; right: .6rem;
+  font-family: 'Cinzel', serif; font-size: .55rem; font-weight: 700;
+  color: #2a5a2a; letter-spacing: .06em;
+  background: rgba(42,90,42,.1); border: 1px solid rgba(42,90,42,.25);
+  border-radius: 2px; padding: 1px 5px;
+  pointer-events: none;
+}
+.itin-card { position: relative; } /* needed for ::after stamp */
+
+/* Barra de progreso por pestaña */
+.itin-progress-bar-wrap {
+  display: flex; align-items: center; gap: .7rem;
+  margin-bottom: 1rem; padding: .5rem .8rem;
+  background: rgba(42,90,42,.05);
+  border: 1px solid rgba(42,90,42,.18);
+  border-radius: 4px;
+}
+.itin-progress-track {
+  flex: 1; height: 6px; background: rgba(42,90,42,.15);
+  border-radius: 3px; overflow: hidden;
+}
+.itin-progress-fill {
+  height: 100%; background: #2a5a2a;
+  border-radius: 3px; transition: width .35s ease;
+}
+.itin-progress-label {
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  color: #2a5a2a; white-space: nowrap; letter-spacing: .05em;
+}
+.itin-reset-btn {
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
+  color: var(--grey); background: none;
+  border: 1px solid var(--rule); border-radius: 3px;
+  padding: 1px 6px; cursor: pointer; letter-spacing: .04em;
+  transition: all .15s; white-space: nowrap;
+}
+.itin-reset-btn:hover { color: var(--red); border-color: var(--red); }
 }
 .itin-card .itin-titles strong {
   font-family: 'Cinzel', serif; font-size: .68rem;
@@ -1493,6 +1781,105 @@ body.modo-proyeccion .proyeccion-exit:hover {
 }
 .proyeccion-exit { display: none; }
 
+/* ── MODO DESCUBRIMIENTO ERA POR ERA ────────────────────────── */
+
+/* Barra de navegación inferior */
+#eraDiscoveryBar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 99998;
+  background: rgba(10,8,4,.94);
+  border-top: 2px solid var(--gold);
+  padding: .6rem 1.5rem;
+  align-items: center; gap: 1rem;
+  backdrop-filter: blur(4px);
+}
+body.modo-descubrimiento #eraDiscoveryBar { display: flex; }
+
+/* Botones prev/next */
+#eraDiscPrev, #eraDiscNext {
+  font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700;
+  color: var(--gold); background: rgba(184,134,11,.12);
+  border: 1.5px solid rgba(184,134,11,.4);
+  border-radius: 4px; padding: .3rem .9rem;
+  cursor: pointer; transition: all .15s; flex-shrink: 0;
+}
+#eraDiscPrev:hover, #eraDiscNext:hover {
+  background: var(--gold); color: #0a0806;
+}
+#eraDiscPrev:disabled, #eraDiscNext:disabled {
+  opacity: .3; cursor: default;
+}
+
+/* Info central */
+#eraDiscInfo {
+  flex: 1; display: flex; align-items: center;
+  gap: .6rem; justify-content: center; flex-wrap: wrap;
+}
+#eraDiscCounter {
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  color: rgba(184,134,11,.6); letter-spacing: .1em;
+  white-space: nowrap;
+}
+#eraDiscName {
+  font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700;
+  color: #fff; letter-spacing: .08em;
+}
+#eraDiscJp {
+  font-family: 'Noto Serif JP', serif; font-size: 1.15rem;
+  color: var(--gold);
+}
+#eraDiscDates {
+  font-family: 'Cinzel', serif; font-size: .65rem;
+  color: rgba(255,255,255,.5); letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+/* Botón "Todas" */
+#eraDiscExit {
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  color: rgba(184,134,11,.7); background: none;
+  border: 1px solid rgba(184,134,11,.3); border-radius: 3px;
+  padding: .25rem .7rem; cursor: pointer; letter-spacing: .05em;
+  transition: all .15s; flex-shrink: 0;
+}
+#eraDiscExit:hover { color: var(--gold); border-color: var(--gold); }
+
+/* Columnas en modo descubrimiento: ocultar todas */
+body.modo-descubrimiento .tl .col,
+body.modo-descubrimiento .tl .sep {
+  display: none !important;
+}
+/* Mostrar solo la activa */
+body.modo-descubrimiento .tl .col.era-active {
+  display: flex !important;
+  animation: eraReveal .45s ease both;
+}
+@keyframes eraReveal {
+  from { opacity: 0; transform: translateX(30px) scale(.97); }
+  to   { opacity: 1; transform: translateX(0)   scale(1); }
+}
+
+/* Ajuste scroll en modo descubrimiento — centrar la era activa */
+body.modo-descubrimiento .scroll {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden !important;
+  padding-bottom: 5rem; /* espacio para la barra de nav */
+}
+body.modo-descubrimiento .col.era-active {
+  min-width: min(340px, 80vw);
+}
+body.modo-descubrimiento .col.era-active .bar {
+  min-width: min(340px, 80vw);
+  height: 200px !important;
+}
+body.modo-descubrimiento .col.era-active .era-name  { font-size: 1.1rem !important; }
+body.modo-descubrimiento .col.era-active .era-jp    { font-size: 1.5rem !important; }
+body.modo-descubrimiento .col.era-active .era-dates { font-size: .85rem !important; }
+body.modo-descubrimiento .col.era-active .card      { font-size: 1rem !important; min-width: 180px !important; }
+
 /* Legend in projection mode */
 body.modo-proyeccion .legend {
   background: rgba(26,16,8,.8) !important;
@@ -2139,6 +2526,91 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #fichaModal .ficha-close-btn:hover { background: #f5efe0; }
 
+/* ── NOTAS DOCENTES ──────────────────────────────────────────── */
+.ficha-notas {
+  border-top: 2px dashed var(--rule);
+  padding-top: .9rem; margin-top: .2rem;
+}
+.ficha-notas-title {
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: #5a3a1a; margin-bottom: .7rem; display: flex;
+  align-items: center; gap: .5rem;
+}
+.ficha-notas-title::after {
+  content: '— uso docente, no se comparte';
+  font-family: 'EB Garamond', serif; font-size: .72rem;
+  font-weight: 400; font-style: italic; letter-spacing: 0;
+  color: var(--grey); text-transform: none;
+}
+.ficha-notas-saved {
+  font-family: 'Cinzel', serif; font-size: .58rem;
+  color: #2a5a2a; letter-spacing: .05em;
+  opacity: 0; transition: opacity .3s;
+  margin-left: auto;
+}
+.ficha-notas-saved.show { opacity: 1; }
+.ficha-nota-field {
+  margin-bottom: .65rem;
+}
+.ficha-nota-label {
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--grey); display: block; margin-bottom: .25rem;
+}
+.ficha-nota-field textarea {
+  width: 100%; min-height: 52px; resize: vertical;
+  font-family: 'EB Garamond', serif; font-size: .9rem;
+  color: var(--ink); background: rgba(245,239,224,.6);
+  border: 1px solid var(--rule); border-radius: 3px;
+  padding: .4rem .6rem; line-height: 1.5;
+  transition: border-color .15s, background .15s;
+}
+.ficha-nota-field textarea:focus {
+  outline: none; border-color: var(--gold);
+  background: #fff;
+}
+/* Escala de implicación — 5 estrellas clickables */
+.ficha-implicacion {
+  display: flex; gap: .3rem; align-items: center;
+  margin-bottom: .65rem;
+}
+.ficha-implicacion-label {
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--grey); margin-right: .4rem; white-space: nowrap;
+}
+.ficha-star {
+  font-size: 1.15rem; cursor: pointer; color: var(--rule);
+  transition: color .12s, transform .1s; line-height: 1;
+  background: none; border: none; padding: 0;
+}
+.ficha-star:hover,
+.ficha-star.on { color: var(--gold); }
+.ficha-star:hover { transform: scale(1.2); }
+.ficha-star-hint {
+  font-family: 'EB Garamond', serif; font-size: .78rem;
+  font-style: italic; color: var(--grey); margin-left: .3rem;
+}
+/* Indicador en cat-card de que hay notas guardadas */
+.cat-card.has-notas::before {
+  content: '📝';
+  position: absolute; top: .35rem; left: .4rem;
+  font-size: .7rem; opacity: .6; pointer-events: none;
+  z-index: 2;
+}
+/* Notas en impresión */
+@media print {
+  .ficha-notas-title::after { display: none; }
+  .ficha-nota-field textarea {
+    border: 1px solid #ccc; background: #fff !important;
+    resize: none;
+  }
+  .ficha-implicacion .ficha-star { color: #ccc; }
+  .ficha-implicacion .ficha-star.on { color: #b8860b; }
+  .ficha-notas-saved { display: none; }
+}
+
 .cat-comp-btn {
   display: inline-flex; align-items: center; gap: 3px;
   font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
@@ -2162,19 +2634,8 @@ p.sa-alternatives strong { color: var(--ink); }
 
 
 
-/* Comparador modal */
-#compOverlay {
-  display: none; position: fixed; inset: 0; z-index: 4000;
-  background: rgba(10,8,4,.75); backdrop-filter: blur(2px);
-}
-#compOverlay.open { display: flex; align-items: center; justify-content: center; padding: 1rem; }
-#compModal {
-  background: var(--paper); color: var(--ink);
-  width: min(900px, 98vw); max-height: 90vh;
-  overflow-y: auto; border-radius: 4px;
-  box-shadow: 0 8px 40px rgba(0,0,0,.4);
-  font-family: 'EB Garamond', serif;
-}
+
+/* Comparador modal — tabla compacta (estilos únicos de esta sección) */
 #compModal .comp-header {
   background: linear-gradient(135deg, #1a1008 0%, #2a1a08 100%);
   color: #f5efe0; padding: 1rem 1.4rem;
@@ -2347,6 +2808,117 @@ p.sa-alternatives strong { color: var(--ink); }
   transition: all .12s;
 }
 .cat-opac-link:hover { background: rgba(42,90,42,.16); color: #1a3a1a; }
+
+/* ── ACTIVIDAD EXPRÉS ────────────────────────────────────────── */
+/* Botón en cat-card */
+.cat-expres-btn {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
+  letter-spacing: .03em; color: #7a4a00; cursor: pointer;
+  background: rgba(184,134,11,.1); border: 1px solid rgba(184,134,11,.35);
+  border-radius: 3px; padding: 3px 6px; transition: all .12s;
+}
+.cat-expres-btn:hover { background: rgba(184,134,11,.22); color: #5a3000; }
+
+/* Overlay */
+#expresOverlay {
+  display: none; position: fixed; inset: 0; z-index: 4000;
+  background: rgba(10,8,4,.75); backdrop-filter: blur(2px);
+}
+#expresOverlay.open { display: flex; align-items: center; justify-content: center; padding: 1rem; }
+#expresModal {
+  background: var(--paper); color: var(--ink);
+  width: min(560px, 98vw); max-height: 90vh;
+  overflow-y: auto; border-radius: 6px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.45);
+  font-family: 'EB Garamond', serif;
+}
+/* Header */
+.expres-header {
+  background: linear-gradient(135deg, #3a2800 0%, #5a3a00 100%);
+  color: #f5efe0; padding: .9rem 1.3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-radius: 6px 6px 0 0;
+}
+.expres-header h2 {
+  font-family: 'Cinzel', serif; font-size: .85rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--gold);
+}
+.expres-close-x {
+  background: none; border: 1px solid rgba(245,239,224,.3);
+  color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
+}
+/* Metadata strip */
+.expres-meta {
+  display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+  padding: .6rem 1.3rem; border-bottom: 1px solid var(--rule);
+  background: rgba(184,134,11,.06);
+}
+.expres-title-line {
+  font-family: 'EB Garamond', serif; font-size: 1rem; font-weight: 600;
+  color: var(--ink); flex: 1; min-width: 0;
+}
+.expres-tipo-badge {
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; padding: 2px 8px; border-radius: 2px;
+  white-space: nowrap;
+}
+.expres-dur {
+  font-family: 'Cinzel', serif; font-size: .62rem;
+  color: var(--grey); white-space: nowrap;
+  border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px;
+}
+/* Body */
+.expres-body { padding: 1.1rem 1.3rem; }
+.expres-instrucciones {
+  font-size: .95rem; line-height: 1.65; color: var(--ink);
+  margin-bottom: .9rem;
+}
+.expres-instrucciones strong { color: #5a3a00; }
+.expres-comp {
+  font-size: .78rem; color: var(--grey); font-style: italic;
+  border-top: 1px dashed var(--rule); padding-top: .6rem;
+  line-height: 1.5;
+}
+.expres-comp::before {
+  content: 'LOMLOE · ';
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
+  letter-spacing: .07em; font-style: normal; color: var(--gold);
+}
+/* Actions */
+.expres-actions {
+  display: flex; gap: .5rem; padding: .8rem 1.3rem;
+  border-top: 1px solid var(--rule); background: rgba(232,221,200,.2);
+  border-radius: 0 0 6px 6px; flex-wrap: wrap;
+}
+.expres-regen-btn {
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
+  padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
+  background: var(--gold); color: #0a0806; border: none;
+  letter-spacing: .04em; transition: background .15s;
+}
+.expres-regen-btn:hover { background: #d4a820; }
+.expres-print-btn {
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
+  padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
+  background: #5a3a1a; color: #fff; border: none;
+  letter-spacing: .04em;
+}
+.expres-close-btn {
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
+  padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
+  background: transparent; color: var(--grey);
+  border: 1px solid var(--rule); margin-left: auto;
+}
+/* Print */
+@media print {
+  body.printing-expres > *:not(#expresOverlay) { display: none !important; }
+  body.printing-expres #expresOverlay { display: block !important; position: static !important; background: none !important; }
+  body.printing-expres #expresModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
+  body.printing-expres .expres-actions { display: none !important; }
+}
 
 /* ── EJE CRONOLÓGICO OCCIDENTAL ─────────────────────────── */
 .tl-western {
@@ -2683,6 +3255,17 @@ p.sa-alternatives strong { color: var(--ink); }
 .mapa-close { background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
   font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px; }
+.mapa-view-btn {
+  background: rgba(255,255,255,.08); border: 1px solid rgba(245,239,224,.25);
+  color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: .65rem; border-radius: 3px;
+  transition: all .15s;
+}
+.mapa-view-btn.active {
+  background: var(--gold); color: var(--ink);
+  border-color: var(--gold); font-weight: 700;
+}
+.mapa-view-btn:hover:not(.active) { background: rgba(255,255,255,.15); }
 /* Mapa grid */
 .mapa-container {
   display: grid;
@@ -2882,18 +3465,7 @@ p.sa-alternatives strong { color: var(--ink); }
 .comp-clear-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
 .comp-clear-btn:hover { color: var(--paper); border-color: rgba(245,239,224,.5); }
 
-/* Comp modal — side-by-side cards */
-#compOverlay {
-  display: none; position: fixed; inset: 0; z-index: 4000;
-  background: rgba(10,8,4,.78); backdrop-filter: blur(3px);
-}
-#compOverlay.open { display: flex; align-items: center; justify-content: center; padding: 1.2rem; }
-#compModal {
-  background: var(--paper); color: var(--ink);
-  width: min(960px, 98vw); max-height: 90vh; overflow-y: auto;
-  border-radius: 6px; box-shadow: 0 8px 40px rgba(0,0,0,.5);
-  font-family: 'EB Garamond', serif;
-}
+/* Comp modal — tarjetas en paralelo (estilos únicos de esta sección) */
 #compModal .comp-modal-header {
   background: linear-gradient(135deg, #1a1008, #2a1a08);
   color: #f5efe0; padding: 1rem 1.5rem;
@@ -3447,6 +4019,21 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <button type="button" class="fb" style="background:#B85A1A;" data-nivel="secundaria" onclick="filterNivel('secundaria')">Secundaria</button>
     <button type="button" class="fb" style="background:#8B6914;" data-nivel="bachillerato" onclick="filterNivel('bachillerato')">Bachillerato</button>
     <button type="button" class="fb" style="background:#4A2A6A;" data-nivel="universidad" onclick="filterNivel('universidad')">Universidad</button>
+  </div>
+  <div class="fb-row" style="margin-top:.4rem;" id="ods-filter-row" aria-label="Filtrar por ODS">
+    <span class="fb-label">ODS →</span>
+    <button type="button" class="fb fb-all-ods active" data-ods="all" onclick="filterOds('all')">Todos</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#4C9F38;" data-ods="3" data-num="3" onclick="filterOds('3')" title="ODS 3 — Salud y bienestar">Salud</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#C5192D;" data-ods="4" data-num="4" onclick="filterOds('4')" title="ODS 4 — Educación de calidad">Educación</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#FF3A21;" data-ods="5" data-num="5" onclick="filterOds('5')" title="ODS 5 — Igualdad de género">Género</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#A21942;" data-ods="8" data-num="8" onclick="filterOds('8')" title="ODS 8 — Economía y crecimiento sostenible">Economía</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#FD6925;" data-ods="9" data-num="9" onclick="filterOds('9')" title="ODS 9 — Industria, innovación e infraestructura">Innovación</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#DD1367;" data-ods="10" data-num="10" onclick="filterOds('10')" title="ODS 10 — Reducción de desigualdades">Desigualdades</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#FD9D24;" data-ods="11" data-num="11" onclick="filterOds('11')" title="ODS 11 — Ciudades y comunidades sostenibles">Ciudades</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#3F7E44;" data-ods="13" data-num="13" onclick="filterOds('13')" title="ODS 13 — Acción por el clima">Clima</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#56C02B;" data-ods="15" data-num="15" onclick="filterOds('15')" title="ODS 15 — Vida de ecosistemas terrestres">Ecosistemas</button>
+    <button type="button" class="fb fb-ods-icon" style="background:#00689D;" data-ods="16" data-num="16" onclick="filterOds('16')" title="ODS 16 — Paz, justicia e instituciones sólidas">Paz y justicia</button>
+    <span id="odsCounter" aria-live="polite"></span>
   </div>
 </div>
 <main id="main-content"><div class="scroll" id="sc">
@@ -9258,10 +9845,65 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
         <span class="ficha-section-label">Conexión curricular LOMLOE</span>
         <p class="ficha-desc" id="fichaLomloe"></p>
       </div>
+
+      <!-- ── NOTAS DOCENTES ── -->
+      <div class="ficha-section ficha-notas" id="fichaNotasSection">
+        <div class="ficha-notas-title">
+          ✎ Notas docentes
+          <span class="ficha-notas-saved" id="fichaNotasSaved">✓ Guardado</span>
+        </div>
+
+        <div class="ficha-implicacion">
+          <span class="ficha-implicacion-label">Implicación del grupo</span>
+          <button type="button" class="ficha-star" data-val="1" title="Muy baja">★</button>
+          <button type="button" class="ficha-star" data-val="2" title="Baja">★</button>
+          <button type="button" class="ficha-star" data-val="3" title="Media">★</button>
+          <button type="button" class="ficha-star" data-val="4" title="Alta">★</button>
+          <button type="button" class="ficha-star" data-val="5" title="Muy alta">★</button>
+          <span class="ficha-star-hint" id="fichaStarHint"></span>
+        </div>
+
+        <div class="ficha-nota-field">
+          <label class="ficha-nota-label" for="fichaNotaObs">Observaciones generales</label>
+          <textarea id="fichaNotaObs" placeholder="¿Cómo respondió el grupo? ¿Qué funcionó bien?"></textarea>
+        </div>
+        <div class="ficha-nota-field">
+          <label class="ficha-nota-label" for="fichaNotaAdapt">Adaptaciones realizadas</label>
+          <textarea id="fichaNotaAdapt" placeholder="Modificaciones respecto a la actividad original…"></textarea>
+        </div>
+        <div class="ficha-nota-field">
+          <label class="ficha-nota-label" for="fichaNotaSeg">Seguimiento · próxima sesión</label>
+          <textarea id="fichaNotaSeg" placeholder="Pendiente, continuación prevista, recursos necesarios…"></textarea>
+        </div>
+      </div>
     </div>
     <div class="ficha-actions">
       <button type="button" class="ficha-print-btn" onclick="document.body.classList.add('printing-ficha');window.print();setTimeout(()=>document.body.classList.remove('printing-ficha'),500)">⎙ Imprimir ficha</button>
       <button type="button" class="ficha-close-btn" onclick="closeFicha()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ACTIVIDAD EXPRÉS ═══════════════════════════════════════ -->
+<div id="expresOverlay" role="dialog" aria-modal="true" aria-labelledby="expresTitle" onclick="if(event.target===this) closeExpres()">
+  <div id="expresModal">
+    <div class="expres-header">
+      <h2 id="expresTitle">⚡ Actividad exprés</h2>
+      <button type="button" class="expres-close-x" onclick="closeExpres()">Cerrar ✕</button>
+    </div>
+    <div class="expres-meta">
+      <span class="expres-title-line" id="expresTitleLine"></span>
+      <span class="expres-tipo-badge" id="expresTipoBadge"></span>
+      <span class="expres-dur">⏱ 5 min</span>
+    </div>
+    <div class="expres-body">
+      <div class="expres-instrucciones" id="expresInstrucciones"></div>
+      <div class="expres-comp" id="expresComp"></div>
+    </div>
+    <div class="expres-actions">
+      <button type="button" class="expres-regen-btn" id="expresRegenBtn">↻ Otra actividad</button>
+      <button type="button" class="expres-print-btn" onclick="document.body.classList.add('printing-expres');window.print();setTimeout(()=>document.body.classList.remove('printing-expres'),500)">⎙ Imprimir</button>
+      <button type="button" class="expres-close-btn" onclick="closeExpres()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -9281,7 +9923,7 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
 </div>
 
 <!-- ══ RÚBRICA MODAL ═════════════════════════════════════════ -->
-<div id="rubricaOverlay" role="dialog" aria-modal="true" aria-labelledby="rubricaTitle">
+<div id="rubricaOverlay" role="dialog" aria-modal="true" aria-labelledby="rubricaTitle" onclick="if(event.target===this) closeRubrica()">
   <div id="rubricaModal">
     <div class="rubrica-header">
       <h2 id="rubricaTitle">⊕ Generador de rúbrica</h2>
@@ -9330,7 +9972,7 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
 <!-- ── FIN MODALES FICHA / COMPARADOR / RÚBRICA ── -->
 
 <!-- ══ GENERADOR DE SECUENCIA DIDÁCTICA ══════════════════════ -->
-<div id="secOverlay" role="dialog" aria-modal="true" aria-labelledby="secTitle">
+<div id="secOverlay" role="dialog" aria-modal="true" aria-labelledby="secTitle" onclick="if(event.target===this) closeSec()">
   <div id="secModal">
     <div class="sec-header">
       <h2 id="secTitle">⊕ Secuencia didáctica</h2>
@@ -9394,7 +10036,11 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
   <div id="mapaModal">
     <div class="mapa-header">
       <h2 id="mapaTitle">⊕ Mapa de conexiones entre títulos</h2>
-      <button type="button" class="mapa-close" onclick="closeMapa()">Cerrar ✕</button>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button type="button" id="mapaViewUso"  class="mapa-view-btn active" onclick="setMapaView('uso')" title="Agrupar por uso pedagógico">Por uso</button>
+        <button type="button" id="mapaViewOds"  class="mapa-view-btn"        onclick="setMapaView('ods')" title="Agrupar por ODS">Por ODS</button>
+        <button type="button" class="mapa-close" onclick="closeMapa()">Cerrar ✕</button>
+      </div>
     </div>
     <div id="mapaContainer" class="mapa-container" 
          aria-label="Títulos del fondo agrupados por temática pedagógica"></div>
@@ -9417,10 +10063,13 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
       <button type="button" class="fab-action" onclick="openMapa()" aria-label="Mapa de conexiones entre títulos" title="Mapa de títulos">⊞</button>
     </div>
     <div class="fab-item">
-      <button type="button" class="fab-action" id="asist-fab" onclick="openPanel()" aria-label="Asistente pedagógico IA" title="Asistente IA">✧</button>
+      <button type="button" class="fab-action" id="asist-fab" aria-label="Asistente pedagógico IA" title="Asistente IA">✧</button>
     </div>
     <div class="fab-item">
       <button type="button" class="fab-action proyeccion-btn" onclick="toggleProyeccion()" aria-label="Activar modo proyección" title="Modo proyección">⛶</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action" id="eraDiscBtn" onclick="toggleEraDiscovery()" aria-label="Modo era por era" title="Descubrir era por era" style="display:none">▶</button>
     </div>
     <div class="fab-item">
       <button type="button" class="fab-action modo-aula-btn" onclick="toggleModoAula()" aria-pressed="false" aria-label="Activar modo aula" title="Modo aula">⊞</button>
@@ -9439,6 +10088,23 @@ class="citation-bar" role="contentinfo" aria-label="Cómo citar este recurso">
 </div>
 
 <!-- ══ COMP DRAWER ══════════════════════════════════════════ -->
+
+<!-- Proyección: botón salir (faltaba en el DOM) -->
+<button type="button" class="proyeccion-exit" onclick="toggleProyeccion()" aria-label="Salir del modo proyección">✕ Salir</button>
+
+<!-- Modo descubrimiento era por era -->
+<div id="eraDiscoveryBar" aria-label="Navegación era por era" role="toolbar">
+  <button type="button" id="eraDiscPrev" onclick="eraNav(-1)" aria-label="Era anterior" title="Era anterior (←)">←</button>
+  <div id="eraDiscInfo">
+    <span id="eraDiscCounter"></span>
+    <span id="eraDiscName"></span>
+    <span id="eraDiscJp"></span>
+    <span id="eraDiscDates"></span>
+  </div>
+  <button type="button" id="eraDiscNext" onclick="eraNav(1)" aria-label="Era siguiente" title="Era siguiente (→ o Espacio)">→</button>
+  <button type="button" id="eraDiscExit" onclick="exitEraDiscovery()" aria-label="Ver todas las eras" title="Ver todas las eras">⊞ Todas</button>
+</div>
+
 <div id="compDrawer" role="status" aria-live="polite" aria-label="Títulos seleccionados para comparar">
   <span class="comp-drawer-title">Comparar:</span>
   <div id="compSlots">
@@ -10216,9 +10882,122 @@ function openFicha(card) {
   document.getElementById('fichaQuestions').innerHTML = generateQuestions(tip, uso1);
   document.getElementById('fichaLomloe').textContent = lomloeConnection(uso1);
 
+  // ── Cargar notas docentes ──────────────────────────────────
+  loadFichaNotas(title);
+
   document.getElementById('fichaOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
+// ── Clave de almacenamiento por título ────────────────────────
+function fichaNotasKey(title) {
+  return 'manga_notas__' + title.slice(0, 80).replace(/\s+/g, '_');
+}
+
+// ── Hints para la escala de estrellas ────────────────────────
+const STAR_HINTS = ['','Muy baja','Baja','Media','Alta','Muy alta'];
+
+// ── Cargar notas en los campos ────────────────────────────────
+function loadFichaNotas(title) {
+  const key  = fichaNotasKey(title);
+  let   data = {};
+  try { data = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) {}
+
+  document.getElementById('fichaNotaObs').value   = data.obs   || '';
+  document.getElementById('fichaNotaAdapt').value = data.adapt || '';
+  document.getElementById('fichaNotaSeg').value   = data.seg   || '';
+
+  // Estrellas
+  const stars = document.querySelectorAll('.ficha-star');
+  const val   = parseInt(data.stars || '0', 10);
+  stars.forEach(s => s.classList.toggle('on', parseInt(s.dataset.val) <= val));
+  document.getElementById('fichaStarHint').textContent = val ? STAR_HINTS[val] : '';
+
+  // Guardar título activo en el modal para el autosave
+  document.getElementById('fichaModal').dataset.activeTitle = title;
+  document.getElementById('fichaNotasSaved').classList.remove('show');
+}
+
+// ── Autoguardado ──────────────────────────────────────────────
+let _fichaNotasTimer = null;
+function saveFichaNotas() {
+  const title = document.getElementById('fichaModal')?.dataset.activeTitle || '';
+  if (!title) return;
+  const key = fichaNotasKey(title);
+  const val = parseInt(document.querySelector('.ficha-star.on:last-of-type')?.dataset.val || '0');
+  // Count filled-on stars properly
+  let starVal = 0;
+  document.querySelectorAll('.ficha-star').forEach(s => { if (s.classList.contains('on')) starVal = parseInt(s.dataset.val); });
+  const data = {
+    obs:   document.getElementById('fichaNotaObs')?.value   || '',
+    adapt: document.getElementById('fichaNotaAdapt')?.value || '',
+    seg:   document.getElementById('fichaNotaSeg')?.value   || '',
+    stars: starVal,
+    ts:    new Date().toISOString()
+  };
+  const hasContent = data.obs || data.adapt || data.seg || data.stars;
+  if (hasContent) {
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+  } else {
+    try { localStorage.removeItem(key); } catch(e) {}
+  }
+  // Flash "Guardado"
+  const saved = document.getElementById('fichaNotasSaved');
+  if (saved) { saved.classList.add('show'); clearTimeout(_fichaNotasTimer); _fichaNotasTimer = setTimeout(() => saved.classList.remove('show'), 1800); }
+  // Update card indicator
+  updateNotasIndicator(title, !!hasContent);
+}
+
+function updateNotasIndicator(title, hasNotes) {
+  document.querySelectorAll('.cat-card').forEach(card => {
+    const t = card.querySelector('.cat-title')?.textContent?.trim();
+    if (t === title) card.classList.toggle('has-notas', hasNotes);
+  });
+}
+
+// ── Init: wire up autosave y estrellas ────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Textareas → autosave debounced
+  ['fichaNotaObs','fichaNotaAdapt','fichaNotaSeg'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      clearTimeout(_fichaNotasTimer);
+      _fichaNotasTimer = setTimeout(saveFichaNotas, 600);
+    });
+  });
+
+  // Estrellas
+  document.querySelectorAll('.ficha-star').forEach(star => {
+    star.addEventListener('click', function() {
+      const val = parseInt(this.dataset.val);
+      const stars = document.querySelectorAll('.ficha-star');
+      let newVal = val;
+      // Click on already-active last star → deselect
+      const currentVal = parseInt(document.querySelector('.ficha-star.on:last-of-type')?.dataset.val || '0');
+      if (currentVal === val) newVal = 0;
+      stars.forEach(s => s.classList.toggle('on', parseInt(s.dataset.val) <= newVal));
+      document.getElementById('fichaStarHint').textContent = newVal ? STAR_HINTS[newVal] : '';
+      saveFichaNotas();
+    });
+    star.addEventListener('mouseenter', function() {
+      const v = parseInt(this.dataset.val);
+      document.getElementById('fichaStarHint').textContent = STAR_HINTS[v] || '';
+    });
+    star.addEventListener('mouseleave', function() {
+      const currentVal = parseInt(document.querySelector('.ficha-star.on:last-of-type')?.dataset.val || '0');
+      document.getElementById('fichaStarHint').textContent = currentVal ? STAR_HINTS[currentVal] : '';
+    });
+  });
+
+  // Marcar tarjetas que ya tienen notas guardadas
+  document.querySelectorAll('.cat-card').forEach(card => {
+    const title = card.querySelector('.cat-title')?.textContent?.trim() || '';
+    if (!title) return;
+    try {
+      const stored = localStorage.getItem(fichaNotasKey(title));
+      if (stored) card.classList.add('has-notas');
+    } catch(e) {}
+  });
+});
 
 function closeFicha() {
   document.getElementById('fichaOverlay')?.classList.remove('open');
@@ -10332,7 +11111,7 @@ function closeComp() {
 }
 
 function filterByTitle(title) {
-  ['compOverlay','mapaOverlay','rubricaOverlay','fichaOverlay'].forEach(id => {
+  ['compOverlay','mapaOverlay','rubricaOverlay','fichaOverlay','secOverlay'].forEach(id => {
     document.getElementById(id)?.classList.remove('open');
   });
   document.body.style.overflow = '';
@@ -10369,7 +11148,6 @@ async function geminiRequest(apiKey, bodyOrPrompt, maxRetries = 8) {
     try {
       const resp = await fetch(url, {
         method: 'POST',
-        mode: 'cors', // Forzamos el modo CORS
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
@@ -10673,8 +11451,10 @@ ${catalogContext || 'Consulta el catálogo visible de la página para selecciona
     panel = document.createElement('div');
     panel.id = 'asist-panel';
     panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-labelledby', 'asist-dialog-title');
     panel.innerHTML = `
-      <div id="asist-head"><h2>✦ Asistente Pedagógico</h2><button type="button" id="asist-close">Cerrar ✕</button></div>
+      <div id="asist-head"><h2 id="asist-dialog-title">✦ Asistente Pedagógico</h2><button type="button" id="asist-close">Cerrar ✕</button></div>
       <div id="asist-key-area"><p>Clave de <strong>Google AI Studio / Gemini</strong>. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#7AB4FF">Obtén tu clave →</a></p>
         <div id="asist-key-row"><input type="password" id="asist-key-input" placeholder="AIzaSy…"><button type="button" id="asist-key-save">Activar</button></div>
         <p id="asist-key-status" class="asist-key-status"></p></div>
@@ -10733,35 +11513,38 @@ ${catalogContext || 'Consulta el catálogo visible de la página para selecciona
 
 
 
-// ══ FAB TOGGLE ════════
-document.getElementById('tools-fab-toggle')?.addEventListener('click', function() {
-  this.classList.toggle('open');
-  document.getElementById('fabItems').classList.toggle('open');
-  this.setAttribute('aria-expanded', this.classList.contains('open') ? 'true' : 'false');
-});
+// ══ FAB TOGGLE ════════;
 
-function closeRubrica() { document.getElementById('rubricaOverlay').classList.remove('open'); }
+function closeRubrica() { document.getElementById('rubricaOverlay').classList.remove('open'); document.body.style.overflow = ''; }
 function openRubrica(card) {
   const title = card.querySelector('.cat-title')?.textContent || '';
   const nivel = card.getAttribute('data-nivel') || '';
   document.getElementById('rubricaOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
   document.getElementById('rubricaTitulo').value = title;
   document.getElementById('rubricaBody').innerHTML = '<p class="rubrica-placeholder">Elige un título y etapa para generar la rúbrica.</p>';
 }
-function closeSec() { document.getElementById('secOverlay').classList.remove('open'); }
-function openSec() { document.getElementById('secOverlay').classList.add('open'); }
-function openMapa() { document.getElementById('mapaOverlay').classList.add('open'); }
-function closeMapa() { document.getElementById('mapaOverlay').classList.remove('open'); }
+function closeSec() { document.getElementById('secOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+function openSec()  { document.getElementById('secOverlay').classList.add('open');    document.body.style.overflow = 'hidden'; }
+function openMapa() {
+  document.getElementById('mapaOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Reset to "uso" view and sync toggle buttons
+  mapaView = 'uso';
+  document.getElementById('mapaViewUso')?.classList.add('active');
+  document.getElementById('mapaViewOds')?.classList.remove('active');
+  if (typeof buildMapaGrid === 'function') buildMapaGrid();
+}
+function closeMapa() {
+  document.getElementById('mapaOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
-// ══ FAB TOGGLE ════════
-document.getElementById('tools-fab-toggle')?.addEventListener('click', function() {
-  this.classList.toggle('open');
-  document.getElementById('fabItems').classList.toggle('open');
-});
+// ══ FAB TOGGLE ════════;
 
-function buildMapaGrid() {
+function buildMapaGrid(force = false) {
   const container = document.getElementById('mapaContainer');
-  if (!container || container.dataset.built) return;
+  if (!container || (!force && container.dataset.built)) return;
   const USO_COLORS = {historia:'#5A3A1A',filosofia:'#4A2A6A',emocional:'#7A5A0A',
     lenguas:'#2E6E3A',inclusion:'#3A4A8A',visual:'#5E3A8A',ciencia:'#1A5A8B',genero:'#8B1A4A'};
   const USO_LABELS = {historia:'Historia',filosofia:'Filosofía',emocional:'Ed. emocional',
@@ -10784,9 +11567,65 @@ function buildMapaGrid() {
       <div class="mapa-chips">${titles.map(t=>`<button type="button" class="mapa-chip"
         style="border-color:${color}30" onclick="filterByTitle('${t.replace(/'/g,"\\'")}');closeMapa()"
         title="${t}">${t}</button>`).join('')}</div></div>`;
+    /* Nota: filterByTitle() ya cierra mapaOverlay; closeMapa() es redundante pero inocuo */
   }
   container.innerHTML = html;
   container.dataset.built = '1';
+}
+
+// ── Vista ODS del mapa ──────────────────────────────────────────
+function buildMapaGridOds(force = false) {
+  const container = document.getElementById('mapaContainer');
+  if (!container || (!force && container.dataset.builtOds)) return;
+  const ODS_COLORS = {3:'#4C9F38',4:'#C5192D',5:'#FF3A21',8:'#A21942',
+    9:'#FD6925',10:'#DD1367',11:'#FD9D24',13:'#3F7E44',15:'#56C02B',16:'#00689D'};
+  const ODS_LABELS = {3:'ODS 3 · Salud y bienestar',4:'ODS 4 · Educación de calidad',
+    5:'ODS 5 · Igualdad de género',8:'ODS 8 · Economía y crecimiento sostenible',
+    9:'ODS 9 · Industria e innovación',10:'ODS 10 · Reducción de desigualdades',
+    11:'ODS 11 · Ciudades sostenibles',13:'ODS 13 · Acción por el clima',
+    15:'ODS 15 · Ecosistemas terrestres',16:'ODS 16 · Paz y justicia'};
+  const groups = {};
+  document.querySelectorAll('.cat-card').forEach(card => {
+    const odsAttr = card.getAttribute('data-ods') || '';
+    const title   = card.querySelector('.cat-title')?.textContent || '';
+    if (!title) return;
+    odsAttr.split(' ').filter(Boolean).forEach(n => {
+      if (!groups[n]) groups[n] = [];
+      groups[n].push(title);
+    });
+  });
+  // Sort by ODS number
+  let html = '';
+  Object.keys(groups).map(Number).sort((a,b)=>a-b).forEach(n => {
+    const titles = groups[n];
+    const color  = ODS_COLORS[n] || '#666';
+    const label  = ODS_LABELS[n] || ('ODS ' + n);
+    html += `<div class="mapa-group"><div class="mapa-group-header" style="background:${color}">
+      <span class="mapa-group-label">${label}</span><span class="mapa-group-count">${titles.length}</span></div>
+      <div class="mapa-chips">${titles.map(t=>`<button type="button" class="mapa-chip"
+        style="border-color:${color}30" onclick="filterOds('${n}');closeMapa()"
+        title="Filtrar por ODS ${n}: ${t}">${t}</button>`).join('')}</div></div>`;
+  });
+  container.innerHTML = html;
+  container.dataset.builtOds = '1';
+}
+
+let mapaView = 'uso'; // 'uso' | 'ods'
+function setMapaView(view) {
+  mapaView = view;
+  document.getElementById('mapaViewUso')?.classList.toggle('active', view === 'uso');
+  document.getElementById('mapaViewOds')?.classList.toggle('active', view === 'ods');
+  const container = document.getElementById('mapaContainer');
+  if (container) {
+    // Clear built cache for the view we're switching to so it rebuilds fresh
+    if (view === 'uso') {
+      delete container.dataset.built;
+      buildMapaGrid();
+    } else {
+      delete container.dataset.builtOds;
+      buildMapaGridOds();
+    }
+  }
 }
 
 const LECTURA_TEMPLATES = {
@@ -10933,6 +11772,697 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// ══════════════════════════════════════════════════════════════════
+// ACTIVIDAD EXPRÉS (5 min)
+// ══════════════════════════════════════════════════════════════════
+(function() {
+
+  // ── Tipos de actividad ────────────────────────────────────────
+  const TIPOS = {
+    opinion:   { label: 'Opinión',        color: '#5A3A8A' },
+    visual:    { label: 'Análisis visual', color: '#1A5A8B' },
+    escritura: { label: 'Escritura',       color: '#5A3A1A' },
+  };
+
+  // ── Plantillas por uso pedagógico ─────────────────────────────
+  // Cada entrada: [tipo, instrucciones HTML, competencia]
+  const PLANTILLAS = {
+    historia: [
+      ['opinion',
+       '<strong>Pregunta de opinión (1+4 min)</strong><br>Lee la descripción de <em>{titulo}</em>. ¿Crees que el manga es una fuente histórica fiable? Escribe tu postura en 2 frases. Después: 4 personas comparten su respuesta en voz alta. El grupo busca puntos en común.',
+       'CSC · Pensamiento histórico y crítico'],
+      ['visual',
+       '<strong>Fuente o ficción (5 min)</strong><br>El argumento de <em>{titulo}</em> mezcla hechos reales y ficción. En parejas: identificad qué elementos de la descripción parecen históricamente documentados y cuáles probablemente son inventados. Poned en común en 2 minutos.',
+       'CSC · Análisis de fuentes históricas'],
+      ['escritura',
+       '<strong>Entrada de diario (5 min)</strong><br>Escribe una entrada de diario como si fueras un personaje secundario de <em>{titulo}</em> que acaba de vivir el acontecimiento principal. Máximo 5 frases. Fecha la entrada con el período histórico de la obra.',
+       'CCL · Escritura creativa en contexto histórico'],
+    ],
+    filosofia: [
+      ['opinion',
+       '<strong>El dilema (2+3 min)</strong><br><em>{titulo}</em> plantea una situación moralmente compleja. 2 minutos de reflexión individual: ¿qué habrías hecho tú en el lugar del protagonista? Después: una persona argumenta a favor de la decisión del personaje, otra en contra.',
+       'CPSAA · Argumentación ética y pensamiento crítico'],
+      ['visual',
+       '<strong>¿Qué preguntaría Sócrates? (5 min)</strong><br>Piensa en el protagonista de <em>{titulo}</em>. Formula la pregunta más incómoda que Sócrates le haría — una que el personaje no pueda responder fácilmente. Escríbela y comparte con el compañero de al lado.',
+       'CCL · Mayéutica y diálogo filosófico'],
+      ['escritura',
+       '<strong>Tesis en 3 frases (5 min)</strong><br>Resume el conflicto filosófico de <em>{titulo}</em> en exactamente 3 frases: (1) el problema, (2) la postura del protagonista, (3) tu propia opinión razonada. No uses más de 3 frases.',
+       'CCL · CPSAA · Síntesis argumentativa'],
+    ],
+    emocional: [
+      ['opinion',
+       '<strong>El termómetro emocional (5 min)</strong><br>¿Qué emoción domina en <em>{titulo}</em>? Cada persona escribe la suya en un papel sin mostrarlo. A la cuenta de tres, todos la revelan. ¿Hay consenso? Debatid 2 minutos: ¿por qué cada persona eligió la suya?',
+       'CPSAA · Identificación y regulación emocional'],
+      ['escritura',
+       '<strong>Carta al personaje (5 min)</strong><br>Escribe una carta breve al protagonista de <em>{titulo}</em>. Solo tienes 3 frases: una para mostrar que le entiendes, una para preguntarle algo, una para darle un consejo. Sin introducción ni despedida.',
+       'CCL · CPSAA · Empatía y escritura expresiva'],
+      ['visual',
+       '<strong>Línea emocional (5 min)</strong><br>Dibuja en tu cuaderno una línea horizontal. Marca el inicio y el final de <em>{titulo}</em> en los extremos. Después traza cómo crees que va cambiando la emoción del protagonista a lo largo de la historia. Compara con tu compañero.',
+       'CPSAA · Representación visual de procesos emocionales'],
+    ],
+    visual: [
+      ['visual',
+       '<strong>El encuadre habla (5 min)</strong><br>Imagina la viñeta más importante de <em>{titulo}</em>. Descríbela en voz alta o por escrito: ¿qué tipo de plano usarías (primer plano, plano general…)? ¿Qué parte de la escena quedaría fuera del cuadro? ¿Por qué esa elección?',
+       'CCEC · Análisis del lenguaje visual y narrativo'],
+      ['opinion',
+       '<strong>Sin palabras (5 min)</strong><br>Si quitaras todos los textos de <em>{titulo}</em>, ¿se entendería la historia solo con las imágenes? Debate en parejas: ¿qué se ganaría? ¿qué se perdería? ¿Hay obras donde las imágenes dicen más que las palabras?',
+       'CCEC · CCL · Relación texto-imagen en narrativa gráfica'],
+      ['escritura',
+       '<strong>Rediseña la portada (5 min)</strong><br>Describe en un párrafo cómo rediseñarías la portada de <em>{titulo}</em> para que llegue a personas de tu edad. ¿Qué imagen usarías? ¿Qué colores? ¿Cambiarías el título? Justifica cada decisión.',
+       'CCEC · Creación e interpretación de imágenes'],
+    ],
+    ciencia: [
+      ['opinion',
+       '<strong>¿Es posible? (2+3 min)</strong><br>El concepto científico de <em>{titulo}</em> — ¿es ciencia real, ciencia futura o ciencia imposible? 2 minutos de investigación mental individual. Después: cada persona defiende su postura con un argumento. Votad al final.',
+       'STEM · Pensamiento científico y evaluación de evidencias'],
+      ['visual',
+       '<strong>El científico critica (5 min)</strong><br>Imagina que un investigador real lee <em>{titulo}</em>. En parejas: listad un error científico probable y un acierto probable que encontraría. Basaos en la descripción. ¿Importa que el manga no sea 100% preciso?',
+       'STEM · Pensamiento crítico sobre representaciones científicas'],
+      ['escritura',
+       '<strong>Dilema ético en 5 frases (5 min)</strong><br>La tecnología o ciencia de <em>{titulo}</em> existe hoy (o podría existir pronto). Escribe 5 frases: 2 argumentos a favor de usarla, 2 en contra, y 1 frase con tu postura personal.',
+       'STEM · CPSAA · Ética científica y tecnológica'],
+    ],
+    genero: [
+      ['opinion',
+       '<strong>El test de Bechdel (5 min)</strong><br>El test de Bechdel pregunta: ¿hay en la obra dos personajes femeninos que hablen entre sí de algo que no sea un hombre? Debatid si <em>{titulo}</em> lo pasaría. ¿Es este un buen criterio para evaluar una obra? ¿Por qué sí o no?',
+       'CSC · Análisis de representación de género en medios'],
+      ['escritura',
+       '<strong>Intercambio de roles (5 min)</strong><br>Elige al protagonista de <em>{titulo}</em>. Reescribe en 3 frases el arranque de la historia con los géneros de los personajes principales intercambiados. ¿Cambia algo más que el género? ¿Cambiaría la recepción de la obra?',
+       'CSC · CPSAA · Perspectiva de género en narrativa'],
+      ['visual',
+       '<strong>Publicidad de época vs. hoy (5 min)</strong><br>Si <em>{titulo}</em> se publicara hoy, ¿cómo sería su campaña publicitaria comparada con la de su época original? Describid en parejas dos decisiones concretas que cambiarían. ¿Por qué habrían cambiado?',
+       'CSC · CCEC · Evolución de representaciones culturales'],
+    ],
+    lenguas: [
+      ['opinion',
+       '<strong>Traduce sin diccionario (5 min)</strong><br>El título <em>{titulo}</em> proviene de una cultura muy diferente. En grupos de 3: intentad deducir qué podría significar literalmente, qué connotaciones culturales tiene, y si existe un equivalente en español o en la cultura canaria.',
+       'CP · CCL · Mediación lingüística e intercultural'],
+      ['escritura',
+       '<strong>Préstamo cultural (5 min)</strong><br>El manga como forma artística viajó de Japón al mundo. Escribe 3 frases sobre qué crees que se mantuvo en ese viaje, qué cambió y qué ganó. Luego: ¿conoces otro ejemplo de algo que viajó de una cultura a otra y cambió por el camino?',
+       'CP · CCEC · Transferencia e hibridación cultural'],
+      ['visual',
+       '<strong>Expresión sin traducción (5 min)</strong><br>En <em>{titulo}</em> hay elementos visuales que no necesitan traducción (onomatopeyas gráficas, expresiones faciales exageradas…). En parejas: buscad 3 convenciones visuales del manga que entenderías en cualquier idioma. ¿Por qué funcionan?',
+       'CP · CCEC · Lenguaje visual como comunicación universal'],
+    ],
+    inclusion: [
+      ['opinion',
+       '<strong>¿Quién falta? (5 min)</strong><br>Piensa en los personajes de <em>{titulo}</em>. ¿Qué tipo de persona no está nunca representada en esta historia? Debatid: ¿importa que las obras de ficción representen a todo el mundo? ¿Cuándo sí y cuándo no?',
+       'CSC · Análisis crítico de representación y diversidad'],
+      ['escritura',
+       '<strong>Barrera invisible (5 min)</strong><br>El protagonista de <em>{titulo}</em> se enfrenta a obstáculos en su contexto. Escribe 3 frases sobre qué barreras encontraría ese mismo personaje si viviera en Las Palmas de Gran Canaria hoy. ¿Serían las mismas o diferentes?',
+       'CSC · CPSAA · Transferencia de contexto y empatía'],
+      ['visual',
+       '<strong>Otro punto de vista (5 min)</strong><br>Cuenta el argumento de <em>{titulo}</em> en 5 frases desde la perspectiva del personaje más secundario o menos visible de la historia. ¿Cambia algo importante? ¿Qué partes de la historia original desaparecen o cobran más importancia?',
+       'CCL · CSC · Perspectiva múltiple y empatía narrativa'],
+    ],
+  };
+
+  // ── Estado ────────────────────────────────────────────────────
+  let currentCard  = null;
+  let currentIndex = null;
+
+  // ── Abrir modal ───────────────────────────────────────────────
+  window.openExpres = function(card) {
+    currentCard  = card;
+    currentIndex = null;
+    renderExpres();
+    document.getElementById('expresOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (typeof logActivity === 'function') {
+      const t = card.querySelector('.cat-title')?.textContent?.trim() || '';
+      logActivity('viewed', { title: t, section: 'Actividad exprés' });
+    }
+  };
+
+  window.closeExpres = function() {
+    document.getElementById('expresOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    currentCard = null;
+  };
+
+  // ── Renderizar ────────────────────────────────────────────────
+  function renderExpres() {
+    if (!currentCard) return;
+    const title = currentCard.querySelector('.cat-title')?.textContent?.trim() || '';
+    const uso   = (currentCard.getAttribute('data-uso') || '').split(/\s+/)[0] || 'visual';
+    const pool  = PLANTILLAS[uso] || PLANTILLAS.visual;
+
+    // Pick next activity (cycle, not repeat consecutive)
+    let idx;
+    do { idx = Math.floor(Math.random() * pool.length); }
+    while (pool.length > 1 && idx === currentIndex);
+    currentIndex = idx;
+
+    const [tipo, instrHtml, comp] = pool[idx];
+    const tipoData = TIPOS[tipo] || TIPOS.opinion;
+
+    document.getElementById('expresTitleLine').textContent = title;
+    const badge = document.getElementById('expresTipoBadge');
+    badge.textContent      = tipoData.label;
+    badge.style.background = tipoData.color;
+    document.getElementById('expresInstrucciones').innerHTML = instrHtml.replace(/\{titulo\}/g, `<em>${title}</em>`);
+    document.getElementById('expresComp').textContent = comp;
+  }
+
+  // ── Botón regenerar ───────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('expresRegenBtn')?.addEventListener('click', renderExpres);
+
+    // Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('expresOverlay')?.classList.contains('open')) {
+        window.closeExpres();
+      }
+    });
+
+    // Inject "⚡ Exprés" button into every cat-card-actions
+    document.querySelectorAll('.cat-card').forEach(card => {
+      const actions = card.querySelector('.cat-card-actions');
+      if (!actions || actions.querySelector('.cat-expres-btn')) return;
+      const btn = document.createElement('button');
+      btn.type      = 'button';
+      btn.className = 'cat-expres-btn';
+      btn.title     = 'Actividad exprés para el aula (5 min)';
+      btn.textContent = '⚡ Exprés';
+      btn.onclick   = () => window.openExpres(card);
+      // Insert before the OPAC link (which is outside actions), after last button
+      actions.appendChild(btn);
+    });
+  });
+
+})();
+
+// ══════════════════════════════════════════════════════════════════
+// PREGUNTAS DETONADORAS POR ERA HISTÓRICA
+// ══════════════════════════════════════════════════════════════════
+(function() {
+
+  // ── Preguntas por era ─────────────────────────────────────────
+  const ERA_QUESTIONS = {
+    'Heian': {
+      nivel: 'Secundaria · Bachillerato · Universidad',
+      preguntas: [
+        '¿Por qué el arte japonés más refinado nació en un período de paz aristocrática? ¿Qué condiciones sociales permiten que florezca la cultura?',
+        'Las Chōjū-giga muestran animales que se comportan como humanos criticando a la nobleza. ¿Qué tradición artística occidental conoces que use el mismo recurso?'
+      ]
+    },
+    'Kamakura · Muromachi': {
+      nivel: 'Secundaria · Bachillerato',
+      preguntas: [
+        'Japón pasó de una nobleza cortesana a una clase guerrera (samurái) en el poder. ¿Conoces en la historia occidental algún cambio de élite similar?',
+        'El bushido establece un código de honor estricto. ¿En qué se parece y en qué se diferencia del código caballeresco europeo medieval?'
+      ]
+    },
+    'Sengoku · Momoyama': {
+      nivel: 'Secundaria · Bachillerato',
+      preguntas: [
+        'El Sengoku es un siglo de guerra civil continua. ¿Qué condiciones políticas explican que un país fragmentado en señoríos rivales acabe unificándose?',
+        '¿Por qué crees que la cultura japonesa (teatro Nō, ceremonia del té, jardines zen) alcanzó una refinación extrema justo en un período de violencia máxima?'
+      ]
+    },
+    'Edo': {
+      nivel: 'Secundaria · Bachillerato · Universidad',
+      preguntas: [
+        'Japón cerró sus fronteras al mundo exterior durante más de 200 años (sakoku). ¿Qué consecuencias tuvo ese aislamiento en su desarrollo cultural, tecnológico y económico?',
+        'Hokusai publica en 1814 los cuadernos que darán nombre al manga. ¿Por qué una cultura con siglos de arte visual secuencial tarda tanto en crear un término propio para nombrarlo?'
+      ]
+    },
+    'Meiji': {
+      nivel: 'Secundaria · Bachillerato',
+      preguntas: [
+        'Japón pasó en pocas décadas de feudalismo a potencia industrial moderna. ¿Qué pierde y qué gana una sociedad cuando moderniza a marcha forzada?',
+        'Los primeros manga de la era Meiji copiaron técnicas de la caricatura occidental. ¿Es copiar una forma de resistencia cultural o de colonización cultural? ¿Puede ser las dos cosas?'
+      ]
+    },
+    'Taishō': {
+      nivel: 'Secundaria · Bachillerato',
+      preguntas: [
+        'La era Taishō fue la más democrática y cosmopolita del Japón premoderno. ¿Por qué duró tan poco? ¿Qué factores históricos pueden truncar un período liberal?',
+        'El manga cómico de esta época mezcla humor absurdo con crítica social. ¿Qué otras formas artísticas conoces que usen el humor para decir verdades incómodas?'
+      ]
+    },
+    'Shōwa': {
+      nivel: 'Secundaria · Bachillerato · Universidad',
+      preguntas: [
+        'Tezuka sobrevivió los bombardeos de Osaka y en 1952 crea a Astroboy, un niño-robot símbolo de esperanza. ¿Cómo puede el trauma colectivo transformarse en arte que mira al futuro?',
+        'El manga de posguerra nació en revistas de alquiler para niños pobres que no podían comprarlas. ¿Qué relación existe entre la precariedad económica y la explosión de una forma artística popular?'
+      ]
+    },
+    'Heisei': {
+      nivel: 'ESO · Bachillerato · Universidad',
+      preguntas: [
+        'El manga Heisei tematiza el miedo a la tecnología, la identidad líquida y el fin del mundo. ¿En qué medida esos miedos de los años 90 japoneses siguen siendo los nuestros hoy?',
+        'Japón exportó su cultura pop masivamente durante el Heisei (anime, manga, videojuegos). ¿Es eso soft power? ¿En qué se diferencia de la exportación cultural que hacen EE. UU. o Europa?'
+      ]
+    },
+    'Reiwa': {
+      nivel: 'ESO · Bachillerato · Universidad',
+      preguntas: [
+        'El manga Reiwa representa protagonistas que buscan "vivir despacio" (日常系, nichijō-kei). ¿Qué dice eso de la sociedad japonesa actual? ¿Resonaría en el alumnado canario?',
+        'Por primera vez en su historia, el manga japonés tiene más lectoras que lectores. ¿Qué transforma una industria cultural cuando cambia quién la consume?'
+      ]
+    }
+  };
+
+  // ── Panel activo (solo uno a la vez) ─────────────────────────
+  let activePanel = null;
+
+  function closeActive() {
+    if (!activePanel) return;
+    activePanel.classList.remove('open');
+    activePanel.closest('.bar')?.querySelector('.era-q-btn')?.classList.remove('active');
+    activePanel = null;
+  }
+
+  // ── Inyectar botón + panel en cada .bar ───────────────────────
+  function initEraQuestions() {
+    document.querySelectorAll('.bar').forEach(bar => {
+      const nameEl = bar.querySelector('.era-name');
+      if (!nameEl) return;
+      const eraName = nameEl.textContent.trim();
+      const data    = ERA_QUESTIONS[eraName];
+      if (!data) return;
+
+      // Botón ?
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'era-q-btn';
+      btn.textContent = '?';
+      btn.setAttribute('aria-label', `Pregunta detonadora: era ${eraName}`);
+      btn.setAttribute('title', 'Pregunta detonadora para el aula');
+
+      // Panel
+      const panel = document.createElement('div');
+      panel.className = 'era-q-panel';
+      panel.setAttribute('role', 'tooltip');
+      panel.innerHTML = `
+        <span class="era-q-label">✦ Pregunta detonadora</span>
+        <span class="era-q-nivel">${data.nivel}</span>
+        <ul class="era-q-list">
+          ${data.preguntas.map(q => `<li>${q}</li>`).join('')}
+        </ul>`;
+
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        if (activePanel === panel) {
+          closeActive();
+          return;
+        }
+        closeActive();
+        panel.classList.add('open');
+        btn.classList.add('active');
+        activePanel = panel;
+      };
+
+      // Prevent panel clicks from bubbling to document
+      panel.addEventListener('click', e => e.stopPropagation());
+
+      bar.appendChild(btn);
+      bar.appendChild(panel);
+    });
+
+    // Close on click outside
+    document.addEventListener('click', closeActive);
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeActive();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEraQuestions);
+  } else {
+    initEraQuestions();
+  }
+
+})();
+
+// ══════════════════════════════════════════════════════════════════
+// ODS — OBJETIVOS DE DESARROLLO SOSTENIBLE
+// ══════════════════════════════════════════════════════════════════
+(function() {
+
+  // ── Colores oficiales ONU ────────────────────────────────────
+  const ODS_COLORS = {
+    3:'#4C9F38', 4:'#C5192D', 5:'#FF3A21', 8:'#A21942',
+    9:'#FD6925', 10:'#DD1367', 11:'#FD9D24', 13:'#3F7E44',
+    15:'#56C02B', 16:'#00689D'
+  };
+  const ODS_LABELS = {
+    3:'ODS 3 Salud', 4:'ODS 4 Educación', 5:'ODS 5 Género',
+    8:'ODS 8 Economía', 9:'ODS 9 Innovación', 10:'ODS 10 Desigualdades',
+    11:'ODS 11 Ciudades', 13:'ODS 13 Clima', 15:'ODS 15 Ecosistemas',
+    16:'ODS 16 Paz'
+  };
+
+  // ── Mapeo título → ODS (precisión por obra) ─────────────────
+  const TITLE_ODS = {
+    'Nausicaä : del valle del viento':          [13,15],
+    'Nausicaä del Valle del Viento':            [13,15],
+    'Planetes :integral':                        [9,13],
+    'Planetes':                                  [9,13],
+    'Dr. Stone':                                 [9,4],
+    'Akira':                                    [11,16],
+    'The ghost in the shell':                    [9,16],
+    'Ghost in the Shell':                        [9,16],
+    'A Silent Voice':                            [3,10],
+    'Sailor Moon':                               [5,10],
+    'Skip and Loafer':                           [5,10],
+    'Nana':                                      [5,3],
+    'Adolf':                                    [16,10],
+    'Barefoot Gen':                             [16,3],
+    'Okinawa':                                  [16,3],
+    'Vinland Saga':                             [16,11],
+    'Vagabond':                                 [16,4],
+    'Thermae Romae':                            [11,4],
+    'Pokémon y feminismo : la gran revolución transmedia': [5,4],
+    'Tengo cáncer terminal, pero estoy bien':    [3,10],
+    'Black Jack':                                [3,8],
+    'Team medical dragon':                       [3,8],
+    'X-venture : el cuerpo en crisis : story':   [3,4],
+    'Yotsuba!':                                 [15,4],
+    'Gon':                                      [15,4],
+    'Dinosan : Dinosaurs Sanctuary':            [15,13],
+    'Devorar la Tierra':                        [13,15],
+    'Devorar la tierra':                        [13,15],
+    'Crónicas de la era glacial':               [13,15],
+    'Buda':                                     [16,4],
+    'Blue Period':                              [4,11],
+    'Bakuman':                                   [4,8],
+    'Eagle':                                    [16,10],
+    'Patlabor':                                  [9,11],
+    'El capital : el manga':                    [8,10],
+    'El manifiesto comunista : el manga':       [10,16],
+    'La riqueza de las naciones : el manga':    [8,10],
+    'Sobre la libertad : el manga':            [16,10],
+    'El contrato social : el manga':           [16,10],
+    'Crimen y castigo : el manga':             [16,10],
+    'La muerte de Sócrates : el manga':        [16,4],
+    'La enfermedad mortal : el manga':          [3,16],
+    'Hirayasumi':                               [3,11],
+    'Solanin : Integral':                        [3,10],
+    'Trágica derrota':                         [10,5],
+    'After School Dice Club':                   [4,10],
+    'La pequeña forastera : Siúil, a Rún':     [10,4],
+    'Bride stories.':                           [5,11],
+    'Frieren: más allá del fin del viaje':      [3,16],
+    'Yona : Princesa del Amanecer':             [5,16],
+    'Sailor Moon':                              [5,10],
+    'Lady Snowblood':                           [5,16],
+    'Mujeres del Zodíaco':                      [5,16],
+    'Ruri la tatuadora : y otras historias de chicas malas.': [5,10],
+    'Una mujer y la guerra':                    [5,16],
+    'Una mujer de la era Shôwa':               [5,16],
+    'Makanai: la cocina de las maiko':          [5,11],
+    'Amor es cuando cesa la lluvia':            [3,5],
+    'Los años dulces':                          [3,5],
+    'El almanaque de mi padre':                [3,11],
+    'El gourmet solitario':                    [3,11],
+    'Paseos de un gourmet solitario':          [3,11],
+    'Tabi no sakana = Bocados de un viaje gourmet': [3,11],
+    'Tokio día a día':                         [11,3],
+    'Venecia':                                 [11,16],
+    'Los guardianes del Louvre':               [11,4],
+    'Mujirushi : el signo de los sueños':      [11,4],
+    'Barrio lejano':                            [3,11],
+    'Pluto':                                    [9,16],
+    'Astroboy':                                 [9,16],
+    'Ambassador Magma':                         [9,13],
+    'Seraphim 266613336 Wings':                [13,15],
+    'Death Note Edición integral':             [16,10],
+    'Monster : [Kanzenban I]':                 [16,3],
+    'Uzumaki : espiral':                        [3,16],
+    'Sick':                                     [3,10],
+    'El bosque milenario':                     [15,3],
+    'El viaje de Shuna':                       [15,13],
+    'El Viaje De Shuna':                       [15,13],
+    'Cuentos de un pasado lejano : konjaku monogatari': [16,11],
+    'Opus':                                     [4,16],
+    'Torpe de nacimiento':                     [10,3],
+    'NeuN':                                    [16,10],
+    'Ataque a los titanes':                    [16,10],
+    'Tokyo revengers':                         [16,10],
+    'Santuario':                               [16,8],
+    'MW':                                      [16,3],
+    'Rainbow Parakeet':                        [10,5],
+    'Cielos radiantes':                        [15,13],
+    'El País de Tanabata':                     [15,11],
+    'Mundo salvaje':                           [15,13],
+    'Mundo perdido':                           [15,13],
+    'La leyenda de madre Sarah':               [16,5],
+    'Leviathan':                               [13,16],
+    'Serial Experiments Lain':                  [9,16],
+    'Atelier of witch hat = El atelier de sombreros de mago': [4,5],
+    'Hirayasumi':                               [3,11],
+    'La hora del té de la pequeña forastera':  [10,4],
+    'Anna Karenina: el manga':                 [5,16],
+    'Orgullo y prejuicio':                     [5,16],
+    'Don Quijote de la Mancha : el manga':     [4,16],
+    'La divina comedia : el manga':            [16,4],
+    'Moby Dick: el manga':                     [15,16],
+    'Romeo y Julieta':                         [3,16],
+    'Romeo y Julieta.':                        [3,16],
+  };
+
+  // ── Fallback por uso pedagógico ──────────────────────────────
+  const USO_DEFAULT = {
+    historia:  [16,11],
+    filosofia: [16,4],
+    emocional: [3,10],
+    lenguas:   [4,10],
+    inclusion: [10,3],
+    visual:    [4,11],
+    ciencia:   [9,13],
+    genero:    [5,10],
+  };
+
+  // ── Asignar data-ods e inyectar badges ───────────────────────
+  function initOds() {
+    document.querySelectorAll('.cat-card').forEach(card => {
+      const title = card.querySelector('.cat-title')?.textContent?.trim() || '';
+      const uso   = (card.getAttribute('data-uso') || '').split(' ')[0];
+
+      const nums = TITLE_ODS[title] || USO_DEFAULT[uso] || [4];
+      card.setAttribute('data-ods', nums.join(' '));
+
+      // Inject ODS badges after existing .cat-nivel
+      const nivelEl = card.querySelector('.cat-nivel');
+      if (nivelEl && !card.querySelector('.ods-badges')) {
+        const wrap = document.createElement('div');
+        wrap.className = 'ods-badges';
+        nums.forEach(n => {
+          const span = document.createElement('span');
+          span.className = 'ods-badge';
+          span.style.background = ODS_COLORS[n] || '#666';
+          span.textContent = 'ODS ' + n;
+          span.title = ODS_LABELS[n] || ('ODS ' + n);
+          wrap.appendChild(span);
+        });
+        nivelEl.after(wrap);
+      }
+    });
+  }
+
+  // ── Filter function ──────────────────────────────────────────
+  let activeOds = 'all';
+
+  window.filterOds = function(v) {
+    activeOds = v;
+    // Update button active state
+    document.querySelectorAll('[data-ods]').forEach(btn => {
+      if (!btn.classList.contains('cat-card')) {
+        btn.classList.toggle('active', btn.getAttribute('data-ods') === v);
+      }
+    });
+    document.querySelector('.fb-all-ods')?.classList.toggle('active', v === 'all');
+
+    const isActive = v !== 'all';
+    document.body.classList.toggle('filtering-ods', isActive);
+
+    document.querySelectorAll('.cat-card').forEach(card => {
+      const cardOds = card.getAttribute('data-ods') || '';
+      card.classList.toggle('match-ods', !isActive || cardOds.split(' ').includes(v));
+    });
+
+    // Update counter
+    const counter = document.getElementById('odsCounter');
+    if (counter) {
+      if (isActive) {
+        const n = document.querySelectorAll('.cat-card.match-ods').length;
+        const label = ODS_LABELS[parseInt(v)] || ('ODS ' + v);
+        counter.textContent = `${n} título${n !== 1 ? 's' : ''} · ${label}`;
+      }
+    }
+
+    // Auto-expand catalog if collapsed
+    if (isActive) {
+      const sec = document.getElementById('catalogo');
+      const btn = document.getElementById('exploreBtn');
+      if (sec?.classList.contains('catalog-collapsed')) {
+        sec.classList.remove('catalog-collapsed');
+        if (btn) { btn.textContent = 'Ocultar todos los títulos ↑'; btn.classList.add('expanded'); }
+        catalogExpanded = true;
+      }
+    }
+  };
+
+  // ── Also reset ODS when filterByTitle clears overlays ────────
+  const _origFilterByTitle = window.filterByTitle;
+  if (typeof _origFilterByTitle === 'function') {
+    window.filterByTitle = function(title) {
+      _origFilterByTitle(title);
+    };
+  }
+
+  // ── Init on DOM ready ────────────────────────────────────────
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOds);
+  } else {
+    initOds();
+  }
+
+})();
+
+// ══════════════════════════════════════════════════════════════════
+// PROGRESO DEL ITINERARIO (localStorage)
+// ══════════════════════════════════════════════════════════════════
+(function() {
+  const STORE_KEY = 'manga_itin_progress';
+
+  // ── Persistencia ─────────────────────────────────────────────
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
+    catch(e) { return {}; }
+  }
+  function saveProgress(data) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  // ── Panel id → lista de h3 ────────────────────────────────────
+  function getCardsInPanel(panelId) {
+    const panel = document.getElementById(panelId);
+    if (!panel) return [];
+    return Array.from(panel.querySelectorAll('.itin-card'));
+  }
+
+  // ── Barra de progreso ─────────────────────────────────────────
+  function renderProgressBar(panelId) {
+    const wrap = document.getElementById('itin-prog-' + panelId);
+    if (!wrap) return;
+    const cards = getCardsInPanel(panelId);
+    const total = cards.length;
+    if (!total) return;
+    const progress = loadProgress();
+    const done  = cards.filter(c => progress[cardKey(c)]).length;
+    const pct   = Math.round((done / total) * 100);
+    const fill  = wrap.querySelector('.itin-progress-fill');
+    const label = wrap.querySelector('.itin-progress-label');
+    if (fill)  fill.style.width = pct + '%';
+    if (label) label.textContent = `${done} / ${total} actividades trabajadas`;
+  }
+
+  function cardKey(card) {
+    return card.querySelector('h3')?.textContent?.trim() || '';
+  }
+
+  // ── Toggle tarjeta ────────────────────────────────────────────
+  function toggleCard(card) {
+    const key = cardKey(card);
+    if (!key) return;
+    const progress = loadProgress();
+    if (progress[key]) {
+      delete progress[key];
+    } else {
+      progress[key] = true;
+    }
+    saveProgress(progress);
+    applyCardState(card, !!progress[key]);
+    // Update bar for its parent panel
+    const panel = card.closest('.itin-panel');
+    if (panel) renderProgressBar(panel.id);
+  }
+
+  function applyCardState(card, done) {
+    card.classList.toggle('itin-done', done);
+    const btn = card.querySelector('.itin-progress-btn');
+    if (btn) btn.textContent = done ? 'Trabajado' : 'Marcar como trabajado';
+  }
+
+  // ── Reset panel ───────────────────────────────────────────────
+  function resetPanel(panelId) {
+    const cards = getCardsInPanel(panelId);
+    const progress = loadProgress();
+    cards.forEach(c => delete progress[cardKey(c)]);
+    saveProgress(progress);
+    cards.forEach(c => applyCardState(c, false));
+    renderProgressBar(panelId);
+  }
+
+  // ── Inicialización ────────────────────────────────────────────
+  function initProgressBars() {
+    const panels = ['itin-inf','itin-p1','itin-p2','itin-p3'];
+    const progress = loadProgress();
+
+    panels.forEach(panelId => {
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+
+      // Inject progress bar before itin-grid
+      const grid = panel.querySelector('.itin-grid');
+      if (grid && !document.getElementById('itin-prog-' + panelId)) {
+        const bar = document.createElement('div');
+        bar.className = 'itin-progress-bar-wrap';
+        bar.id = 'itin-prog-' + panelId;
+        bar.innerHTML = `
+          <div class="itin-progress-track">
+            <div class="itin-progress-fill" style="width:0%"></div>
+          </div>
+          <span class="itin-progress-label">0 / 0 actividades trabajadas</span>
+          <button type="button" class="itin-reset-btn" title="Reiniciar progreso de este itinerario"
+            onclick="resetItinPanel('${panelId}')">↺ Reiniciar</button>`;
+        grid.before(bar);
+      }
+
+      // Inject "Marcar como trabajado" button into each itin-card
+      getCardsInPanel(panelId).forEach(card => {
+        if (!card.querySelector('.itin-progress-btn')) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'itin-progress-btn';
+          btn.textContent = 'Marcar como trabajado';
+          btn.onclick = () => toggleCard(card);
+          card.appendChild(btn);
+        }
+        // Restore saved state
+        applyCardState(card, !!progress[cardKey(card)]);
+      });
+
+      renderProgressBar(panelId);
+    });
+  }
+
+  // Expose reset for inline onclick
+  window.resetItinPanel = function(panelId) {
+    if (confirm('¿Reiniciar el progreso de este itinerario?')) resetPanel(panelId);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProgressBars);
+  } else {
+    initProgressBars();
+  }
+
+  // Re-render bar when user switches tab (progress bars in hidden panels)
+  document.addEventListener('click', function(e) {
+    const tab = e.target.closest('.itin-tab');
+    if (!tab) return;
+    const panelId = tab.getAttribute('aria-controls');
+    if (panelId) setTimeout(() => renderProgressBar(panelId), 50);
+  });
+
+})();
 
 // ══ CATÁLOGO — COLAPSO/EXPANSIÓN ════════════════════════════
 let catalogExpanded = false;
