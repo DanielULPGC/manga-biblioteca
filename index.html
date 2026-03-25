@@ -11172,7 +11172,7 @@ async function geminiRequest(apiKey, bodyOrPrompt, maxRetries = 8) {
       throw new Error(errMsg);
     } catch(e) {
       if (!e.message.startsWith('Error ') && !e.message.startsWith('API')) {
-        if (attempt === maxRetries) throw new Error('Fallo de red. Revisa tu conexión.');
+        if (attempt === maxRetries) throw new Error('Error real: ' + e.message);
         await new Promise(r => setTimeout(r, delay + Math.random() * 500));
         attempt++; continue;
       }
