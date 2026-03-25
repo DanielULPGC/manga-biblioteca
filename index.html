@@ -11516,11 +11516,14 @@ document.addEventListener('DOMContentLoaded', updateCompDrawer);
 // CONEXIÓN API GEMINI 1.5 FLASH
 // ══════════════════════════════════════════════════════════════════
 async function geminiRequest(api_key, promptText) {
-  // Probamos con la URL v1 (estable) y el modelo con versión específica para forzar la detección
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${api_key}`;
+  // Probamos con la URL v1beta y el modelo 8b, que es el que menos errores de "Not Found" da en la UE
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${api_key}`;
 
   const body = {
-    contents: [{ role: 'user', parts: [{ text: promptText }] }],
+    contents: [{
+      role: 'user',
+      parts: [{ text: promptText }]
+    }],
     safetySettings: [
       { category: "HARM_CATEGORY_HARASSMENT",        threshold: "BLOCK_NONE" },
       { category: "HARM_CATEGORY_HATE_SPEECH",       threshold: "BLOCK_NONE" },
@@ -11529,7 +11532,7 @@ async function geminiRequest(api_key, promptText) {
     ],
     generationConfig: {
       temperature: 0.7,
-      maxOutputTokens: 2048
+      maxOutputTokens: 2000
     }
   };
 
@@ -11543,15 +11546,20 @@ async function geminiRequest(api_key, promptText) {
     const data = await resp.json();
 
     if (resp.ok) {
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      // Verificamos si Google ha devuelto contenido o si el filtro lo ha bloqueado
+      if (data.candidates && data.candidates[0].content) {
+        return data.candidates[0].content.parts[0].text;
+      } else {
+        throw new Error("Google ha devuelto una respuesta vacía (posible bloqueo de seguridad).");
+      }
     }
 
-    // Si este modelo falla, Google nos dirá exactamente por qué
-    const errorMsg = data.error?.message || `Error ${resp.status}`;
+    // Si el error es "Not Found", es que Google quiere otro nombre de modelo
+    const errorMsg = data.error?.message || `Error HTTP ${resp.status}`;
     throw new Error(errorMsg);
 
   } catch (e) {
-    console.error("Detalle del error:", e);
+    console.error("Detalle del fallo:", e);
     throw new Error(`Google dice: ${e.message}`);
   }
 }
