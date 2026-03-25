@@ -11516,8 +11516,8 @@ document.addEventListener('DOMContentLoaded', updateCompDrawer);
 // CONEXIÓN API GEMINI 1.5 FLASH
 // ══════════════════════════════════════════════════════════════════
 async function geminiRequest(api_key, promptText) {
-  // Usamos la versión v1beta que es la más flexible para este tipo de llamadas
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${api_key}`;
+  // Probamos con la URL v1 (estable) y el modelo con versión específica para forzar la detección
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${api_key}`;
 
   const body = {
     contents: [{ role: 'user', parts: [{ text: promptText }] }],
@@ -11527,7 +11527,10 @@ async function geminiRequest(api_key, promptText) {
       { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
       { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
     ],
-    generationConfig: { temperature: 0.7, maxOutputTokens: 2000 }
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 2048
+    }
   };
 
   try {
@@ -11543,13 +11546,13 @@ async function geminiRequest(api_key, promptText) {
       return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
 
-    // Si hay error, extraemos el mensaje real de Google
+    // Si este modelo falla, Google nos dirá exactamente por qué
     const errorMsg = data.error?.message || `Error ${resp.status}`;
     throw new Error(errorMsg);
 
   } catch (e) {
-    console.error("Error real:", e);
-    throw new Error(`Fallo en la comunicación: ${e.message}`);
+    console.error("Detalle del error:", e);
+    throw new Error(`Google dice: ${e.message}`);
   }
 }
 
