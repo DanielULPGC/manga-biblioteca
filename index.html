@@ -11513,36 +11513,30 @@ function filterByTitle(title) {
 document.addEventListener('DOMContentLoaded', updateCompDrawer);
 
 // ══════════════════════════════════════════════════════════════════
-// CONEXIÓN API GEMINI — FALLBACK MULTI-MODELO
+// CONEXIÓN API GEMINI
 // ══════════════════════════════════════════════════════════════════
 async function geminiRequest(api_key, promptText) {
-  // Intentamos primero con el modelo Pro, que es el más estable en la v1 estable
-  const models = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-pro"];
-  let lastError = "";
+  // La URL definitiva que usa Google en producción para Gemini 1.5 Flash
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${api_key}`;
 
-  for (const modelName of models) {
-    const url = `https://generativelanguage.googleapis.com/v1/models/${modelName}:generateContent?key=${api_key}`;
-
-    try {
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
-      });
-
-      const data = await resp.json();
-
-      if (resp.ok && data.candidates) {
-        return data.candidates[0].content.parts[0].text;
-      }
-
-      lastError = data.error?.message || `Error ${resp.status}`;
-    } catch (e) {
-      lastError = e.message;
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }] }]
+      })
+    });
+    const data = await resp.json();
+    if (resp.ok && data.candidates) {
+      return data.candidates[0].content.parts[0].text;
     }
+    // Si falla, lanzamos el error que nos diga Google
+    throw new Error(data.error?.message || `Error ${resp.status}`);
+  } catch (e) {
+    console.error("Fallo de API:", e);
+    throw new Error(`Google no responde: ${e.message}`);
   }
-
-  throw new Error(`Ningún modelo respondió. Último error: ${lastError}`);
 }
 
 
