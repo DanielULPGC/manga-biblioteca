@@ -11132,7 +11132,7 @@ document.addEventListener('DOMContentLoaded', updateCompDrawer);
 // CONEXIÓN API GEMINI 2.0 FLASH
 // ══════════════════════════════════════════════════════════════════
 async function geminiRequest(apiKey, bodyOrPrompt, maxRetries = 8) {
- const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+ const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
   
   // Accept either a string prompt or a full body object
   const requestBody = typeof bodyOrPrompt === 'string'
