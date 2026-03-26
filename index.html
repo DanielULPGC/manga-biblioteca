@@ -1483,6 +1483,56 @@ body.filtering-ods #odsCounter { display:inline-block; }
 }
 .cat-card.search-hidden { display: none; }
 
+/* ── MODO BÚSQUEDA ACTIVA ─────────────────────────────────────── */
+/* Cuando hay término de búsqueda: grid se convierte en lista compacta */
+#catGrid.search-active {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  max-width: 720px;
+}
+#catGrid.search-active .cat-card {
+  width: 100% !important;
+  flex-direction: row;
+  align-items: stretch;
+  border-radius: 5px;
+}
+#catGrid.search-active .cat-card-bar {
+  width: 5px; height: auto;
+  border-radius: 5px 0 0 5px;
+  flex-shrink: 0;
+}
+#catGrid.search-active .cat-card-body {
+  flex: 1; padding: 8px 11px 7px;
+}
+#catGrid.search-active .cat-card-actions {
+  display: flex; flex-direction: column;
+  justify-content: center; gap: 3px;
+  padding: 6px 8px 6px 0;
+  flex-shrink: 0;
+}
+#catGrid.search-active .cat-comp-btn { display: none; }
+#catGrid.search-active .ods-badges .ods-badge:nth-child(n+3) { display: none; }
+
+/* Resaltado del término buscado */
+.search-hl {
+  background: rgba(184,134,11,.28);
+  border-radius: 2px;
+  padding: 0 1px;
+  font-weight: 700;
+}
+
+/* Barra de búsqueda — botón limpiar */
+.search-clear {
+  background: none; border: none;
+  color: var(--grey); font-size: 1rem;
+  cursor: pointer; padding: 0 4px;
+  line-height: 1; transition: color .12s;
+  display: none;
+}
+.search-clear.visible { display: inline-block; }
+.search-clear:hover { color: var(--red); }
+
 
 /* ── PANEL DE BIENVENIDA ──────────────────────────────────────── */
 .welcome-panel {
@@ -4832,6 +4882,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <div class="search-bar">
   <label>🔍 Buscar en el catálogo →</label>
   <input type="search" id="catalogSearch" aria-label="Buscar en el catálogo" aria-controls="catGrid" autocomplete="off" placeholder="título, autor, tema…" oninput="searchCatalog(this.value)">
+  <button type="button" class="search-clear" id="searchClear" aria-label="Limpiar búsqueda" onclick="clearSearch()" title="Limpiar búsqueda">✕</button>
   <span id="searchCount" role="status" aria-live="polite" aria-atomic="true"></span>
 </div>
 
@@ -7594,13 +7645,13 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <div class="cat-card-actions"><button type="button" class="cat-comp-btn" onclick="toggleComp(this)" title="Añadir al comparador">⊕ Comparar</button><button type="button" class="cat-ficha-btn" onclick="openFicha(this.closest('.cat-card'))" title="Ver ficha de aula">Ficha aula</button><button type="button" class="cat-ficha-btn" style="background:rgba(42,58,122,.08);border-color:rgba(42,58,122,.3)" onclick="openRubrica(this.closest('.cat-card'))" title="Generar rúbrica IA">Rúbrica IA</button><button type="button" class="cat-lectura-btn" onclick="openLectura(this.closest('.cat-card'))" title="Ficha de lectura guiada">Lectura</button></div><a class="cat-opac-link" href="https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3DShinobino" target="_blank" rel="noopener noreferrer" aria-label="Buscar «Shinobino» en el catálogo de la ULPGC">Ver en catálogo ULPGC →</a>
 </div>
     </div>
-    <div class="cat-card" data-uso="filosofia" data-nivel="bachillerato universidad"
+    <div class="cat-card" data-uso="filosofia visual" data-nivel="bachillerato universidad"
          data-tip="Un padre y su hija buscan un símbolo sin significado en el París contemporáneo. Urasawa reflexiona sobre el arte, la impostura y la búsqueda de sentido.">
       <div class="cat-card-bar" style="background:#4A2A6A"></div>
       <div class="cat-card-body">
         <span class="cat-title">Mujirushi : el signo de los sueños</span>
         <span class="cat-author">Naoki Urasawa · 2022</span>
-        <div class="cat-badges"><span class="cat-badge" style="background:#4A2A6A">Filosofía y ética</span></div>
+        <div class="cat-badges"><span class="cat-badge" style="background:#4A2A6A">Filosofía y ética</span><span class="cat-badge" style="background:#5E3A8A">Alfabetización visual</span></div>
         <div class="cat-nivel"><span class="niv-badge">Bachillerato</span><span class="niv-badge">Universidad</span></div>
         <span class="periodo-badge" title="Contexto histórico occidental">Siglo XXI</span>
 <div class="cat-card-actions"><button type="button" class="cat-comp-btn" onclick="toggleComp(this)" title="Añadir al comparador">⊕ Comparar</button><button type="button" class="cat-ficha-btn" onclick="openFicha(this.closest('.cat-card'))" title="Ver ficha de aula">Ficha aula</button><button type="button" class="cat-ficha-btn" style="background:rgba(42,58,122,.08);border-color:rgba(42,58,122,.3)" onclick="openRubrica(this.closest('.cat-card'))" title="Generar rúbrica IA">Rúbrica IA</button><button type="button" class="cat-lectura-btn" onclick="openLectura(this.closest('.cat-card'))" title="Ficha de lectura guiada">Lectura</button></div><a class="cat-opac-link" href="https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3DMujirushi+:+el+signo+de+los+sueños" target="_blank" rel="noopener noreferrer" aria-label="Buscar «Mujirushi : el signo de los sueños» en el catálogo de la ULPGC">Ver en catálogo ULPGC →</a>
@@ -10640,38 +10691,111 @@ function showRec(id, ev) {
 
 // ── Buscador de catálogo ────────────────────────────────────────
 function searchCatalog(q) {
-  const cards = document.querySelectorAll('.cat-card');
-  const term = q.trim().toLowerCase();
-  const aulaOn = document.body.classList.contains('modo-aula');
+  const cards   = document.querySelectorAll('.cat-card');
+  const grid    = document.getElementById('catGrid');
+  const count   = document.getElementById('searchCount');
+  const clearBtn= document.getElementById('searchClear');
+  const term    = q.trim().toLowerCase();
+  const words   = term ? term.split(/\s+/).filter(Boolean) : [];
+  const aulaOn  = document.body.classList.contains('modo-aula');
+
+  // Toggle active search mode on grid
+  grid?.classList.toggle('search-active', words.length > 0);
+
+  // Show/hide clear button
+  if (clearBtn) clearBtn.classList.toggle('visible', words.length > 0);
+
   let visible = 0;
+  let firstMatch = null;
+
   cards.forEach(card => {
     const isSensitive = aulaOn && card.hasAttribute('data-sensitive');
     if (isSensitive) {
       card.classList.add('search-hidden');
       return;
     }
-    if (!term) {
+
+    if (!words.length) {
       card.classList.remove('search-hidden');
+      // Restore original title/author text (remove highlights)
+      _restoreText(card);
       visible++;
+      return;
+    }
+
+    const titleEl  = card.querySelector('.cat-title');
+    const authorEl = card.querySelector('.cat-author');
+    const tipText  = (card.getAttribute('data-tip') || '').toLowerCase();
+    const fullText = (
+      (titleEl?.textContent || '') + ' ' +
+      (authorEl?.textContent || '') + ' ' +
+      tipText
+    ).toLowerCase();
+
+    const match = words.every(w => fullText.includes(w));
+    card.classList.toggle('search-hidden', !match);
+
+    if (match) {
+      visible++;
+      if (!firstMatch) firstMatch = card;
+      // Highlight matching words in title and author
+      if (titleEl)  titleEl.innerHTML  = _highlight(titleEl.textContent, words);
+      if (authorEl) authorEl.innerHTML = _highlight(authorEl.textContent, words);
     } else {
-      const text = (
-        (card.querySelector('.cat-title')?.textContent || '') + ' ' +
-        (card.querySelector('.cat-author')?.textContent || '') + ' ' +
-        (card.getAttribute('data-tip') || '')
-      ).toLowerCase();
-      const match = term.split(/\s+/).every(w => text.includes(w));
-      card.classList.toggle('search-hidden', !match);
-      if (match) visible++;
+      _restoreText(card);
     }
   });
-  const count = document.getElementById('searchCount');
+
+  // Update counter
   if (count) {
-    const aulaNote = aulaOn ? ' (modo aula activo)' : '';
-    count.textContent = term
-      ? `${visible} título${visible !== 1 ? 's' : ''} encontrado${visible !== 1 ? 's' : ''}${aulaNote}`
-      : aulaOn ? 'Modo aula: títulos con contenido adulto ocultos' : '';
+    if (words.length) {
+      count.textContent = visible === 0
+        ? 'Sin resultados'
+        : `${visible} título${visible !== 1 ? 's' : ''}`;
+    } else {
+      count.textContent = aulaOn ? 'Modo aula activo' : '';
+    }
+  }
+
+  // Scroll to first result (after short delay for layout)
+  if (firstMatch && words.length) {
+    setTimeout(() => {
+      firstMatch.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
   }
 }
+
+function _highlight(text, words) {
+  let result = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  words.forEach(w => {
+    const rx = new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    result = result.replace(rx, '<mark class="search-hl">$1</mark>');
+  });
+  return result;
+}
+
+function _restoreText(card) {
+  const titleEl  = card.querySelector('.cat-title');
+  const authorEl = card.querySelector('.cat-author');
+  if (titleEl?.querySelector('.search-hl'))
+    titleEl.textContent = titleEl.textContent;
+  if (authorEl?.querySelector('.search-hl'))
+    authorEl.textContent = authorEl.textContent;
+}
+
+function clearSearch() {
+  const input = document.getElementById('catalogSearch');
+  if (input) { input.value = ''; input.focus(); }
+  searchCatalog('');
+}
+
+// Escape key clears search
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const input = document.getElementById('catalogSearch');
+    if (input && document.activeElement === input) clearSearch();
+  }
+});
 
 // ── Generic tab switcher (ARIA-complete) ─────────────────────────
 function _activateTab(panelPrefix, tabClass, id, btn) {
