@@ -3848,11 +3848,17 @@ p.sa-alternatives strong { color: var(--ink); }
   padding: 1.2rem 2rem 2rem;
   align-items: flex-start;
 }
-/* Default: cards hidden until user interacts */
-.catalog-collapsed #catGrid .cat-card { display: none; }
-.catalog-collapsed #catGrid .cat-card.search-match { display: flex; }
+/* Default: catálogo colapsado — solo se ven resultados de búsqueda */
+.catalog-collapsed #catGrid .cat-card { display: none !important; }
+.catalog-collapsed #catGrid .cat-card.search-match { display: flex !important; }
 
-/* Explore button */
+/* Cuando se busca: ocultar banner, mostrar solo resultados */
+.catalog-searching #catGrid .cat-card { display: none !important; }
+.catalog-searching #catGrid .cat-card.search-match { display: flex !important; }
+.catalog-searching .catalog-collapsed-banner { display: none !important; }
+.catalog-searching .catalog-explore-btn { display: none !important; }
+
+/* Explorar todo el catálogo — botón que expande */
 .catalog-explore-btn {
   display: block;
   margin: 1rem auto;
@@ -3864,32 +3870,19 @@ p.sa-alternatives strong { color: var(--ink); }
   cursor: pointer; transition: background .14s, color .14s;
 }
 .catalog-explore-btn:hover { background: var(--gold); color: var(--paper); }
-.catalog-explore-btn.expanded { opacity: .5; }
 
-/* Collapsed state banner */
+/* Banner estado vacío */
 .catalog-collapsed-banner {
   text-align: center;
-  padding: 2rem 2rem 1rem;
+  padding: 2.5rem 2rem 1.5rem;
   color: var(--grey);
   font-family: 'EB Garamond', serif;
   font-style: italic;
-  font-size: .95rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.8;
+  display: none;
 }
 .catalog-collapsed .catalog-collapsed-banner { display: block; }
-.catalog-collapsed-banner { display: none; }
-
-/* When searching: always show grid regardless of collapsed state */
-.catalog-searching #catGrid .cat-card { display: flex !important; }
-.catalog-searching .catalog-collapsed-banner { display: none !important; }
-.catalog-searching .catalog-explore-btn { display: none; }
-
-/* Result count emphasis */
-#searchCount {
-  font-family: 'Cinzel', serif;
-  font-size: .65rem; font-weight: 700;
-  color: var(--grey); letter-spacing: .04em;
-}
 
 /* ══ VISUAL IMPROVEMENTS ════════════════════════════════════ */
 
@@ -10744,65 +10737,64 @@ function showRec(id, ev) {
 
 // ── Buscador de catálogo ────────────────────────────────────────
 function searchCatalog(q) {
-  const cards   = document.querySelectorAll('.cat-card');
-  const grid    = document.getElementById('catGrid');
-  const count   = document.getElementById('searchCount');
-  const clearBtn= document.getElementById('searchClear');
-  const term    = q.trim().toLowerCase();
-  const words   = term ? term.split(/\s+/).filter(Boolean) : [];
-  const aulaOn  = document.body.classList.contains('modo-aula');
+  const cards    = document.querySelectorAll('.cat-card');
+  const grid     = document.getElementById('catGrid');
+  const section  = document.getElementById('catalogo');
+  const count    = document.getElementById('searchCount');
+  const clearBtn = document.getElementById('searchClear');
+  const term     = q.trim().toLowerCase();
+  const words    = term ? term.split(/\s+/).filter(Boolean) : [];
+  const aulaOn   = document.body.classList.contains('modo-aula');
+  const searching = words.length > 0;
 
-  grid?.classList.toggle('search-active', words.length > 0);
-  if (clearBtn) clearBtn.classList.toggle('visible', words.length > 0);
+  // Toggle search state on section and grid
+  section?.classList.toggle('catalog-searching', searching);
+  grid?.classList.toggle('search-active', searching);
+  if (clearBtn) clearBtn.classList.toggle('visible', searching);
 
   let visible = 0;
   let firstMatch = null;
 
   cards.forEach(card => {
     const isSensitive = aulaOn && card.hasAttribute('data-sensitive');
-    if (isSensitive) { card.classList.add('search-hidden'); return; }
 
-    // Remove injected tip if exists
+    // Remove injected tip from previous search
     card.querySelector('.cat-search-tip')?.remove();
+    card.classList.remove('search-match', 'search-hidden');
+    _restoreText(card);
 
-    if (!words.length) {
-      card.classList.remove('search-hidden');
-      _restoreText(card);
-      visible++;
-      return;
-    }
+    if (isSensitive) return;
+    if (!searching) return;
 
     const titleEl  = card.querySelector('.cat-title');
     const authorEl = card.querySelector('.cat-author');
     const tip      = card.getAttribute('data-tip') || '';
     const fullText = (
       (titleEl?.textContent || '') + ' ' +
-      (authorEl?.textContent || '') + ' ' +
-      tip
+      (authorEl?.textContent || '') + ' ' + tip
     ).toLowerCase();
 
     const match = words.every(w => fullText.includes(w));
-    card.classList.toggle('search-hidden', !match);
 
     if (match) {
+      card.classList.add('search-match');
       visible++;
       if (!firstMatch) firstMatch = card;
       if (titleEl)  titleEl.innerHTML  = _highlight(titleEl.textContent, words);
       if (authorEl) authorEl.innerHTML = _highlight(authorEl.textContent, words);
-      // Inject tip in list mode
+      // Show tip in list mode
       if (tip) {
         const tipEl = document.createElement('span');
         tipEl.className = 'cat-search-tip';
         tipEl.textContent = tip;
         card.querySelector('.cat-card-body')?.appendChild(tipEl);
       }
-    } else {
-      _restoreText(card);
     }
   });
 
+  // Counter
   if (count) {
-    if (words.length) {
+    if (searching) {
       if (visible === 0) {
         count.textContent = 'Sin resultados — prueba con otra palabra';
         count.className = 'no-results';
@@ -10816,7 +10808,8 @@ function searchCatalog(q) {
     }
   }
 
-  if (firstMatch && words.length) {
+  // Scroll to first result
+  if (firstMatch && searching) {
     setTimeout(() => firstMatch.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
   }
 }
@@ -11862,7 +11855,7 @@ document.addEventListener('DOMContentLoaded', updateCompDrawer);
 // ══════════════════════════════════════════════════════════════════
 async function geminiRequest(api_key, promptText) {
   // La URL definitiva que usa Google en producción para Gemini 1.5 Flash
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${api_key}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${api_key}`;
 
   try {
     const resp = await fetch(url, {
