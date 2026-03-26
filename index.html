@@ -10948,17 +10948,72 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── Impresión de modales ─────────────────────────────────────────
-// Usa el evento afterprint para limpiar la clase, evitando problemas
-// de timing con setTimeout.
+// Extrae el contenido del modal al body, imprime, y lo restaura.
+// Evita completamente los problemas de display:none en @media print.
 function printModal(cls) {
-  document.body.classList.add(cls);
-  // Limpiar al cerrar el diálogo de impresión
+  // Mapear clase → ID del modal con el contenido real
+  const MODAL_MAP = {
+    'printing-ficha':    'fichaModal',
+    'printing-rubrica':  'rubricaModal',
+    'printing-expres':   'expresModal',
+    'printing-sec':      'secModal',
+    'printing-lectura':  'lecturaModal',
+  };
+
+  const modalId = MODAL_MAP[cls];
+  if (!modalId) { window.print(); return; }
+
+  const modal = document.getElementById(modalId);
+  if (!modal) { window.print(); return; }
+
+  // Elementos a ocultar al imprimir (no el modal)
+  const HIDE_SELECTORS = '.ficha-actions, .rubrica-actions, .rubrica-controls, ' +
+    '.sec-actions, .expres-actions, .lectura-actions, .lectura-nivel-tabs, ' +
+    'button.ficha-print-btn, button.rubrica-print-btn, button.sec-print-btn, ' +
+    'button.expres-print-btn, button.lectura-print-btn, ' +
+    '.ficha-header button, .rubrica-header button, .sec-header button, .lectura-header button';
+
+  // Clonar contenido del modal
+  const clone = modal.cloneNode(true);
+
+  // Ocultar botones de acción en el clon
+  clone.querySelectorAll(HIDE_SELECTORS).forEach(el => el.style.display = 'none');
+
+  // Crear contenedor de impresión
+  const printWrap = document.createElement('div');
+  printWrap.id = '__print_wrap__';
+  printWrap.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:99999;overflow:auto;padding:1.5rem 2rem;box-sizing:border-box;';
+  printWrap.appendChild(clone);
+  document.body.appendChild(printWrap);
+
+  // Ocultar todo lo demás
+  const origBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
+
+  // CSS de impresión específico
+  const style = document.createElement('style');
+  style.id = '__print_style__';
+  style.textContent = `
+    @media print {
+      body > *:not(#__print_wrap__) { display: none !important; }
+      #__print_wrap__ {
+        position: static !important; overflow: visible !important;
+        padding: 0 !important; z-index: auto !important;
+      }
+      #__print_wrap__ * { box-shadow: none !important; max-height: none !important; overflow: visible !important; }
+    }
+  `;
+  document.head.appendChild(style);
+
   function cleanup() {
-    document.body.classList.remove(cls);
+    document.body.removeChild(printWrap);
+    document.head.removeChild(style);
+    document.body.style.overflow = origBodyOverflow;
     window.removeEventListener('afterprint', cleanup);
   }
   window.addEventListener('afterprint', cleanup);
-  // Pequeño delay para que el CSS se aplique antes de llamar a print
+
+  // Pequeño delay para que el DOM se actualice antes de imprimir
   requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
 }
 function _activateTab(panelPrefix, tabClass, id, btn) {
