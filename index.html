@@ -2888,24 +2888,77 @@ p.sa-alternatives strong { color: var(--ink); }
   #fichaOverlay, #compOverlay, #rubricaOverlay { display: none !important; }
 }
 
-.cat-card-actions {
-  display: flex; gap: 2px; margin-top: 5px; flex-wrap: wrap;
-}
-
 @media print {
-  /* When printing ficha: show only the ficha modal */
+  /* ── FICHA DE AULA ── */
   body.printing-ficha > *:not(#fichaOverlay) { display: none !important; }
-  body.printing-ficha #fichaOverlay { display: block !important; position: static !important; background: none !important; }
-  body.printing-ficha #fichaModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
-  body.printing-ficha .ficha-actions { display: none !important; }
+  body.printing-ficha #fichaOverlay {
+    display: block !important; position: static !important;
+    background: none !important; inset: auto !important;
+  }
+  body.printing-ficha #fichaModal {
+    display: block !important; box-shadow: none !important;
+    width: 100% !important; max-height: none !important;
+    border-radius: 0 !important; overflow: visible !important;
+  }
+  body.printing-ficha .ficha-actions,
+  body.printing-ficha .ficha-header button { display: none !important; }
 
-  /* When printing rubrica */
+  /* ── RÚBRICA IA ── */
   body.printing-rubrica > *:not(#rubricaOverlay) { display: none !important; }
-  body.printing-rubrica #rubricaOverlay { display: block !important; position: static !important; background: none !important; }
-  body.printing-rubrica #rubricaModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
+  body.printing-rubrica #rubricaOverlay {
+    display: block !important; position: static !important;
+    background: none !important; inset: auto !important;
+  }
+  body.printing-rubrica #rubricaModal {
+    display: block !important; box-shadow: none !important;
+    width: 100% !important; max-height: none !important;
+    border-radius: 0 !important; overflow: visible !important;
+  }
   body.printing-rubrica .rubrica-actions,
   body.printing-rubrica .rubrica-controls,
   body.printing-rubrica .rubrica-header button { display: none !important; }
+
+  /* ── ACTIVIDAD EXPRÉS ── */
+  body.printing-expres > *:not(#expresOverlay) { display: none !important; }
+  body.printing-expres #expresOverlay {
+    display: block !important; position: static !important;
+    background: none !important; inset: auto !important;
+  }
+  body.printing-expres #expresModal {
+    display: block !important; box-shadow: none !important;
+    width: 100% !important; max-height: none !important;
+    border-radius: 0 !important; overflow: visible !important;
+  }
+  body.printing-expres .expres-actions { display: none !important; }
+
+  /* ── SECUENCIA DIDÁCTICA ── */
+  body.printing-sec > *:not(#secOverlay) { display: none !important; }
+  body.printing-sec #secOverlay {
+    display: block !important; position: static !important;
+    background: none !important; inset: auto !important;
+  }
+  body.printing-sec #secModal {
+    display: block !important; box-shadow: none !important;
+    width: 100% !important; max-height: none !important;
+    border-radius: 0 !important; overflow: visible !important;
+  }
+  body.printing-sec .sec-actions,
+  body.printing-sec .sec-header button { display: none !important; }
+
+  /* ── FICHA DE LECTURA ── */
+  body.printing-lectura > *:not(#lecturaOverlay) { display: none !important; }
+  body.printing-lectura #lecturaOverlay {
+    display: block !important; position: static !important;
+    background: none !important; inset: auto !important;
+  }
+  body.printing-lectura #lecturaModal {
+    display: block !important; box-shadow: none !important;
+    width: 100% !important; max-height: none !important;
+    border-radius: 0 !important; overflow: visible !important;
+  }
+  body.printing-lectura .lectura-actions,
+  body.printing-lectura .lectura-nivel-tabs,
+  body.printing-lectura .lectura-header button { display: none !important; }
 }
 
 /* ── OPAC LINK ───────────────────────────────────────────── */
@@ -3024,11 +3077,8 @@ p.sa-alternatives strong { color: var(--ink); }
   border: 1px solid var(--rule); margin-left: auto;
 }
 /* Print */
-@media print {
-  body.printing-expres > *:not(#expresOverlay) { display: none !important; }
-  body.printing-expres #expresOverlay { display: block !important; position: static !important; background: none !important; }
-  body.printing-expres #expresModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
-  body.printing-expres .expres-actions { display: none !important; }
+.cat-card-actions {
+  display: flex; gap: 2px; margin-top: 5px; flex-wrap: wrap;
 }
 
 /* ── EJE CRONOLÓGICO OCCIDENTAL ─────────────────────────── */
@@ -3414,14 +3464,6 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .mapa-chip:hover { background: rgba(184,134,11,.15); border-color: var(--gold) !important; }
 
-@media print {
-  #mapaBtn, #mapaOverlay, #secOverlay { display: none !important; }
-  
-  
-  body.printing-sec #secModal { box-shadow: none !important; width: 100% !important; max-height: none !important; }
-  body.printing-sec .sec-actions { display: none !important; }
-}
-
 /* ── BOTÓN VOLVER ARRIBA ─────────────────────────────────── */
 #gtt-btn {
   position: fixed; bottom: 1.4rem; left: 1.4rem;
@@ -3805,7 +3847,6 @@ p.sa-alternatives strong { color: var(--ink); }
 .lectura-close-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; cursor:pointer; }
 .cat-lectura-btn { flex:1; min-width:0; font-family:'Cinzel',serif; font-size:.6rem; font-weight:700; letter-spacing:.02em; cursor:pointer; border-radius:3px; padding:5px 4px; text-align:center; transition:all .12s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a3a6a; background:rgba(26,58,106,.07); border:1px solid rgba(26,58,106,.25); }
 .cat-lectura-btn:hover { background:rgba(26,58,106,.18); }
-@media print { body.printing-lectura > *:not(#lecturaOverlay) { display:none !important; } body.printing-lectura #lecturaOverlay { display:block !important; position:static !important; background:none !important; } body.printing-lectura .lectura-actions, body.printing-lectura .lectura-nivel-tabs { display:none !important; } }
 
 #histOverlay { display:none; position:fixed; inset:0; z-index:4000; background:rgba(10,8,4,.72); backdrop-filter:blur(2px); }
 #histOverlay.open { display:flex; align-items:center; justify-content:center; padding:1rem; }
@@ -10338,7 +10379,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       </div>
     </div>
     <div class="ficha-actions">
-      <button type="button" class="ficha-print-btn" onclick="document.body.classList.add('printing-ficha');window.print();setTimeout(()=>document.body.classList.remove('printing-ficha'),500)">⎙ Imprimir ficha</button>
+      <button type="button" class="ficha-print-btn" onclick="printModal('printing-ficha')">⎙ Imprimir ficha</button>
       <button type="button" class="ficha-close-btn" onclick="closeFicha()">Cerrar</button>
     </div>
   </div>
@@ -10362,7 +10403,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     </div>
     <div class="expres-actions">
       <button type="button" class="expres-regen-btn" id="expresRegenBtn">↻ Otra actividad</button>
-      <button type="button" class="expres-print-btn" onclick="document.body.classList.add('printing-expres');window.print();setTimeout(()=>document.body.classList.remove('printing-expres'),500)">⎙ Imprimir</button>
+      <button type="button" class="expres-print-btn" onclick="printModal('printing-expres')">⎙ Imprimir</button>
       <button type="button" class="expres-close-btn" onclick="closeExpres()">Cerrar</button>
     </div>
   </div>
@@ -10424,7 +10465,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       <p class="rubrica-placeholder">Elige un título y etapa, y el asistente IA generará una rúbrica de evaluación LOMLOE lista para usar.</p>
     </div>
     <div class="rubrica-actions">
-      <button type="button" class="rubrica-print-btn" onclick="document.body.classList.add('printing-rubrica');window.print();setTimeout(()=>document.body.classList.remove('printing-rubrica'),500)">⎙ Imprimir rúbrica</button>
+      <button type="button" class="rubrica-print-btn" onclick="printModal('printing-rubrica')">⎙ Imprimir rúbrica</button>
       <button type="button" class="rubrica-close2" onclick="closeRubrica()">Cerrar</button>
     </div>
   </div>
@@ -10482,8 +10523,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       El asistente IA generará una secuencia didáctica completa lista para llevar al aula.</p>
     </div>
     <div class="sec-actions">
-      <button type="button" class="sec-print-btn"
-        onclick="document.body.classList.add('printing-sec');window.print();setTimeout(()=>document.body.classList.remove('printing-sec'),500)">
+      <button type="button" class="sec-print-btn" onclick="printModal('printing-sec')">
         ⎙ Imprimir secuencia
       </button>
       <button type="button" class="sec-close2" onclick="closeSec()">Cerrar</button>
@@ -10846,7 +10886,20 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ── Generic tab switcher (ARIA-complete) ─────────────────────────
+// ── Impresión de modales ─────────────────────────────────────────
+// Usa el evento afterprint para limpiar la clase, evitando problemas
+// de timing con setTimeout.
+function printModal(cls) {
+  document.body.classList.add(cls);
+  // Limpiar al cerrar el diálogo de impresión
+  function cleanup() {
+    document.body.classList.remove(cls);
+    window.removeEventListener('afterprint', cleanup);
+  }
+  window.addEventListener('afterprint', cleanup);
+  // Pequeño delay para que el CSS se aplique antes de llamar a print
+  requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
+}
 function _activateTab(panelPrefix, tabClass, id, btn) {
   // Deactivate all panels in this group
   document.querySelectorAll('.' + panelPrefix + '-panel').forEach(p => {
@@ -13490,7 +13543,7 @@ if (typeof filterNivel === 'function') {
     <div class="lectura-nivel-tabs" id="lecturaNivelTabs" role="tablist"></div>
     <div id="lecturaContent"></div>
     <div class="lectura-actions">
-      <button type="button" class="lectura-print-btn" onclick="document.body.classList.add('printing-lectura');window.print();setTimeout(()=>document.body.classList.remove('printing-lectura'),600)">⎙ Imprimir ficha</button>
+      <button type="button" class="lectura-print-btn" onclick="printModal('printing-lectura')">⎙ Imprimir ficha</button>
       <button type="button" class="lectura-close-btn" onclick="closeLectura()">Cerrar</button>
     </div>
   </div>
