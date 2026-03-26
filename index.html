@@ -1462,76 +1462,140 @@ body.filtering-ods #odsCounter { display:inline-block; }
 
 /* ── BUSCADOR ─────────────────────────────────────────────────── */
 .search-bar {
-  padding: .6rem 2rem .5rem;
+  padding: 1rem 2rem;
   background: rgba(232,221,200,.6);
   border-bottom: 1px solid var(--rule);
-  display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
 }
-.search-bar label {
-  font-family: 'Cinzel', serif; font-size: .7rem;
-  color: var(--grey); letter-spacing: .08em; white-space: nowrap;
+.search-bar-inner {
+  display: flex; align-items: center; gap: .6rem;
+  background: #fff;
+  border: 2px solid var(--rule);
+  border-radius: 6px;
+  padding: .45rem .7rem;
+  max-width: 680px;
+  transition: border-color .18s, box-shadow .18s;
+}
+.search-bar-inner:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184,134,11,.12);
+}
+.search-icon {
+  color: var(--grey); font-size: 1rem; flex-shrink: 0; opacity: .7;
 }
 #catalogSearch {
-  font-family: 'EB Garamond', serif; font-size: .95rem;
-  padding: .3rem .8rem; border: 1.5px solid var(--rule);
-  border-radius: 3px; background: #fff; color: var(--ink);
-  width: 280px; outline: none; transition: border-color .15s;
+  font-family: 'EB Garamond', serif; font-size: 1.05rem;
+  border: none; outline: none; background: transparent;
+  color: var(--ink); flex: 1; min-width: 0;
+  padding: 0;
 }
-#catalogSearch:focus { border-color: var(--gold); }
+#catalogSearch::placeholder { color: rgba(90,70,40,.45); }
+.search-clear {
+  background: none; border: none;
+  color: rgba(90,70,40,.4); font-size: 1.1rem;
+  cursor: pointer; padding: 0 2px; line-height: 1;
+  transition: color .12s; display: none; flex-shrink: 0;
+}
+.search-clear.visible { display: inline-block; }
+.search-clear:hover { color: var(--red); }
 #searchCount {
-  font-size: .8rem; color: var(--grey); font-style: italic;
+  font-family: 'Cinzel', serif; font-size: .65rem;
+  color: var(--gold); letter-spacing: .08em;
+  margin-top: .4rem; display: block; min-height: 1em;
+}
+#searchCount.no-results {
+  color: var(--red);
 }
 .cat-card.search-hidden { display: none; }
 
 /* ── MODO BÚSQUEDA ACTIVA ─────────────────────────────────────── */
-/* Cuando hay término de búsqueda: grid se convierte en lista compacta */
 #catGrid.search-active {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
-  max-width: 720px;
+  gap: .45rem;
+  padding: 1rem 2rem;
+  max-width: 800px;
 }
+
+/* Tarjeta en modo lista */
 #catGrid.search-active .cat-card {
   width: 100% !important;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 4px 1fr auto;
+  grid-template-rows: 1fr;
   align-items: stretch;
-  border-radius: 5px;
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgba(0,0,0,.07);
+  transition: box-shadow .15s, transform .12s;
+}
+#catGrid.search-active .cat-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,.13);
+  transform: translateX(2px);
 }
 #catGrid.search-active .cat-card-bar {
-  width: 5px; height: auto;
-  border-radius: 5px 0 0 5px;
-  flex-shrink: 0;
+  width: 4px; height: auto;
+  border-radius: 6px 0 0 6px;
+  grid-column: 1; grid-row: 1;
 }
 #catGrid.search-active .cat-card-body {
-  flex: 1; padding: 8px 11px 7px;
+  grid-column: 2; grid-row: 1;
+  padding: 10px 14px 9px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto auto;
+  column-gap: .8rem;
+  align-items: start;
 }
+#catGrid.search-active .cat-title {
+  grid-column: 1; grid-row: 1;
+  font-size: 1rem; -webkit-line-clamp: unset;
+  display: block; overflow: visible;
+}
+#catGrid.search-active .cat-author {
+  grid-column: 1; grid-row: 2;
+  font-size: .8rem; margin-top: 2px;
+}
+#catGrid.search-active .cat-badges {
+  grid-column: 2; grid-row: 1 / 3;
+  align-self: center; justify-content: flex-end;
+  margin-top: 0;
+}
+#catGrid.search-active .cat-nivel { display: none; }
+#catGrid.search-active .periodo-badge {
+  grid-column: 1; grid-row: 3;
+  margin-top: 4px;
+}
+#catGrid.search-active .ods-badges { display: none; }
+
+/* Tip visible en modo lista */
+#catGrid.search-active .cat-search-tip {
+  grid-column: 1 / 3; grid-row: 4;
+  font-family: 'EB Garamond', serif; font-size: .88rem;
+  color: var(--grey); line-height: 1.5;
+  margin-top: 5px; padding-top: 5px;
+  border-top: 1px solid rgba(200,184,154,.35);
+  display: block;
+}
+
+/* Acciones — columna derecha */
 #catGrid.search-active .cat-card-actions {
+  grid-column: 3; grid-row: 1;
   display: flex; flex-direction: column;
   justify-content: center; gap: 3px;
-  padding: 6px 8px 6px 0;
-  flex-shrink: 0;
+  padding: 8px 10px;
+  border-left: 1px solid rgba(200,184,154,.3);
+  min-width: 80px;
 }
 #catGrid.search-active .cat-comp-btn { display: none; }
-#catGrid.search-active .ods-badges .ods-badge:nth-child(n+3) { display: none; }
-
-/* Resaltado del término buscado */
-.search-hl {
-  background: rgba(184,134,11,.28);
-  border-radius: 2px;
-  padding: 0 1px;
-  font-weight: 700;
-}
-
-/* Barra de búsqueda — botón limpiar */
-.search-clear {
-  background: none; border: none;
-  color: var(--grey); font-size: 1rem;
-  cursor: pointer; padding: 0 4px;
-  line-height: 1; transition: color .12s;
+#catGrid.search-active .cat-opac-link {
   display: none;
 }
-.search-clear.visible { display: inline-block; }
-.search-clear:hover { color: var(--red); }
+
+/* Resaltado */
+.search-hl {
+  background: rgba(184,134,11,.22);
+  border-radius: 2px; padding: 0 1px;
+  font-weight: 700; color: #7a5500;
+}
 
 
 /* ── PANEL DE BIENVENIDA ──────────────────────────────────────── */
@@ -3916,19 +3980,6 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   color: var(--grey); text-transform: uppercase;
   white-space: nowrap;
 }
-#catalogSearch {
-  font-family: 'EB Garamond', serif; font-size: 1rem;
-  padding: .35rem 1rem;
-  border: 1.5px solid var(--rule); border-radius: 4px;
-  background: rgba(245,239,224,.95); color: var(--ink);
-  flex: 1; min-width: 180px; max-width: 380px;
-  transition: border-color .15s, box-shadow .15s;
-}
-#catalogSearch:focus {
-  outline: none; border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(184,134,11,.15);
-}
-
 /* Filter buttons */
 .fb {
   font-family: 'Cinzel', serif; font-size: .65rem !important;
@@ -4880,9 +4931,11 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 </div>
 
 <div class="search-bar">
-  <label>🔍 Buscar en el catálogo →</label>
-  <input type="search" id="catalogSearch" aria-label="Buscar en el catálogo" aria-controls="catGrid" autocomplete="off" placeholder="título, autor, tema…" oninput="searchCatalog(this.value)">
-  <button type="button" class="search-clear" id="searchClear" aria-label="Limpiar búsqueda" onclick="clearSearch()" title="Limpiar búsqueda">✕</button>
+  <div class="search-bar-inner">
+    <span class="search-icon" aria-hidden="true">🔍</span>
+    <input type="search" id="catalogSearch" aria-label="Buscar en el catálogo" aria-controls="catGrid" autocomplete="off" placeholder="Buscar título, autor o tema…" oninput="searchCatalog(this.value)">
+    <button type="button" class="search-clear" id="searchClear" aria-label="Limpiar búsqueda" onclick="clearSearch()" title="Limpiar (Escape)">✕</button>
+  </div>
   <span id="searchCount" role="status" aria-live="polite" aria-atomic="true"></span>
 </div>
 
@@ -10699,10 +10752,7 @@ function searchCatalog(q) {
   const words   = term ? term.split(/\s+/).filter(Boolean) : [];
   const aulaOn  = document.body.classList.contains('modo-aula');
 
-  // Toggle active search mode on grid
   grid?.classList.toggle('search-active', words.length > 0);
-
-  // Show/hide clear button
   if (clearBtn) clearBtn.classList.toggle('visible', words.length > 0);
 
   let visible = 0;
@@ -10710,14 +10760,13 @@ function searchCatalog(q) {
 
   cards.forEach(card => {
     const isSensitive = aulaOn && card.hasAttribute('data-sensitive');
-    if (isSensitive) {
-      card.classList.add('search-hidden');
-      return;
-    }
+    if (isSensitive) { card.classList.add('search-hidden'); return; }
+
+    // Remove injected tip if exists
+    card.querySelector('.cat-search-tip')?.remove();
 
     if (!words.length) {
       card.classList.remove('search-hidden');
-      // Restore original title/author text (remove highlights)
       _restoreText(card);
       visible++;
       return;
@@ -10725,11 +10774,11 @@ function searchCatalog(q) {
 
     const titleEl  = card.querySelector('.cat-title');
     const authorEl = card.querySelector('.cat-author');
-    const tipText  = (card.getAttribute('data-tip') || '').toLowerCase();
+    const tip      = card.getAttribute('data-tip') || '';
     const fullText = (
       (titleEl?.textContent || '') + ' ' +
       (authorEl?.textContent || '') + ' ' +
-      tipText
+      tip
     ).toLowerCase();
 
     const match = words.every(w => fullText.includes(w));
@@ -10738,30 +10787,37 @@ function searchCatalog(q) {
     if (match) {
       visible++;
       if (!firstMatch) firstMatch = card;
-      // Highlight matching words in title and author
       if (titleEl)  titleEl.innerHTML  = _highlight(titleEl.textContent, words);
       if (authorEl) authorEl.innerHTML = _highlight(authorEl.textContent, words);
+      // Inject tip in list mode
+      if (tip) {
+        const tipEl = document.createElement('span');
+        tipEl.className = 'cat-search-tip';
+        tipEl.textContent = tip;
+        card.querySelector('.cat-card-body')?.appendChild(tipEl);
+      }
     } else {
       _restoreText(card);
     }
   });
 
-  // Update counter
   if (count) {
     if (words.length) {
-      count.textContent = visible === 0
-        ? 'Sin resultados'
-        : `${visible} título${visible !== 1 ? 's' : ''}`;
+      if (visible === 0) {
+        count.textContent = 'Sin resultados — prueba con otra palabra';
+        count.className = 'no-results';
+      } else {
+        count.textContent = `${visible} título${visible !== 1 ? 's' : ''} encontrado${visible !== 1 ? 's' : ''}`;
+        count.className = '';
+      }
     } else {
       count.textContent = aulaOn ? 'Modo aula activo' : '';
+      count.className = '';
     }
   }
 
-  // Scroll to first result (after short delay for layout)
   if (firstMatch && words.length) {
-    setTimeout(() => {
-      firstMatch.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 60);
+    setTimeout(() => firstMatch.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
   }
 }
 
