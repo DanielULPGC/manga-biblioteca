@@ -9,9 +9,9 @@
 <title>Las eras de Japón y el manga — Recurso didáctico · Biblioteca ULPGC</title>
 
 <!-- ── SEO básico ── -->
-<meta name="description" content="Línea del tiempo interactiva, catálogo pedagógico de 279 títulos, situaciones de aprendizaje LOMLOE, itinerarios para Infantil y Primaria, tabla currículo-manga y recursos para el aula. Biblioteca del Campus del Obelisco, ULPGC.">
+<meta name="description" content="Línea del tiempo interactiva, catálogo pedagógico de 279 títulos, situaciones de aprendizaje LOMLOE, itinerarios para Infantil y Primaria, tabla currículo-manga y recursos para el aula. Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, ULPGC.">
 <meta name="keywords" content="manga, educación, LOMLOE, recurso didáctico, alfabetización visual, línea del tiempo, catálogo manga, situaciones de aprendizaje, Educación Primaria, Secundaria, Bachillerato, universidad">
-<meta name="author" content="Biblioteca del Campus del Obelisco — Universidad de Las Palmas de Gran Canaria">
+<meta name="author" content="Daniel Becerra Romero (Dir.) — Paula Arocha Moros · Lucía Hernández Chio · Daniel Hernández García · Zaira Rodríguez Panadero — Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, ULPGC">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://biblioteca.ulpgc.es/manga-recurso-didactico">
 
@@ -31,10 +31,10 @@
 
 <!-- ── Dublin Core (repositorios académicos e institucionales) ── -->
 <meta name="DC.title" content="El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico">
-<meta name="DC.creator" content="Biblioteca del Campus del Obelisco, Universidad de Las Palmas de Gran Canaria">
+<meta name="DC.creator" content="Becerra Romero, Daniel (Dir.); Arocha Moros, Paula; Hernández Chio, Lucía; Hernández García, Daniel; Rodríguez Panadero, Zaira — Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria">
 <meta name="DC.subject" content="Manga; Recursos educativos; Educación; LOMLOE; Alfabetización visual; Narrativa gráfica">
 <meta name="DC.description" content="Recurso web interactivo para docentes e investigadores que incluye línea del tiempo cronológica del manga japonés, catálogo pedagógico del fondo de la biblioteca, situaciones de aprendizaje con estructura LOMLOE, itinerarios didácticos para Educación Infantil y Primaria, tabla de correspondencias currículo-manga y selección de recursos para el aula.">
-<meta name="DC.publisher" content="Universidad de Las Palmas de Gran Canaria. Biblioteca del Campus del Obelisco">
+<meta name="DC.publisher" content="Universidad de Las Palmas de Gran Canaria. Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación">
 <meta name="DC.type" content="InteractiveResource">
 <meta name="DC.format" content="text/html">
 <meta name="DC.language" content="es">
@@ -53,15 +53,22 @@
   "datePublished": "2026-03-26",
   "dateModified": "2026-03-26",
   "version": "4.0",
-  "author": {
-    "@type": "Organization",
-    "name": "Biblioteca del Campus del Obelisco",
-    "parentOrganization": {
-      "@type": "CollegeOrUniversity",
-      "name": "Universidad de Las Palmas de Gran Canaria",
-      "url": "https://www.ulpgc.es"
-    }
-  },
+  "author": [
+    {
+      "@type": "Organization",
+      "name": "Biblioteca del Campus del Obelisco · Aula de Cómic",
+    "department": "Facultad de Ciencias de la Educación",
+      "parentOrganization": {
+        "@type": "CollegeOrUniversity",
+        "name": "Universidad de Las Palmas de Gran Canaria",
+        "url": "https://www.ulpgc.es"
+      }
+    },
+    { "@type": "Person", "name": "Paula Arocha Moros" },
+    { "@type": "Person", "name": "Lucía Hernández Chio" },
+    { "@type": "Person", "name": "Daniel Hernández García" },
+    { "@type": "Person", "name": "Zaira Rodríguez Panadero" }
+  ],
   "educationalLevel": ["Educación Infantil", "Educación Primaria", "Educación Secundaria", "Bachillerato", "Universidad"],
   "teaches": ["Alfabetización visual", "Historia del manga", "Literatura comparada", "Filosofía", "Historia contemporánea"],
   "license": "https://creativecommons.org/licenses/by-nc/4.0/",
@@ -242,131 +249,115 @@ toggleProyeccion = function() {
 
 // ══════════════════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════════
-// CONTADOR DE VISITAS GLOBALES — Abacus API (gratuito, CORS)
-// + ESTADÍSTICAS DE USO locales
+// CONTADOR DE VISITAS Y ESTADÍSTICAS DE USO — localStorage
 // ══════════════════════════════════════════════════════════════════
 (function() {
-  // ── Clave única para este recurso ─────────────────────────────
-  const NAMESPACE = 'ulpgc-biblioteca-obelisco';
-  const KEY       = 'manga-recurso-didactico';
-  const API_BASE  = 'https://abacus.jasoncameron.dev';
-
-  // ── Estadísticas de uso (localStorage) ───────────────────────
   const STATS_KEY = 'manga_stats_v4';
+
   function getStats() {
     try { return JSON.parse(localStorage.getItem(STATS_KEY) || '{}'); } catch(e) { return {}; }
   }
   function saveStats(s) {
     try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch(e) {}
   }
+
+  // ── API pública para trackear eventos ─────────────────────────
   window._trackStat = function(key) {
     const s = getStats();
     s[key] = (s[key] || 0) + 1;
     saveStats(s);
   };
 
-  // ── Contador global de visitas ────────────────────────────────
+  // ── Contar visita al cargar ───────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
-    const el = document.getElementById('visitCount');
-    const elGlobal = document.getElementById('visitCountGlobal');
+    window._trackStat('visitas');
+    const s = getStats();
 
-    // Incrementar y mostrar contador global
-    fetch(`${API_BASE}/hit/${NAMESPACE}/${KEY}`)
-      .then(r => r.json())
-      .then(data => {
-        const n = data.value || 0;
-        const fmt = n.toLocaleString('es-ES');
-        if (el) el.textContent = fmt;
-        if (elGlobal) elGlobal.textContent = fmt;
-        // Guardar local también como respaldo
-        try { localStorage.setItem('manga_global_visits', n); } catch(e) {}
-      })
-      .catch(() => {
-        // Fallback: contador local
-        try {
-          const v = parseInt(localStorage.getItem('manga_visits') || '0', 10) + 1;
-          localStorage.setItem('manga_visits', v);
-          if (el) el.textContent = v.toLocaleString('es-ES') + ' (local)';
-        } catch(e) {
-          if (el) el.textContent = '—';
+    // Mostrar visitas en el header
+    const el = document.getElementById('visitCountGlobal');
+    if (el) el.textContent = (s.visitas || 1).toLocaleString('es-ES');
+
+    // Parchear funciones principales para registrar uso
+    setTimeout(() => {
+      [
+        ['openFicha',        'fichas_abiertas'],
+        ['openRubrica',      'rubricas_abiertas'],
+        ['openLectura',      'lecturas_abiertas'],
+        ['openExpres',       'expres_abiertas'],
+        ['generarSecuencia', 'secuencias_generadas'],
+        ['generarRubrica',   'rubricas_generadas'],
+      ].forEach(([fn, stat]) => {
+        const orig = window[fn];
+        if (typeof orig === 'function' && !orig._tracked) {
+          window[fn] = function(...args) {
+            window._trackStat(stat);
+            return orig.apply(this, args);
+          };
+          window[fn]._tracked = true;
         }
       });
-
-    // ── Trackear uso de funciones ─────────────────────────────
-    window._trackStat('pageviews');
-
-    // Patch funciones principales para trackear uso
-    const patchFn = (name, statKey) => {
-      const orig = window[name];
-      if (typeof orig === 'function') {
-        window[name] = function(...args) {
-          window._trackStat(statKey);
-          return orig.apply(this, args);
-        };
-      }
-    };
-
-    setTimeout(() => {
-      patchFn('openFicha',   'fichas_abiertas');
-      patchFn('openRubrica', 'rubricas_generadas');
-      patchFn('openLectura', 'lecturas_abiertas');
-      patchFn('generarSecuencia', 'secuencias_generadas');
-      if (window.openExpres) patchFn('openExpres', 'expres_abiertas');
-    }, 500);
+    }, 600);
   });
 
   // ── Panel de estadísticas ─────────────────────────────────────
   window.showStats = function() {
     const s = getStats();
-    const globalVisits = parseInt(localStorage.getItem('manga_global_visits') || '0', 10);
 
     const rows = [
-      ['🌐 Visitas globales al recurso', globalVisits.toLocaleString('es-ES')],
-      ['📄 Páginas vistas (este navegador)', (s.pageviews || 0).toLocaleString('es-ES')],
-      ['📋 Fichas de aula abiertas', (s.fichas_abiertas || 0).toLocaleString('es-ES')],
-      ['📖 Fichas de lectura abiertas', (s.lecturas_abiertas || 0).toLocaleString('es-ES')],
-      ['⚡ Actividades exprés', (s.expres_abiertas || 0).toLocaleString('es-ES')],
-      ['⭐ Rúbricas IA abiertas', (s.rubricas_generadas || 0).toLocaleString('es-ES')],
-      ['📐 Secuencias generadas', (s.secuencias_generadas || 0).toLocaleString('es-ES')],
+      ['👁  Visitas a este recurso',          s.visitas            || 0],
+      ['📋  Fichas de aula abiertas',          s.fichas_abiertas    || 0],
+      ['📖  Fichas de lectura abiertas',       s.lecturas_abiertas  || 0],
+      ['⚡  Actividades exprés abiertas',      s.expres_abiertas    || 0],
+      ['⭐  Rúbricas IA abiertas',             s.rubricas_abiertas  || 0],
+      ['🧠  Secuencias didácticas generadas',  s.secuencias_generadas || 0],
+      ['📝  Rúbricas generadas',               s.rubricas_generadas || 0],
     ];
 
-    // Crear modal de estadísticas
     let overlay = document.getElementById('statsOverlay');
     if (!overlay) {
       overlay = document.createElement('div');
       overlay.id = 'statsOverlay';
       overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:5000;background:rgba(10,8,4,.75);backdrop-filter:blur(2px);align-items:center;justify-content:center;';
-      overlay.innerHTML = `
-        <div id="statsModal" style="background:var(--paper);color:var(--ink);width:min(480px,96vw);border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.4);font-family:'EB Garamond',serif;overflow:hidden;">
-          <div style="background:linear-gradient(135deg,#1a1008,#2a1a08);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;letter-spacing:.1em;color:var(--gold);">📊 ESTADÍSTICAS DE USO</span>
-            <button onclick="document.getElementById('statsOverlay').style.display='none';document.body.style.overflow='';" style="background:none;border:none;color:rgba(245,239,224,.6);font-size:1.1rem;cursor:pointer;">✕</button>
-          </div>
-          <div style="padding:1.2rem 1.4rem;">
-            <p style="font-size:.8rem;color:var(--grey);font-style:italic;margin-bottom:.9rem;">Visitas globales obtenidas de Abacus API · Resto registrado en este navegador</p>
-            <table style="width:100%;border-collapse:collapse;">
-              ${rows.map(([label, val]) => `
-                <tr style="border-bottom:1px solid rgba(200,184,154,.3);">
-                  <td style="padding:.5rem .3rem;font-size:.95rem;">${label}</td>
-                  <td style="padding:.5rem .3rem;text-align:right;font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold);">${val}</td>
-                </tr>`).join('')}
-            </table>
-            <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;">
-              <button onclick="if(confirm('¿Borrar estadísticas locales?')){localStorage.removeItem('${STATS_KEY}');document.getElementById('statsOverlay').style.display='none';document.body.style.overflow=''}" style="font-family:'Cinzel',serif;font-size:.62rem;background:none;border:1px solid var(--rule);color:var(--grey);padding:.3rem .8rem;border-radius:3px;cursor:pointer;">↺ Reiniciar locales</button>
-              <button onclick="document.getElementById('statsOverlay').style.display='none';document.body.style.overflow='';" style="font-family:'Cinzel',serif;font-size:.62rem;background:var(--ink);border:none;color:var(--gold);padding:.3rem .8rem;border-radius:3px;cursor:pointer;">Cerrar</button>
-            </div>
-          </div>
-        </div>`;
-      overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.style.display='none'; document.body.style.overflow=''; }});
       document.body.appendChild(overlay);
-    } else {
-      // Actualizar valores
-      const tds = overlay.querySelectorAll('td:last-child');
-      rows.forEach(([,val], i) => { if (tds[i]) tds[i].textContent = val; });
     }
+
+    overlay.innerHTML = `
+      <div style="background:var(--paper);color:var(--ink);width:min(440px,96vw);border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.4);font-family:'EB Garamond',serif;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#1a1008,#2a1a08);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;letter-spacing:.1em;color:var(--gold);">📊 ESTADÍSTICAS DE USO</span>
+          <button id="statsClose" style="background:none;border:none;color:rgba(245,239,224,.6);font-size:1.1rem;cursor:pointer;">✕</button>
+        </div>
+        <div style="padding:1.2rem 1.4rem;">
+          <p style="font-size:.82rem;color:var(--grey);font-style:italic;margin-bottom:.9rem;line-height:1.5;">
+            Datos registrados en este navegador · Acumulados desde la primera visita
+          </p>
+          <table style="width:100%;border-collapse:collapse;">
+            ${rows.map(([label, val]) => `
+              <tr style="border-bottom:1px solid rgba(200,184,154,.25);">
+                <td style="padding:.55rem .2rem;font-size:.95rem;">${label}</td>
+                <td style="padding:.55rem .2rem;text-align:right;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold);">${Number(val).toLocaleString('es-ES')}</td>
+              </tr>`).join('')}
+          </table>
+          <div style="margin-top:1.1rem;display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap;">
+            <button id="statsReset" style="font-family:'Cinzel',serif;font-size:.62rem;background:none;border:1px solid var(--rule);color:var(--grey);padding:.35rem .9rem;border-radius:3px;cursor:pointer;">↺ Reiniciar</button>
+            <button id="statsCloseBtn" style="font-family:'Cinzel',serif;font-size:.62rem;background:var(--ink);border:none;color:var(--gold);padding:.35rem .9rem;border-radius:3px;cursor:pointer;">Cerrar</button>
+          </div>
+        </div>
+      </div>`;
 
     overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+
+    const close = () => { overlay.style.display = 'none'; document.body.style.overflow = ''; };
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+    overlay.querySelector('#statsClose').onclick = close;
+    overlay.querySelector('#statsCloseBtn').onclick = close;
+    overlay.querySelector('#statsReset').onclick = () => {
+      if (confirm('¿Borrar todas las estadísticas guardadas en este navegador?')) {
+        localStorage.removeItem(STATS_KEY);
+        close();
+      }
+    };
   };
 })();
 
@@ -4504,7 +4495,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <header>
   <div class="kamon" role="img" aria-label="Torii, símbolo de la cultura japonesa">⛩</div>
   <h1>Las eras de <em>Japón</em> y el manga</h1>
-  <p class="sub">Biblioteca del Campus del Obelisco · ¿Puede un manga enseñar?</p>
+  <p class="sub">Biblioteca del Campus del Obelisco · Aula de Cómic · Facultad de Ciencias de la Educación · ULPGC</p>
   <div class="header-rule" aria-hidden="true"></div>
   <div class="jp" lang="ja">日本の時代と漫画</div>
   <div class="visit-counter" aria-live="polite" aria-label="Contador de visitas">
@@ -10476,7 +10467,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <strong>Cómo citar este recurso</strong>
   <span>
     <strong style="font-size:.7rem;display:inline;text-transform:none;letter-spacing:0;">APA 7.ª ed.:</strong>
-    Biblioteca del Campus del Obelisco, Universidad de Las Palmas de Gran Canaria. (2026). <em>El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.</em>
+    Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., &amp; Rodríguez Panadero, Z. (2026). <em>El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.</em> Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria.
     <button type="button" class="citation-copy" onclick="copyCitation()" aria-label="Copiar referencia APA al portapapeles">
       Copiar
     </button>
@@ -10488,9 +10479,27 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     Licencia de los contenidos propios: CC BY-NC 4.0 &nbsp;·&nbsp;
     Los derechos de los títulos reseñados pertenecen a sus respectivos autores y editoriales.
   </span>
+  <br>
+  <span style="font-size:.76rem; color:var(--grey); margin-top:.35rem; display:inline-block; line-height:1.8;">
+    <strong style="font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); font-weight:700;">Dirección</strong>
+    &nbsp;·&nbsp; Daniel Becerra Romero
+    &nbsp;&nbsp;
+    <strong style="font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); font-weight:700;">Equipo</strong>
+    &nbsp;·&nbsp;
+    Paula Arocha Moros &nbsp;·&nbsp;
+    Lucía Hernández Chio &nbsp;·&nbsp;
+    Daniel Hernández García &nbsp;·&nbsp;
+    Zaira Rodríguez Panadero
+  </span>
 </div>
 
-<footer>El manga como recurso didáctico — Biblioteca del Campus del Obelisco &nbsp;·&nbsp; Pasa el cursor sobre los títulos para más información</footer>
+<footer>
+  El manga como recurso didáctico — Biblioteca del Campus del Obelisco · Aula de Cómic · Facultad de Ciencias de la Educación · ULPGC
+  &nbsp;·&nbsp;
+  Dir. Daniel Becerra Romero
+  &nbsp;·&nbsp;
+  Paula Arocha Moros · Lucía Hernández Chio · Daniel Hernández García · Zaira Rodríguez Panadero
+</footer>
 
 
 <!-- ══ FICHA DE AULA MODAL ══════════════════════════════════ -->
@@ -11222,7 +11231,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── Copiar cita APA ──────────────────────────────────────────────
 function copyCitation() {
-  const text = `Biblioteca del Campus del Obelisco, Universidad de Las Palmas de Gran Canaria. (2026). El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.`;
+  const text = `Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. (2026). El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.citation-copy');
     btn.textContent = '✓ Copiado';
