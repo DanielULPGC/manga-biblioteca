@@ -241,17 +241,134 @@ toggleProyeccion = function() {
 
 
 // ══════════════════════════════════════════════════════════════════
-// CONTADOR DE VISITAS (se ejecuta tras cargar el DOM)
 // ══════════════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    const KEY = 'manga_visits';
-    let v = parseInt(localStorage.getItem(KEY) || '0', 10) + 1;
-    localStorage.setItem(KEY, v);
+// CONTADOR DE VISITAS GLOBALES — Abacus API (gratuito, CORS)
+// + ESTADÍSTICAS DE USO locales
+// ══════════════════════════════════════════════════════════════════
+(function() {
+  // ── Clave única para este recurso ─────────────────────────────
+  const NAMESPACE = 'ulpgc-biblioteca-obelisco';
+  const KEY       = 'manga-recurso-didactico';
+  const API_BASE  = 'https://abacus.jasoncameron.dev';
+
+  // ── Estadísticas de uso (localStorage) ───────────────────────
+  const STATS_KEY = 'manga_stats_v4';
+  function getStats() {
+    try { return JSON.parse(localStorage.getItem(STATS_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveStats(s) {
+    try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch(e) {}
+  }
+  window._trackStat = function(key) {
+    const s = getStats();
+    s[key] = (s[key] || 0) + 1;
+    saveStats(s);
+  };
+
+  // ── Contador global de visitas ────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
     const el = document.getElementById('visitCount');
-    if (el) el.textContent = v.toLocaleString('es-ES');
-  } catch(e) {}
-});
+    const elGlobal = document.getElementById('visitCountGlobal');
+
+    // Incrementar y mostrar contador global
+    fetch(`${API_BASE}/hit/${NAMESPACE}/${KEY}`)
+      .then(r => r.json())
+      .then(data => {
+        const n = data.value || 0;
+        const fmt = n.toLocaleString('es-ES');
+        if (el) el.textContent = fmt;
+        if (elGlobal) elGlobal.textContent = fmt;
+        // Guardar local también como respaldo
+        try { localStorage.setItem('manga_global_visits', n); } catch(e) {}
+      })
+      .catch(() => {
+        // Fallback: contador local
+        try {
+          const v = parseInt(localStorage.getItem('manga_visits') || '0', 10) + 1;
+          localStorage.setItem('manga_visits', v);
+          if (el) el.textContent = v.toLocaleString('es-ES') + ' (local)';
+        } catch(e) {
+          if (el) el.textContent = '—';
+        }
+      });
+
+    // ── Trackear uso de funciones ─────────────────────────────
+    window._trackStat('pageviews');
+
+    // Patch funciones principales para trackear uso
+    const patchFn = (name, statKey) => {
+      const orig = window[name];
+      if (typeof orig === 'function') {
+        window[name] = function(...args) {
+          window._trackStat(statKey);
+          return orig.apply(this, args);
+        };
+      }
+    };
+
+    setTimeout(() => {
+      patchFn('openFicha',   'fichas_abiertas');
+      patchFn('openRubrica', 'rubricas_generadas');
+      patchFn('openLectura', 'lecturas_abiertas');
+      patchFn('generarSecuencia', 'secuencias_generadas');
+      if (window.openExpres) patchFn('openExpres', 'expres_abiertas');
+    }, 500);
+  });
+
+  // ── Panel de estadísticas ─────────────────────────────────────
+  window.showStats = function() {
+    const s = getStats();
+    const globalVisits = parseInt(localStorage.getItem('manga_global_visits') || '0', 10);
+
+    const rows = [
+      ['🌐 Visitas globales al recurso', globalVisits.toLocaleString('es-ES')],
+      ['📄 Páginas vistas (este navegador)', (s.pageviews || 0).toLocaleString('es-ES')],
+      ['📋 Fichas de aula abiertas', (s.fichas_abiertas || 0).toLocaleString('es-ES')],
+      ['📖 Fichas de lectura abiertas', (s.lecturas_abiertas || 0).toLocaleString('es-ES')],
+      ['⚡ Actividades exprés', (s.expres_abiertas || 0).toLocaleString('es-ES')],
+      ['⭐ Rúbricas IA abiertas', (s.rubricas_generadas || 0).toLocaleString('es-ES')],
+      ['📐 Secuencias generadas', (s.secuencias_generadas || 0).toLocaleString('es-ES')],
+    ];
+
+    // Crear modal de estadísticas
+    let overlay = document.getElementById('statsOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'statsOverlay';
+      overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:5000;background:rgba(10,8,4,.75);backdrop-filter:blur(2px);align-items:center;justify-content:center;';
+      overlay.innerHTML = `
+        <div id="statsModal" style="background:var(--paper);color:var(--ink);width:min(480px,96vw);border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.4);font-family:'EB Garamond',serif;overflow:hidden;">
+          <div style="background:linear-gradient(135deg,#1a1008,#2a1a08);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;letter-spacing:.1em;color:var(--gold);">📊 ESTADÍSTICAS DE USO</span>
+            <button onclick="document.getElementById('statsOverlay').style.display='none';document.body.style.overflow='';" style="background:none;border:none;color:rgba(245,239,224,.6);font-size:1.1rem;cursor:pointer;">✕</button>
+          </div>
+          <div style="padding:1.2rem 1.4rem;">
+            <p style="font-size:.8rem;color:var(--grey);font-style:italic;margin-bottom:.9rem;">Visitas globales obtenidas de Abacus API · Resto registrado en este navegador</p>
+            <table style="width:100%;border-collapse:collapse;">
+              ${rows.map(([label, val]) => `
+                <tr style="border-bottom:1px solid rgba(200,184,154,.3);">
+                  <td style="padding:.5rem .3rem;font-size:.95rem;">${label}</td>
+                  <td style="padding:.5rem .3rem;text-align:right;font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold);">${val}</td>
+                </tr>`).join('')}
+            </table>
+            <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;">
+              <button onclick="if(confirm('¿Borrar estadísticas locales?')){localStorage.removeItem('${STATS_KEY}');document.getElementById('statsOverlay').style.display='none';document.body.style.overflow=''}" style="font-family:'Cinzel',serif;font-size:.62rem;background:none;border:1px solid var(--rule);color:var(--grey);padding:.3rem .8rem;border-radius:3px;cursor:pointer;">↺ Reiniciar locales</button>
+              <button onclick="document.getElementById('statsOverlay').style.display='none';document.body.style.overflow='';" style="font-family:'Cinzel',serif;font-size:.62rem;background:var(--ink);border:none;color:var(--gold);padding:.3rem .8rem;border-radius:3px;cursor:pointer;">Cerrar</button>
+            </div>
+          </div>
+        </div>`;
+      overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.style.display='none'; document.body.style.overflow=''; }});
+      document.body.appendChild(overlay);
+    } else {
+      // Actualizar valores
+      const tds = overlay.querySelectorAll('td:last-child');
+      rows.forEach(([,val], i) => { if (tds[i]) tds[i].textContent = val; });
+    }
+
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+})();
 
 // ══════════════════════════════════════════════════════════════════
 // TÍTULO DEL DÍA (se ejecuta tras cargar el DOM)
@@ -4392,7 +4509,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <div class="jp" lang="ja">日本の時代と漫画</div>
   <div class="visit-counter" aria-live="polite" aria-label="Contador de visitas">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    Este recurso ha sido consultado <span id="visitCount">…</span> veces desde este navegador
+    <span id="visitCountGlobal">…</span> visitas · <button onclick="showStats()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.65rem;color:rgba(184,134,11,.8);cursor:pointer;letter-spacing:.06em;padding:0;text-decoration:underline dotted;">ver estadísticas</button>
   </div>
 </header>
 
@@ -10640,6 +10757,9 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     </div>
       <div class="fab-item">
       <button type="button" class="fab-action" onclick="openHist()" aria-label="Historial de la sesión" title="Historial">&#9719;</button>
+    </div>
+    <div class="fab-item">
+      <button type="button" class="fab-action" onclick="showStats()" aria-label="Estadísticas de uso" title="Estadísticas">📊</button>
     </div>
     <div class="fab-item">
       <button type="button" class="fab-action" onclick="var a=document.getElementById('top-anchor');if(a)a.scrollIntoView({behavior:'smooth'});else window.scrollTo({top:0,behavior:'smooth'});" aria-label="Volver al inicio" title="Volver arriba">↑</button>
