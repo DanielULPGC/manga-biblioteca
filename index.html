@@ -50,6 +50,9 @@
   "description": "Recurso educativo interactivo con línea del tiempo del manga japonés, catálogo pedagógico de 279 títulos, situaciones de aprendizaje con estructura LOMLOE e itinerarios para Infantil y Primaria.",
   "url": "https://biblioteca.ulpgc.es/manga-recurso-didactico",
   "inLanguage": "es",
+  "datePublished": "2026-03-26",
+  "dateModified": "2026-03-26",
+  "version": "4.0",
   "author": {
     "@type": "Organization",
     "name": "Biblioteca del Campus del Obelisco",
@@ -2221,9 +2224,31 @@ body.modo-proyeccion .fb { font-size: .7rem; padding: .3rem .7rem; }
   letter-spacing: .05em; color: var(--ink);
   background: rgba(184,134,11,.12); border: 1.5px solid var(--gold);
   border-radius: 3px; padding: .35rem 1rem; cursor: pointer;
-  transition: background .12s;
+  transition: background .12s; display: block; margin-bottom: .8rem;
 }
 .vitrina-catalog-btn:hover { background: rgba(184,134,11,.25); }
+
+/* ── BOTONES DE ACCIÓN PEDAGÓGICA EN VITRINA ─────────────────── */
+.vitrina-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .4rem;
+  margin-bottom: 1rem;
+}
+.vitrina-action-btn {
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
+  letter-spacing: .04em; cursor: pointer;
+  border-radius: 4px; padding: .4rem .5rem;
+  transition: background .12s, color .12s;
+  text-align: center;
+  background: rgba(245,239,224,.07);
+  color: var(--paper);
+  border: 1px solid rgba(245,239,224,.25);
+}
+.vitrina-action-btn:hover {
+  background: rgba(245,239,224,.18);
+  border-color: rgba(245,239,224,.5);
+}
 
 /* ── MICROFICHA «LLÉVALO AL AULA» ─────────────────────────────── */
 .vitrina-ficha {
@@ -2825,7 +2850,8 @@ p.sa-alternatives strong { color: var(--ink); }
   display: block; margin-bottom: .3rem;
 }
 #rubricaModal .rubrica-controls select,
-#rubricaModal .rubrica-controls input {
+#rubricaModal .rubrica-controls input[type="text"],
+#rubricaModal .rubrica-controls input[type="number"] {
   font-family: 'EB Garamond', serif; font-size: .9rem;
   border: 1px solid var(--rule); border-radius: 3px;
   background: #fff; color: var(--ink); padding: .3rem .6rem;
@@ -2833,6 +2859,30 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #rubricaModal .rubrica-controls select:focus,
 #rubricaModal .rubrica-controls input:focus { border-color: #2a3a7a; }
+
+/* ── Grupo de competencias con checkboxes ── */
+.sec-comp-group { min-width: 200px; }
+.sec-comp-label {
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--grey);
+  display: block; margin-bottom: .35rem;
+}
+.sec-comp-checks {
+  display: flex; flex-wrap: wrap; gap: .25rem .6rem;
+  background: #fff; border: 1px solid var(--rule);
+  border-radius: 3px; padding: .4rem .6rem;
+  max-width: 340px;
+}
+.sec-comp-checks label {
+  font-family: 'EB Garamond', serif; font-size: .85rem;
+  color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; gap: .3rem;
+  text-transform: none; letter-spacing: 0; font-weight: 400;
+  margin-bottom: 0; white-space: nowrap;
+}
+.sec-comp-checks input[type="checkbox"] {
+  accent-color: #2a3a7a; width: 13px; height: 13px; cursor: pointer;
+}
 #rubricaModal .rubrica-gen-btn {
   background: #2a3a7a; color: #fff; border: none;
   border-radius: 3px; padding: .4rem 1rem;
@@ -2885,20 +2935,18 @@ p.sa-alternatives strong { color: var(--ink); }
 .rubrica-no-key a { color: #2a3a7a; }
 
 @media print {
-  #fichaOverlay, #compOverlay, #rubricaOverlay { display: none !important; }
-}
-
-@media print {
   /* ── FICHA DE AULA ── */
   body.printing-ficha > *:not(#fichaOverlay) { display: none !important; }
   body.printing-ficha #fichaOverlay {
     display: block !important; position: static !important;
     background: none !important; inset: auto !important;
+    overflow: visible !important;
   }
   body.printing-ficha #fichaModal {
     display: block !important; box-shadow: none !important;
     width: 100% !important; max-height: none !important;
     border-radius: 0 !important; overflow: visible !important;
+    position: static !important;
   }
   body.printing-ficha .ficha-actions,
   body.printing-ficha .ficha-header button { display: none !important; }
@@ -2908,11 +2956,13 @@ p.sa-alternatives strong { color: var(--ink); }
   body.printing-rubrica #rubricaOverlay {
     display: block !important; position: static !important;
     background: none !important; inset: auto !important;
+    overflow: visible !important;
   }
   body.printing-rubrica #rubricaModal {
     display: block !important; box-shadow: none !important;
     width: 100% !important; max-height: none !important;
     border-radius: 0 !important; overflow: visible !important;
+    position: static !important;
   }
   body.printing-rubrica .rubrica-actions,
   body.printing-rubrica .rubrica-controls,
@@ -2923,11 +2973,13 @@ p.sa-alternatives strong { color: var(--ink); }
   body.printing-expres #expresOverlay {
     display: block !important; position: static !important;
     background: none !important; inset: auto !important;
+    overflow: visible !important;
   }
   body.printing-expres #expresModal {
     display: block !important; box-shadow: none !important;
     width: 100% !important; max-height: none !important;
     border-radius: 0 !important; overflow: visible !important;
+    position: static !important;
   }
   body.printing-expres .expres-actions { display: none !important; }
 
@@ -2936,11 +2988,13 @@ p.sa-alternatives strong { color: var(--ink); }
   body.printing-sec #secOverlay {
     display: block !important; position: static !important;
     background: none !important; inset: auto !important;
+    overflow: visible !important;
   }
   body.printing-sec #secModal {
     display: block !important; box-shadow: none !important;
     width: 100% !important; max-height: none !important;
     border-radius: 0 !important; overflow: visible !important;
+    position: static !important;
   }
   body.printing-sec .sec-actions,
   body.printing-sec .sec-header button { display: none !important; }
@@ -2950,11 +3004,13 @@ p.sa-alternatives strong { color: var(--ink); }
   body.printing-lectura #lecturaOverlay {
     display: block !important; position: static !important;
     background: none !important; inset: auto !important;
+    overflow: visible !important;
   }
   body.printing-lectura #lecturaModal {
     display: block !important; box-shadow: none !important;
     width: 100% !important; max-height: none !important;
     border-radius: 0 !important; overflow: visible !important;
+    position: static !important;
   }
   body.printing-lectura .lectura-actions,
   body.printing-lectura .lectura-nivel-tabs,
@@ -10310,7 +10366,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   </span>
   <br>
   <span style="font-size:.74rem; color:var(--grey); font-style:italic;">
-    Última actualización: 15 de marzo de 2026 · v3.0 &nbsp;·&nbsp;
+    Última actualización: 26 de marzo de 2026 · v4.0 &nbsp;·&nbsp;
     Fondo: 279 títulos &nbsp;·&nbsp;
     Licencia de los contenidos propios: CC BY-NC 4.0 &nbsp;·&nbsp;
     Los derechos de los títulos reseñados pertenecen a sus respectivos autores y editoriales.
@@ -10446,16 +10502,18 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
           <option value="Universidad">Universidad</option>
         </select>
       </div>
-      <div>
-        <label for="rubricaComp">Competencia principal</label>
-        <select id="rubricaComp">
-          <option value="CCL">CCL — Comunicación lingüística</option>
-          <option value="CPAA">CPAA — Aprender a aprender</option>
-          <option value="CSC">CSC — Social y cívica</option>
-          <option value="CCEC">CCEC — Expresión cultural</option>
-          <option value="CD">CD — Competencia digital</option>
-          <option value="CPSAA">CPSAA — Personal y social</option>
-        </select>
+      <div class="sec-comp-group">
+        <label class="sec-comp-label">Competencias clave <span style="font-size:.6rem;opacity:.6">(una o varias)</span></label>
+        <div class="sec-comp-checks" id="rubricaCompChecks">
+          <label><input type="checkbox" value="CCL" checked> CCL — Lingüística</label>
+          <label><input type="checkbox" value="CP"> CP — Plurilingüe</label>
+          <label><input type="checkbox" value="STEM"> STEM — Científica</label>
+          <label><input type="checkbox" value="CD"> CD — Digital</label>
+          <label><input type="checkbox" value="CPSAA"> CPSAA — Personal y social</label>
+          <label><input type="checkbox" value="CC"> CC — Ciudadana</label>
+          <label><input type="checkbox" value="CE"> CE — Emprendedora</label>
+          <label><input type="checkbox" value="CCEC"> CCEC — Cultural y artística</label>
+        </div>
       </div>
       <button type="button" class="rubrica-gen-btn" id="rubricaGenBtn" onclick="generarRubrica()">
         Generar rúbrica ✦
@@ -10504,15 +10562,18 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
           <option value="8">8 sesiones</option>
         </select>
       </div>
-      <div>
-        <label for="secComp">Competencia principal</label>
-        <select id="secComp">
-          <option value="CCL">CCL — Lingüística</option>
-          <option value="CPSAA">CPSAA — Personal y social</option>
-          <option value="CSC">CSC — Social y cívica</option>
-          <option value="CCEC">CCEC — Expresión cultural</option>
-          <option value="STEM">STEM — Científica</option>
-        </select>
+      <div class="sec-comp-group">
+        <label class="sec-comp-label">Competencias clave <span style="font-size:.6rem;opacity:.6">(selecciona una o varias)</span></label>
+        <div class="sec-comp-checks" id="secCompChecks">
+          <label><input type="checkbox" value="CCL" checked> CCL — Lingüística</label>
+          <label><input type="checkbox" value="CP"> CP — Plurilingüe</label>
+          <label><input type="checkbox" value="STEM"> STEM — Científica</label>
+          <label><input type="checkbox" value="CD"> CD — Digital</label>
+          <label><input type="checkbox" value="CPSAA"> CPSAA — Personal y social</label>
+          <label><input type="checkbox" value="CC"> CC — Ciudadana</label>
+          <label><input type="checkbox" value="CE"> CE — Emprendedora</label>
+          <label><input type="checkbox" value="CCEC"> CCEC — Cultural y artística</label>
+        </div>
       </div>
       <button type="button" class="sec-gen-btn" id="secGenBtn" onclick="generarSecuencia()">
         Generar secuencia ✦
@@ -11086,6 +11147,15 @@ function ensureVitrinaUI() {
       <p id="vitrineDesc" class="vitrina-desc"></p>
       <div id="vitrineMeta" class="vitrina-meta"></div>
       <a id="vitrineOpacLink" class="vitrina-catalog-btn" href="#" target="_blank" rel="noopener">Buscar en el catálogo ULPGC</a>
+
+      <!-- ── Botones de acción pedagógica ── -->
+      <div id="vitrineActions" class="vitrina-actions">
+        <button type="button" class="vitrina-action-btn" id="vitrineFichaBtn" title="Ficha de aula">📋 Ficha aula</button>
+        <button type="button" class="vitrina-action-btn" id="vitrineRubricaBtn" title="Rúbrica IA">⭐ Rúbrica IA</button>
+        <button type="button" class="vitrina-action-btn" id="vitrineLecturaBtn" title="Ficha de lectura">📖 Lectura</button>
+        <button type="button" class="vitrina-action-btn" id="vitrineExpresBtn" title="Actividad exprés">⚡ Exprés</button>
+      </div>
+
       <div class="vitrina-ficha">
         <div class="vitrina-ficha-label">Llévalo al aula</div>
         <div id="vitrineSteps" class="vitrina-ficha-steps"></div>
@@ -11102,6 +11172,28 @@ function ensureVitrinaUI() {
   document.body.appendChild(drawer);
 
   drawer.querySelector('.vitrina-close').addEventListener('click', closeVitrina);
+}
+
+// ── Tarjeta virtual para línea del tiempo ────────────────────────
+// Crea un elemento DOM mínimo compatible con openFicha/openLectura/
+// openExpres/openRubrica a partir de los datos de una tarjeta .card
+function _makeVirtualCard(title, author, tip, uso, nivel) {
+  const div = document.createElement('div');
+  div.setAttribute('data-uso',   uso   || 'visual');
+  div.setAttribute('data-nivel', nivel || 'secundaria bachillerato');
+  div.setAttribute('data-tip',   tip   || '');
+
+  const titleSpan = document.createElement('span');
+  titleSpan.className = 'cat-title';
+  titleSpan.textContent = title;
+
+  const authorSpan = document.createElement('span');
+  authorSpan.className = 'cat-author';
+  authorSpan.textContent = author;
+
+  div.appendChild(titleSpan);
+  div.appendChild(authorSpan);
+  return div;
 }
 
 function openVitrina(card) {
@@ -11165,6 +11257,19 @@ function openVitrina(card) {
   });
   // Build classroom activity ficha
   buildFicha(uso, nivel);
+
+  // ── Botones de acción pedagógica ─────────────────────────────
+  // Construir tarjeta virtual compatible con openFicha/openLectura/openExpres/openRubrica
+  const vCard = _makeVirtualCard(title, author, tip, uso, nivel);
+  const fichaBtn   = document.getElementById('vitrineFichaBtn');
+  const rubricaBtn = document.getElementById('vitrineRubricaBtn');
+  const lecturaBtn = document.getElementById('vitrineLecturaBtn');
+  const expresBtn  = document.getElementById('vitrineExpresBtn');
+
+  if (fichaBtn)   fichaBtn.onclick   = () => { closeVitrina(); openFicha(vCard); };
+  if (rubricaBtn) rubricaBtn.onclick = () => { closeVitrina(); openRubrica(vCard); };
+  if (lecturaBtn) lecturaBtn.onclick = () => { closeVitrina(); openLectura(vCard); };
+  if (expresBtn)  expresBtn.onclick  = () => { closeVitrina(); window.openExpres(vCard); };
 
   const related = Array.from(document.querySelectorAll('.card[data-vitrina="' + vitrineId + '"]'))
     .filter(c => c !== card);
@@ -11938,7 +12043,8 @@ async function generarRubrica() {
   const apiKey  = sessionStorage.getItem('manga_asist_apikey') || '';
   const titulo  = document.getElementById('rubricaTitulo').value.trim();
   const nivel   = document.getElementById('rubricaNivel').value;
-  const comp    = document.getElementById('rubricaComp').value;
+  const comps   = Array.from(document.querySelectorAll('#rubricaCompChecks input:checked')).map(cb => cb.value);
+  const comp    = comps.length ? comps.join(' · ') : 'CCL';
   const bodyEl  = document.getElementById('rubricaBody');
   const btn     = document.getElementById('rubricaGenBtn');
 
@@ -11946,7 +12052,6 @@ async function generarRubrica() {
     bodyEl.innerHTML = '<p class="rubrica-placeholder">Introduce el título de un manga.</p>';
     return;
   }
-
   if (!apiKey) {
     bodyEl.innerHTML = '<p class="rubrica-no-key">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio para usar esta función.</p>';
     return;
@@ -11956,7 +12061,7 @@ async function generarRubrica() {
   btn.textContent = 'Generando…';
   bodyEl.innerHTML = '<p class="rubrica-placeholder">Generando rúbrica profesional con Gemini…</p>';
 
-  const prompt = `Actúa como experto en pedagogía LOMLOE. Genera una rúbrica de evaluación detallada para trabajar el manga "${titulo}" en ${nivel}. Competencia principal: ${comp}. Devuelve SOLO código HTML limpio (sin bloques de código markdown). Incluye un párrafo de contexto y una tabla 4x4 con niveles: Inicial, En desarrollo, Conseguido y Excelente.`;
+  const prompt = `Actúa como experto en pedagogía LOMLOE. Genera una rúbrica de evaluación detallada para trabajar el manga "${titulo}" en ${nivel}. Competencias clave: ${comp}. Devuelve SOLO código HTML limpio (sin bloques de código markdown). Incluye un párrafo de contexto y una tabla 4x4 con niveles: Inicial, En desarrollo, Conseguido y Excelente. Para cada criterio indica a qué competencia corresponde.`;
 
   try {
     let html = await geminiRequest(apiKey, prompt);
@@ -11976,7 +12081,9 @@ async function generarSecuencia() {
   const titulo   = document.getElementById('secTitulo').value.trim();
   const etapa    = document.getElementById('secEtapa').value;
   const sesiones = document.getElementById('secSesiones').value;
-  const comp     = document.getElementById('secComp').value;
+  const comps    = Array.from(document.querySelectorAll('#secCompChecks input:checked')).map(cb => cb.value);
+  const comp     = comps.length ? comps.join(' · ') : 'CCL';
+  const compPrincipal = comps.length ? comps[0] : 'CCL';
   const bodyEl   = document.getElementById('secBody');
   const btn      = document.getElementById('secGenBtn');
 
@@ -11984,7 +12091,6 @@ async function generarSecuencia() {
     bodyEl.innerHTML = '<p class="sec-placeholder">Introduce el título de un manga.</p>';
     return;
   }
-
   if (!apiKey) {
     bodyEl.innerHTML = '<p class="sec-placeholder">Activa el <strong>Asistente IA</strong> con tu clave de Google AI Studio para usar esta función.</p>';
     return;
@@ -11999,15 +12105,15 @@ Genera una secuencia didáctica completa y aplicable en un aula canaria usando e
 
 CONTEXTO CURRICULAR (${etapa}):
 ${etapa.includes('Infantil') ? 'Decreto 196/2022 Canarias. Áreas: Crecimiento en Armonía · Descubrimiento del Entorno · Comunicación y Representación. Metodología: aprendizaje globalizado, rincones, juego simbólico.' : ''}${etapa.includes('Primaria') ? 'Decreto 83/2022 Canarias + RD 157/2022. Énfasis en entorno insular, situaciones de aprendizaje contextualizadas, interdisciplinariedad.' : ''}${(etapa.includes('ESO') || etapa.includes('Secundaria')) ? 'RD 217/2022 + normativa canaria. Situaciones de aprendizaje, ODS, ciudadanía global.' : ''}${etapa.includes('Bachillerato') ? 'RD 217/2022 bachillerato. Pensamiento crítico, investigación, preparación universitaria.' : ''}
-Competencia: ${comp}. Sesiones: ${sesiones} × 50 min.
+Competencias clave trabajadas: ${comp}. Competencia principal: ${compPrincipal}. Sesiones: ${sesiones} × 50 min.
 
 ESTRUCTURA HTML (sin markdown):
 1. <h3>Título y justificación</h3> — Cita la normativa canaria aplicable.
 2. <h4>Objetivos didácticos</h4> — 4-5 objetivos.
-3. <h4>Competencias clave</h4> — ${comp} como principal + 2 complementarias.
+3. <h4>Competencias clave</h4> — ${comp}. Describe la contribución de cada una.
 4. <h4>Tabla de sesiones</h4> — Sesión|Título|Actividad|Recursos|Indicador evaluación.
 5. <h4>Metodología</h4> — Metodologías activas canarias.
-6. <h4>Evaluación</h4> — Criterios LOMLOE + instrumentos.
+6. <h4>Evaluación</h4> — Criterios LOMLOE + instrumentos vinculados a ${comp}.
 ${etapa.includes('Infantil') ? '7. <h4>Conexión áreas Infantil</h4>' : ''}${etapa.includes('Primaria') ? '7. <h4>Interdisciplinariedad</h4>' : ''}
 Solo HTML: <h3><h4><p><ul><li><table><thead><tbody><tr><th><td>`;
 
