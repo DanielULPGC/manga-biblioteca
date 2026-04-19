@@ -18,7 +18,7 @@
 <!-- ── Open Graph (LinkedIn, Facebook, WhatsApp) ── -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Las eras de Japón y el manga — Recurso didáctico · Biblioteca ULPGC">
-<meta property="og:description" content="Línea del tiempo interactiva con 57 títulos en 9 eras históricas japonesas · Catálogo pedagógico de 279 títulos del fondo · Situaciones de aprendizaje con estructura LOMLOE · Itinerarios para Infantil y Primaria · Tabla currículo → manga · Recursos para el aula.">
+<meta property="og:description" content="Línea del tiempo interactiva con 48 títulos en 9 eras históricas japonesas · Catálogo pedagógico de 279 títulos del fondo · Situaciones de aprendizaje con estructura LOMLOE · Itinerarios para Infantil y Primaria · Tabla currículo → manga · Recursos para el aula.">
 <meta property="og:url" content="https://biblioteca.ulpgc.es/manga-recurso-didactico">
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="Biblioteca del Campus del Obelisco — ULPGC">
@@ -1914,6 +1914,17 @@ body.filtering-ods #odsCounter { display:inline-block; }
 /* Hide sensitive cards in modo aula */
 body.modo-aula .cat-card[data-sensitive] {
   display: none !important;
+}
+/* Badge de aviso en tarjetas sensibles (visible solo cuando modo aula está desactivado) */
+body:not(.modo-aula) .cat-card[data-sensitive]::after {
+  content: '⚠ Adulto';
+  position: absolute; top: 6px; right: 6px;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: #7a4a00; background: rgba(255,235,180,.95);
+  border: 1px solid rgba(200,140,0,.5);
+  border-radius: 3px; padding: 2px 6px;
+  pointer-events: none; z-index: 2;
 }
 /* Show modo aula notice */
 body.modo-aula .modo-aula-notice {
@@ -4484,7 +4495,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     </a>
     <a class="wr" href="#sc" onclick="document.getElementById('sc').scrollIntoView({behavior:'smooth'}); return false;">
       <span class="wr-if">Si quiero explorar la historia del manga</span>
-      <span class="wr-do">Línea del tiempo interactiva: 57 títulos en 9 eras históricas japonesas</span>
+      <span class="wr-do">Línea del tiempo interactiva: 48 títulos en 9 eras históricas japonesas</span>
       <span class="wr-arrow">→ Línea del tiempo</span>
     </a>
   </div>
@@ -4672,10 +4683,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
 <!-- ══════════════════ MEIJI ══════════════════ -->
 <div class="col" style="width:200px;animation-delay:.20s">
-  <div class="cards" data-tip="Manga japonés ambientado en la Europa vikinga del s. X–XI. Demuestra que el formato puede tratar historia no japonesa con rigor documental y complejidad moral." data-vitrina="V7" data-uso="historia" data-nivel="bachillerato">
-    <div data-vitrina="V7" data-uso="historia" data-nivel="bachillerato" class="card hist" data-tip="Manga japonés ambientado en la Europa vikinga del s. X-XI. Demuestra que el formato puede tratar historia no japonesa con rigor documental y complejidad moral. Sus reflexiones sobre la violencia y la identidad lo hacen imprescindible.">
-      <span class="ct">Vinland Saga</span>
-      <span class="ca">YUKIMURA · Pub. en Heisei</span></div>
+  <div class="cards" data-tip="Adaptación del clásico japonés ambientado en la Era Meiji (1868–1912). Narra el choque entre tradición e influencia occidental a través de la mirada irónica de un maestro tokyota en provincias." data-vitrina="V8" data-uso="historia lenguas" data-nivel="bachillerato">
     <div class="card" data-tip="Adaptación del clásico japonés ambientado en la Era Meiji (1868–1912). Narra el choque entre tradición e influencia occidental a través de la mirada irónica de un maestro tokyota en provincias." data-vitrina="V8" data-uso="historia lenguas" data-nivel="bachillerato">
       <span class="ct">La época de Botchan</span>
       <span class="ca">Adaptación de NATSUME Soseki</span></div>
@@ -4699,7 +4707,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div data-vitrina="V11" data-uso="visual historia" data-nivel="secundaria bachillerato" class="card note" data-tip="Taishō Roman designa la estética nostálgica de esta era: mezcla de kimono y sombrero de copa, calles adoquinadas con gas, jazz en cafeterías. Numerosos mangas actuales recuperan esta ambientación como marco de aventura y romance. El equivalente japonés del ambiente Art Déco europeo.">
       <span class="ct">Taisho Roman (大正ロマン)</span>
       <span class="ca">Estética de era · Nota cultural</span></div>
-    <div data-vitrina="V2" data-uso="historia emocional" data-nivel="secundaria bachillerato" class="card tai" data-tip="Ambientado en el Japón Taishō con fidelidad extraordinaria. ambientado en el Japón Taishō con fidelidad extraordinaria. Esta era es percibida en Japón como una edad dorada de elegancia y melancolía justo antes de la catástrofe de la WWII — el equivalente japonés del Art Déco." data-uso="historia emocional" data-nivel="secundaria">
+    <div data-vitrina="V2" data-uso="historia emocional" data-nivel="secundaria bachillerato" class="card tai" data-tip="Ambientado en el Japón Taishō con fidelidad extraordinaria. Esta era es percibida en Japón como una edad dorada de elegancia y melancolía justo antes de la catástrofe de la WWII — el equivalente japonés del Art Déco." data-uso="historia emocional" data-nivel="secundaria">
       <span class="ct">Kimetsu no Yaiba</span>
       <span class="ca">GOTOUGE, Koyoharu · 2016</span></div>
   </div>
@@ -4775,7 +4783,10 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <!-- ══════════════════ HEISEI ══════════════════ -->
 <div class="col" style="width:215px;animation-delay:.32s">
   <div class="cards" data-tip="Dragon Ball, Sailor Moon, Naruto, One Piece y Death Note crean generaciones de lectores en todos los continentes. El manga se convierte en un lenguaje visual universal durante esta era." data-vitrina="V11" data-uso="visual filosofia" data-nivel="bachillerato universidad">
-    <div data-vitrina="V11" data-uso="visual filosofia" data-nivel="bachillerato universidad" class="card" data-tip="Berserk (1989-2021) es la obra más influyente del manga dark fantasy. Inconclusa por la muerte de Kentaro Miura en 2021, su final póstumo generó uno de los debates más intensos de la cultura manga: ¿debe continuarse la obra de un autor fallecido? Ningún otro título ilustra mejor la tensión entre obra y autor, ni la relación entre el manga y el duelo de los lectores.">
+    <div data-vitrina="V7" data-uso="historia" data-nivel="bachillerato" class="card hist" data-tip="Publicado en Heisei (2005–2013), Vinland Saga es un manga japonés ambientado en la Europa vikinga del s. X–XI. Demuestra que el formato puede tratar historia no japonesa con rigor documental y complejidad moral excepcionales. Sus reflexiones sobre la violencia, la identidad y la búsqueda de paz lo hacen imprescindible en bachillerato.">
+      <span class="ct">Vinland Saga</span>
+      <span class="ca">YUKIMURA, Makoto · 2005–2013</span></div>
+        <div data-vitrina="V11" data-uso="visual filosofia" data-nivel="bachillerato universidad" class="card" data-tip="Berserk (1989-2021) es la obra más influyente del manga dark fantasy. Inconclusa por la muerte de Kentaro Miura en 2021, su final póstumo generó uno de los debates más intensos de la cultura manga: ¿debe continuarse la obra de un autor fallecido? Ningún otro título ilustra mejor la tensión entre obra y autor, ni la relación entre el manga y el duelo de los lectores.">
       <span class="ct">Berserk</span>
       <span class="ca">MIURA, Kentaro · 1989–2021</span></div>
     <div class="card" data-tip="One Piece (1997–presente) lleva 27 años publicándose y es el manga más vendido de la historia: más de 520 millones de copias. Es el caso de estudio definitivo sobre narrativa de largo aliento, construcción de mundo y fidelización de comunidades globales de lectores. Eiichiro Oda ha mantenido coherencia narrativa durante casi tres décadas de serialización semanal — un logro sin precedentes en cualquier medio." data-vitrina="V2" data-uso="lenguas" data-nivel="secundaria">
@@ -5173,13 +5184,13 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <div class="cat-card-actions"><button type="button" class="cat-comp-btn" onclick="toggleComp(this)" title="Añadir al comparador">⊕ Comparar</button><button type="button" class="cat-ficha-btn" onclick="openFicha(this.closest('.cat-card'))" title="Ver ficha de aula">Ficha aula</button><button type="button" class="cat-ficha-btn" style="background:rgba(42,58,122,.08);border-color:rgba(42,58,122,.3)" onclick="openRubrica(this.closest('.cat-card'))" title="Generar rúbrica IA">Rúbrica IA</button><button type="button" class="cat-lectura-btn" onclick="openLectura(this.closest('.cat-card'))" title="Ficha de lectura guiada">Lectura</button></div><a class="cat-opac-link" href="https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3DEagle" target="_blank" rel="noopener noreferrer" aria-label="Buscar «Eagle» en el catálogo de la ULPGC">Ver en catálogo ULPGC →</a>
 </div>
     </div>
-    <div class="cat-card" data-uso="ciencia" data-nivel="secundaria"
-         data-tip="Una chica de tres ojos busca convertirse en humana. Manga de acción con mitología hindú. Para lectores de secundaria.">
-      <div class="cat-card-bar" style="background:#1A5A8B"></div>
+    <div class="cat-card" data-uso="filosofia" data-nivel="secundaria"
+         data-tip="Una chica de tres ojos busca convertirse en humana. Manga de acción con mitología hindú. Trabaja identidad, dualidad y transformación. Para lectores de secundaria.">
+      <div class="cat-card-bar" style="background:#4A2A6A"></div>
       <div class="cat-card-body">
         <span class="cat-title">3 x 3 eyes</span>
         <span class="cat-author">Yuzo Takada · 2019-</span>
-        <div class="cat-badges"><span class="cat-badge" style="background:#1A5A8B">Ciencia y tecnología</span></div>
+        <div class="cat-badges"><span class="cat-badge" style="background:#4A2A6A">Filosofía y ética</span></div>
         <div class="cat-nivel"><span class="niv-badge">Secundaria</span></div>
         <span class="periodo-badge" title="Contexto histórico occidental">Siglo XXI</span>
 <div class="cat-card-actions"><button type="button" class="cat-comp-btn" onclick="toggleComp(this)" title="Añadir al comparador">⊕ Comparar</button><button type="button" class="cat-ficha-btn" onclick="openFicha(this.closest('.cat-card'))" title="Ver ficha de aula">Ficha aula</button><button type="button" class="cat-ficha-btn" style="background:rgba(42,58,122,.08);border-color:rgba(42,58,122,.3)" onclick="openRubrica(this.closest('.cat-card'))" title="Generar rúbrica IA">Rúbrica IA</button><button type="button" class="cat-lectura-btn" onclick="openLectura(this.closest('.cat-card'))" title="Ficha de lectura guiada">Lectura</button></div><a class="cat-opac-link" href="https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3D3+x+3+eyes" target="_blank" rel="noopener noreferrer" aria-label="Buscar «3 x 3 eyes» en el catálogo de la ULPGC">Ver en catálogo ULPGC →</a>
@@ -5190,7 +5201,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       <div class="cat-card-bar" style="background:#5A3A1A"></div>
       <div class="cat-card-body">
         <span class="cat-title">Mangavisión : [Guía del tebeo japonés]</span>
-        <span class="cat-author">Santiago García · 1995</span>
+        <span class="cat-author">Trajano Bermúdez · 1995</span>
         <div class="cat-badges"><span class="cat-badge" style="background:#5A3A1A">Historia</span></div>
         <div class="cat-nivel"><span class="niv-badge">Bachillerato</span><span class="niv-badge">Universidad</span></div>
         <span class="periodo-badge" title="Contexto histórico occidental">Globalización · Posguerra Fría</span>
@@ -10467,7 +10478,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <strong>Cómo citar este recurso</strong>
   <span>
     <strong style="font-size:.7rem;display:inline;text-transform:none;letter-spacing:0;">APA 7.ª ed.:</strong>
-    Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., &amp; Rodríguez Panadero, Z. (2026). <em>El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.</em> Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria.
+    Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., &amp; Rodríguez Panadero, Z. (2026). <em>El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.</em> Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. <a href="https://danielulpgc.github.io/manga-biblioteca/" target="_blank" rel="noopener" style="color:var(--gold);word-break:break-all;">https://danielulpgc.github.io/manga-biblioteca/</a>
     <button type="button" class="citation-copy" onclick="copyCitation()" aria-label="Copiar referencia APA al portapapeles">
       Copiar
     </button>
@@ -11231,7 +11242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── Copiar cita APA ──────────────────────────────────────────────
 function copyCitation() {
-  const text = `Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. (2026). El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.`;
+  const text = `Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., & Rodríguez Panadero, Z. (2026). El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico. Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. https://danielulpgc.github.io/manga-biblioteca/`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.citation-copy');
     btn.textContent = '✓ Copiado';
@@ -12325,16 +12336,17 @@ Solo HTML: <h3><h4><p><ul><li><table><thead><tbody><tr><th><td>`;
   let apiKey = sessionStorage.getItem(SESS_KEY) || '';
   let hasWelcomed = false;
 
-  function extractCatalogContext(limit = 120) {
-    const cards = Array.from(document.querySelectorAll('.cat-card')).slice(0, limit);
+  function extractCatalogContext() {
+    // Pasa TODAS las tarjetas en formato compacto para que el asistente conozca el fondo completo (279 títulos)
+    const cards = Array.from(document.querySelectorAll('.cat-card'));
     if (!cards.length) return '';
-
     return cards.map(card => {
-      const title = card.querySelector('.cat-title')?.textContent?.trim() || '';
+      const title  = card.querySelector('.cat-title')?.textContent?.trim()  || '';
       const author = card.querySelector('.cat-author')?.textContent?.trim() || '';
-      const usos = Array.from(card.querySelectorAll('.cat-badge')).map(el => el.textContent.trim()).join(', ');
-      const niveles = Array.from(card.querySelectorAll('.niv-badge')).map(el => el.textContent.trim()).join(', ');
-      return `• ${title} — ${author}${usos ? ' — uso: ' + usos : ''}${niveles ? ' — nivel: ' + niveles : ''}`;
+      const uso    = card.dataset.uso    || '';
+      const nivel  = card.dataset.nivel  || '';
+      // Formato compacto: una línea por título, sin descripción larga
+      return `${title}|${author}|${uso}|${nivel}`;
     }).join('\n');
   }
 
@@ -12349,7 +12361,7 @@ Tu función es ayudar a docentes y visitantes a:
 
 Responde siempre en español. Sé útil, concreto y profesional. Prioriza títulos reales del fondo mostrado en esta página.
 
-FONDO DISPONIBLE EN ESTA PÁGINA:
+FONDO COMPLETO (279 títulos — formato: Título|Autor|Uso pedagógico|Nivel educativo):
 ${catalogContext || 'Consulta el catálogo visible de la página para seleccionar títulos reales.'}`;
   }
 
