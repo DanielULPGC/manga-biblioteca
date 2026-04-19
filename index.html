@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛩</text></svg>">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -426,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
   --paper2: #e8ddc8;
   --red:    #8b1a1a;
   --gold:   #b8860b;
+  --gold-text: #7a5800;  /* #7a5800 sobre --paper = 4.6:1 — pasa WCAG AA */
   --grey:   #6b6255;
   --rule:   #c8b89a;
 
@@ -465,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .ur-time {
   font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
-  color: var(--gold); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold-text); letter-spacing: .1em; text-transform: uppercase;
 }
 .ur-label {
   font-family: 'EB Garamond', serif; font-size: 1.05rem; font-weight: 600;
@@ -4455,11 +4457,26 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <button type="button" class="compact-btn" id="cmpBtn" onclick="toggleCompact()" title="Vista panorámica / Vista completa">⊟ Solo títulos</button>
 
 
 <!-- ══════════════════ PANEL DE BIENVENIDA ══════════════════ -->
+</div>
+
+<div class="totd-bar" id="totdBar" role="complementary" aria-label="Título del día"></div>
+<header>
+  <div class="kamon" role="img" aria-label="Torii, símbolo de la cultura japonesa">⛩</div>
+  <h1>Las eras de <em>Japón</em> y el manga</h1>
+  <p class="sub">Biblioteca del Campus del Obelisco · Aula de Cómic · Facultad de Ciencias de la Educación · ULPGC</p>
+  <div class="header-rule" aria-hidden="true"></div>
+  <div class="jp" lang="ja">日本の時代と漫画</div>
+  <div class="visit-counter" aria-live="polite" aria-label="Contador de visitas">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span id="visitCountGlobal">…</span> visitas en este navegador · <button onclick="showStats()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.65rem;color:var(--gold-text);cursor:pointer;letter-spacing:.06em;padding:0;text-decoration:underline dotted;">ver estadísticas</button>
+  </div>
+</header>
 <div class="welcome-panel">
   <h2>¿Por dónde empiezo?</h2>
   <div class="welcome-routes">
@@ -4499,21 +4516,6 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       <span class="wr-arrow">→ Línea del tiempo</span>
     </a>
   </div>
-</div>
-
-<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-<div class="totd-bar" id="totdBar" role="complementary" aria-label="Título del día"></div>
-<header>
-  <div class="kamon" role="img" aria-label="Torii, símbolo de la cultura japonesa">⛩</div>
-  <h1>Las eras de <em>Japón</em> y el manga</h1>
-  <p class="sub">Biblioteca del Campus del Obelisco · Aula de Cómic · Facultad de Ciencias de la Educación · ULPGC</p>
-  <div class="header-rule" aria-hidden="true"></div>
-  <div class="jp" lang="ja">日本の時代と漫画</div>
-  <div class="visit-counter" aria-live="polite" aria-label="Contador de visitas">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    <span id="visitCountGlobal">…</span> visitas · <button onclick="showStats()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.65rem;color:rgba(184,134,11,.8);cursor:pointer;letter-spacing:.06em;padding:0;text-decoration:underline dotted;">ver estadísticas</button>
-  </div>
-</header>
 
 <div class="legend">
   <span><span class="dot" style="background:#5A3A1A"></span>Historia</span>
@@ -4527,28 +4529,28 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <span><span class="dot" style="background:var(--gold)"></span>★ Hito fundacional</span>
 </div>
 
-<div class="hint">← Arrastra para explorar · Pasa el cursor sobre cada título → &nbsp;|&nbsp; <a href="#glosario" style="color:var(--gold);text-decoration:none;" title="Glosario de términos japoneses">辞書 Glosario</a> &nbsp;|&nbsp; <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos digitales</a> · <a href="#curriculo" style="color:var(--gold);text-decoration:none;">Currículo → Manga</a> · <a href="#itinerarios" style="color:var(--gold);text-decoration:none;">Itinerarios</a> · <a href="#universidad" style="color:var(--gold);text-decoration:none;">Universidad</a> · <a href="#situaciones" style="color:var(--gold);text-decoration:none;">Situaciones de aprendizaje</a> · <a href="#catalogo" style="color:var(--gold);text-decoration:none;">Catálogo</a> · <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos</a></div>
+<div class="hint">← Arrastra para explorar · Pasa el cursor sobre cada título → &nbsp;|&nbsp; <a href="#glosario" style="color:var(--gold);text-decoration:none;" title="Glosario de términos japoneses"><span lang="ja">辞書</span> Glosario</a> &nbsp;|&nbsp; <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos digitales</a> · <a href="#curriculo" style="color:var(--gold);text-decoration:none;">Currículo → Manga</a> · <a href="#itinerarios" style="color:var(--gold);text-decoration:none;">Itinerarios</a> · <a href="#universidad" style="color:var(--gold);text-decoration:none;">Universidad</a> · <a href="#situaciones" style="color:var(--gold);text-decoration:none;">Situaciones de aprendizaje</a> · <a href="#catalogo" style="color:var(--gold);text-decoration:none;">Catálogo</a> · <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos</a></div>
 
 <div class="filter-bar" id="filterBar" role="search" aria-label="Filtros de la línea del tiempo">
   <div class="fb-row">
     <span class="fb-label" id="uso-label">Uso pedagógico →</span>
-    <button type="button" class="fb fb-all-uso active" data-uso="all" onclick="filterUso('all')">Todos</button>
-    <button type="button" class="fb" style="background:#5A3A1A;" data-uso="historia" onclick="filterUso('historia')">Historia</button>
-    <button type="button" class="fb" style="background:#4A2A6A;" data-uso="filosofia" onclick="filterUso('filosofia')">Filosofía y ética</button>
-    <button type="button" class="fb" style="background:#7A5A0A;" data-uso="emocional" onclick="filterUso('emocional')">Educación emocional</button>
-    <button type="button" class="fb" style="background:#2E6E3A;" data-uso="lenguas" onclick="filterUso('lenguas')">Lengua extranjera</button>
-    <button type="button" class="fb" style="background:#3A4A8A;" data-uso="inclusion" onclick="filterUso('inclusion')">Inclusión</button>
-    <button type="button" class="fb" style="background:#5E3A8A;" data-uso="visual" onclick="filterUso('visual')">Alfabetización visual</button>
-    <button type="button" class="fb" style="background:#1A5A8B;" data-uso="ciencia" onclick="filterUso('ciencia')">Ciencia y tecnología</button>
-    <button type="button" class="fb" style="background:#8B1A4A;" data-uso="genero" onclick="filterUso('genero')">Género e identidad</button>
+    <button type="button" class="fb fb-all-uso active" data-uso="all" aria-pressed="true" onclick="filterUso('all')">Todos</button>
+    <button type="button" class="fb" style="background:#5A3A1A;" data-uso="historia" aria-pressed="false" onclick="filterUso('historia')">Historia</button>
+    <button type="button" class="fb" style="background:#4A2A6A;" data-uso="filosofia" aria-pressed="false" onclick="filterUso('filosofia')">Filosofía y ética</button>
+    <button type="button" class="fb" style="background:#7A5A0A;" data-uso="emocional" aria-pressed="false" onclick="filterUso('emocional')">Educación emocional</button>
+    <button type="button" class="fb" style="background:#2E6E3A;" data-uso="lenguas" aria-pressed="false" onclick="filterUso('lenguas')">Lengua extranjera</button>
+    <button type="button" class="fb" style="background:#3A4A8A;" data-uso="inclusion" aria-pressed="false" onclick="filterUso('inclusion')">Inclusión</button>
+    <button type="button" class="fb" style="background:#5E3A8A;" data-uso="visual" aria-pressed="false" onclick="filterUso('visual')">Alfabetización visual</button>
+    <button type="button" class="fb" style="background:#1A5A8B;" data-uso="ciencia" aria-pressed="false" onclick="filterUso('ciencia')">Ciencia y tecnología</button>
+    <button type="button" class="fb" style="background:#8B1A4A;" data-uso="genero" aria-pressed="false" onclick="filterUso('genero')">Género e identidad</button>
   </div>
   <div class="fb-row" style="margin-top:.4rem;">
     <span class="fb-label" id="nivel-label">Nivel educativo →</span>
-    <button type="button" class="fb fb-all-nivel active" data-nivel="all" onclick="filterNivel('all')">Todos</button>
-    <button type="button" class="fb" style="background:#2E7B6E;" data-nivel="primaria" onclick="filterNivel('primaria')">Primaria</button>
-    <button type="button" class="fb" style="background:#B85A1A;" data-nivel="secundaria" onclick="filterNivel('secundaria')">Secundaria</button>
-    <button type="button" class="fb" style="background:#8B6914;" data-nivel="bachillerato" onclick="filterNivel('bachillerato')">Bachillerato</button>
-    <button type="button" class="fb" style="background:#4A2A6A;" data-nivel="universidad" onclick="filterNivel('universidad')">Universidad</button>
+    <button type="button" class="fb fb-all-nivel active" data-nivel="all" aria-pressed="true" onclick="filterNivel('all')">Todos</button>
+    <button type="button" class="fb" style="background:#2E7B6E;" data-nivel="primaria" aria-pressed="false" onclick="filterNivel('primaria')">Primaria</button>
+    <button type="button" class="fb" style="background:#B85A1A;" data-nivel="secundaria" aria-pressed="false" onclick="filterNivel('secundaria')">Secundaria</button>
+    <button type="button" class="fb" style="background:#8B6914;" data-nivel="bachillerato" aria-pressed="false" onclick="filterNivel('bachillerato')">Bachillerato</button>
+    <button type="button" class="fb" style="background:#4A2A6A;" data-nivel="universidad" aria-pressed="false" onclick="filterNivel('universidad')">Universidad</button>
   </div>
   <div class="fb-row" style="margin-top:.4rem;" id="ods-filter-row" aria-label="Filtrar por ODS">
     <span class="fb-label">ODS →</span>
@@ -4594,8 +4596,8 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
 <!-- ══════════════════ HEIAN ══════════════════ -->
 <div class="col" style="width:170px;animation-delay:.04s">
-  <div class="cards" data-tip="Las Pinturas Satíricas de Animales (鳥獣戯画, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval.">Pinturas Satíricas de Animales</em> (鳥獣戯画) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
-    <div data-vitrina="V1" data-uso="historia visual" data-nivel="universidad" class="card note" data-tip="Las Pinturas Satíricas de Animales (鳥獣戯画, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje budista Kakuyū. Consideradas el «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
+  <div class="cards" data-tip="Las Pinturas Satíricas de Animales (<span lang="ja">鳥獣戯画</span>, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval.">Pinturas Satíricas de Animales</em> (<span lang="ja">鳥獣戯画</span>) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
+    <div data-vitrina="V1" data-uso="historia visual" data-nivel="universidad" class="card note" data-tip="Las Pinturas Satíricas de Animales (<span lang="ja">鳥獣戯画</span>, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje budista Kakuyū. Consideradas el «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
       <span class="ct">Chōjū-giga</span>
       <span class="ca">s. XII — Proto-manga</span></div>
   </div>
@@ -4664,7 +4666,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="card" data-tip="Basado en Miyamoto Musashi (1584–1645), el samurái más legendario de Japón. Una de las obras mejor dibujadas de la historia del manga; sus composiciones de página son estudiadas en escuelas de arte." data-vitrina="V7" data-uso="historia visual" data-nivel="bachillerato universidad">
       <span class="ct">Vagabond</span>
       <span class="ca">INOUE, Takehiko · Edo temprano</span></div>
-    <div data-vitrina="V1" data-uso="historia visual" data-nivel="secundaria bachillerato universidad" class="card origin" data-tip="El término 漫画 (manga) nace aquí. Hokusai publica en 1814 sus cuadernos de bocetos bajo el título «imágenes espontáneas o caprichosas». El fondo de esta biblioteca posee un ejemplar de este título fundacional." data-uso="historia visual" data-nivel="universidad">
+    <div data-vitrina="V1" data-uso="historia visual" data-nivel="secundaria bachillerato universidad" class="card origin" data-tip="El término <span lang="ja">漫画</span> (manga) nace aquí. Hokusai publica en 1814 sus cuadernos de bocetos bajo el título «imágenes espontáneas o caprichosas». El fondo de esta biblioteca posee un ejemplar de este título fundacional." data-uso="historia visual" data-nivel="universidad">
       <span class="ct">★ Hokusai Manga · 1814</span>
       <span class="ca">KATSUSHIKA, Hokusai</span></div>
   </div>
@@ -4705,7 +4707,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <div class="col" style="width:200px;animation-delay:.24s">
   <div class="cards" data-tip="Taishō Roman: mezcla de kimono y sombrero de copa, calles adoquinadas con gas, jazz en cafeterías. Numerosos mangas actuales recuperan esta ambientación como marco de aventura y romance." data-uso="historia" data-nivel="secundaria bachillerato">
     <div data-vitrina="V11" data-uso="visual historia" data-nivel="secundaria bachillerato" class="card note" data-tip="Taishō Roman designa la estética nostálgica de esta era: mezcla de kimono y sombrero de copa, calles adoquinadas con gas, jazz en cafeterías. Numerosos mangas actuales recuperan esta ambientación como marco de aventura y romance. El equivalente japonés del ambiente Art Déco europeo.">
-      <span class="ct">Taisho Roman (大正ロマン)</span>
+      <span class="ct">Taisho Roman (<span lang="ja">大正ロマン</span>)</span>
       <span class="ca">Estética de era · Nota cultural</span></div>
     <div data-vitrina="V2" data-uso="historia emocional" data-nivel="secundaria bachillerato" class="card tai" data-tip="Ambientado en el Japón Taishō con fidelidad extraordinaria. Esta era es percibida en Japón como una edad dorada de elegancia y melancolía justo antes de la catástrofe de la WWII — el equivalente japonés del Art Déco." data-uso="historia emocional" data-nivel="secundaria">
       <span class="ct">Kimetsu no Yaiba</span>
@@ -4942,7 +4944,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="ac" style="border-left-color:#6e2e7a; background:rgba(248,235,255,.5);">
       <b>🔊 Nota: onomatopeyas y expresión oral</b>
       <i>Recurso para expresión oral y lectura dramatizada</i>
-      <s>El manga japonés tiene un sistema de onomatopeyas único: no solo ruidos (ドカン, BOOM) sino estados emocionales y ambientales (しーん, silencio absoluto; ドキドキ, corazón acelerado). Trabajar estas onomatopeyas en voz alta desarrolla la conciencia fonológica, la entonación y la lectura expresiva. Además introduce vocabulario japonés de forma natural y motivadora.</s>
+      <s>El manga japonés tiene un sistema de onomatopeyas único: no solo ruidos (<span lang="ja">ドカン</span>, BOOM) sino estados emocionales y ambientales (しーん, silencio absoluto; <span lang="ja">ドキドキ</span>, corazón acelerado). Trabajar estas onomatopeyas en voz alta desarrolla la conciencia fonológica, la entonación y la lectura expresiva. Además introduce vocabulario japonés de forma natural y motivadora.</s>
     </div>
   </div>
 </div>
@@ -5009,98 +5011,98 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="ac" style="border-left-color:#1A5A8B; background:rgba(210,235,255,.4); max-width:280px;">
       <b>⑥ Leer en voz alta con bocadillos (Primaria · 1.º–4.º)</b>
       <i>Expresión oral · Entonación lectora</i>
-      <s>El manga ofrece un recurso único para trabajar la lectura expresiva: el bocadillo indica quién habla, la tipografía y el tamaño de letra marcan la intensidad, y las onomatopeyas (¡ZAS! ¡POOM! しーん…) exigen interpretación vocal. Actividad: reparto de personajes, lectura dramatizada en voz alta de una página. Evalúa: ¿cambia el significado según cómo lo lees? Títulos recomendados: Helena y el Señor Lobo malo, El zorro y el pequeño tanuki.</s>
+      <s>El manga ofrece un recurso único para trabajar la lectura expresiva: el bocadillo indica quién habla, la tipografía y el tamaño de letra marcan la intensidad, y las onomatopeyas (¡ZAS! ¡POOM! <span lang="ja">しーん</span>…) exigen interpretación vocal. Actividad: reparto de personajes, lectura dramatizada en voz alta de una página. Evalúa: ¿cambia el significado según cómo lo lees? Títulos recomendados: Helena y el Señor Lobo malo, El zorro y el pequeño tanuki.</s>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════ GLOSARIO ══════════════════ -->
 <div class="adapt" id="glosario" style="background:rgba(245,239,224,.6); border-top-color:var(--gold);">
-  <h2 style="color:var(--gold); font-size:1.1rem;">辞書 Glosario de términos japoneses</h2>
+  <h2 style="color:var(--gold); font-size:1.1rem;"><span lang="ja">辞書</span> Glosario de términos japoneses</h2>
   <p style="font-size:.9rem; color:var(--grey); font-style:italic; margin-bottom:1.2rem;">Términos usados en esta línea del tiempo y en la exposición. Para consulta rápida del equipo docente y del público universitario.</p>
   <div class="adapt-grid">
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-manga">Manga (漫画)</b>
+      <b id="gloss-manga">Manga (<span lang="ja">漫画</span>)</b>
       <i>Imágenes espontáneas o caprichosas</i>
       <s>Término acuñado por Hokusai en 1814. Hoy designa la narrativa gráfica secuencial japonesa. Fuera de Japón se usa para cualquier cómic de estética japonesa.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-gengo">Gengō (元号)</b>
+      <b id="gloss-gengo">Gengō (<span lang="ja">元号</span>)</b>
       <i>Sistema de eras imperiales</i>
       <s>Sistema japonés que numera los años según el reinado del Emperador. La era actual es Reiwa (令和, «bella armonía»), iniciada en 2019.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-tankobon">Tankōbon (単行本)</b>
+      <b id="gloss-tankobon">Tankōbon (<span lang="ja">単行本</span>)</b>
       <i>Volumen recopilatorio</i>
       <s>Volumen que recopila capítulos previamente publicados en revista. El formato de libro estándar del manga. Equivale al «tomo» en España.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-demographics">Shōnen (少年) · Shōjo (少女)</b>
+      <b id="gloss-demographics">Shōnen (<span lang="ja">少年</span>) · Shōjo (<span lang="ja">少女</span>)</b>
       <i>Géneros editoriales por público</i>
       <s>Shōnen: manga para chicos jóvenes (acción, amistad, superación). Shōjo: manga para chicas jóvenes (emociones, relaciones, identidad). No son géneros narrativos sino categorías editoriales.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-demographics-b">Seinen (青年) · Josei (女性)</b>
+      <b id="gloss-demographics-b">Seinen (<span lang="ja">青年</span>) · Josei (<span lang="ja">女性</span>)</b>
       <i>Géneros editoriales adultos</i>
       <s>Seinen: manga para hombres adultos — mayor complejidad narrativa y temática. Josei: manga para mujeres adultas — cotidianidad, romance realista, madurez emocional.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-gekiga">Gekiga (劇画)</b>
+      <b id="gloss-gekiga">Gekiga (<span lang="ja">劇画</span>)</b>
       <i>Imagen dramática</i>
       <s>Movimiento de los años 60 que reivindica un manga adulto, político y expresionista. Fundado por Yoshihiro Tatsumi como reacción al manga infantil de Tezuka.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-yokai">Yokai (妖怪)</b>
+      <b id="gloss-yokai">Yokai (<span lang="ja">妖怪</span>)</b>
       <i>Criatura sobrenatural del folklore japonés</i>
       <s>Amplia categoría de seres sobrenaturales — monstruos, espíritus, fenómenos animados — del imaginario popular japonés. Kappa, tanuki, kitsune y oni son los más conocidos.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-furigana">Furigana (振り仮名)</b>
+      <b id="gloss-furigana">Furigana (<span lang="ja">振り仮名</span>)</b>
       <i>Guía de pronunciación</i>
       <s>Caracteres fonéticos pequeños escritos junto a los kanjis para indicar su pronunciación. Presentes en manga infantil y escolar; ausentes en manga adulto. Indicador del nivel de dificultad lectora.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-taisho">Taishō Roman (大正ロマン)</b>
+      <b id="gloss-taisho">Taishō Roman (<span lang="ja">大正ロマン</span>)</b>
       <i>Romanticismo de la Era Taishō</i>
       <s>Estética nostálgica de la Era Taishō (1912–1926): mezcla de kimono y moda occidental, jazz, calles adoquinadas. El equivalente japonés del Art Déco europeo. Muy recuperada en el manga actual.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
       <b id="gloss-onomatopeya">Onomatopeya manga</b>
       <i>Sistema sonoro visual único</i>
-      <s>El manga japonés usa onomatopeyas no solo para ruidos sino para estados emocionales (ドキドキ, corazón acelerado) y ambientales (しーん, silencio absoluto). Sistema sin equivalente en el cómic occidental.</s>
+      <s>El manga japonés usa onomatopeyas no solo para ruidos sino para estados emocionales (<span lang="ja">ドキドキ</span>, corazón acelerado) y ambientales (<span lang="ja">しーん</span>, silencio absoluto). Sistema sin equivalente en el cómic occidental.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-koma">Koma (コマ)</b>
+      <b id="gloss-koma">Koma (<span lang="ja">コマ</span>)</b>
       <i>La viñeta</i>
       <s>Unidad mínima de narración en el manga. A diferencia del cómic occidental, el koma puede variar radicalmente de tamaño dentro de una misma página para marcar el ritmo. Una viñeta a página completa se llama <em>tobikomi</em>.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-fukidashi">Fukidashi (吹き出し)</b>
+      <b id="gloss-fukidashi">Fukidashi (<span lang="ja">吹き出し</span>)</b>
       <i>El bocadillo de texto</i>
       <s>Existe más de una docena de formas distintas, cada una con un significado preciso: redondo (voz normal), dentado (grito o sorpresa), nube (pensamiento), rectángulo (voz en off o narrador). La forma comunica tanto como las palabras.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-ma">Ma (間)</b>
+      <b id="gloss-ma">Ma (<span lang="ja">間</span>)</b>
       <i>El espacio entre viñetas</i>
       <s>El espacio en blanco entre dos koma que el lector rellena mentalmente. Es donde ocurre la acción invisible — la «clausura» en términos de Scott McCloud. Concepto fundamental para enseñar lectura multimodal e inferencia narrativa.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-chibi">Chibi (ちび)</b>
+      <b id="gloss-chibi">Chibi (<span lang="ja">ちび</span>)</b>
       <i>Estilo de proporción exagerada</i>
       <s>Personaje con cabeza desproporcionadamente grande y cuerpo pequeño. Se usa para expresar emoción intensa (ternura, vergüenza, humor) y está presente en el manga infantil y en los momentos cómicos del manga adulto. Muy reconocible por el alumnado de Infantil y Primaria.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-mangaka">Mangaka (漫画家)</b>
+      <b id="gloss-mangaka">Mangaka (<span lang="ja">漫画家</span>)</b>
       <i>Autor o autora de manga</i>
       <s>Término para designar a quien crea manga profesionalmente. A diferencia del cómic europeo, muchos mangaka trabajan solos guion y dibujo; otros trabajan con un asistente (<em>assistant</em>) o con un equipo. El ritmo de publicación semanal en revista impone condiciones de trabajo muy exigentes.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-jidaigeki">Jidaigeki (時代劇)</b>
+      <b id="gloss-jidaigeki">Jidaigeki (<span lang="ja">時代劇</span>)</b>
       <i>Drama histórico</i>
       <s>Género ambientado en el Japón preindustrial, especialmente en el período Edo. Equivale al <em>western</em> o al drama de época europeo. Muy presente en el fondo: Vagabond, Dororo, Usagi Yojimbo, El Lobo solitario y su cachorro.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-nichijokei">Nichijō-kei (日常系)</b>
+      <b id="gloss-nichijokei">Nichijō-kei (<span lang="ja">日常系</span>)</b>
       <i>La historia de lo cotidiano</i>
       <s>Subgénero centrado en la vida ordinaria sin conflicto central ni resolución dramática. El valor narrativo está en los momentos pequeños. Ejemplos en el fondo: Yotsuba!, Hirayasumi, El gourmet solitario. Muy accesible como entrada al manga para lectores nuevos.</s>
     </div>
@@ -5146,6 +5148,14 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <button type="button" class="search-clear" id="searchClear" aria-label="Limpiar búsqueda" onclick="clearSearch()" title="Limpiar (Escape)">✕</button>
   </div>
   <span id="searchCount" role="status" aria-live="polite" aria-atomic="true"></span>
+  <button type="button" id="copyFilteredBtn" onclick="copyFilteredList()"
+    title="Copiar la lista de títulos visibles al portapapeles"
+    style="display:none; font-family:'Cinzel',serif; font-size:.65rem; font-weight:700;
+           letter-spacing:.06em; text-transform:uppercase; padding:.3rem .85rem;
+           background:none; border:1.5px solid var(--rule); border-radius:3px;
+           color:var(--grey); cursor:pointer; white-space:nowrap; transition:all .15s;">
+    ↗ Copiar lista
+  </button>
 </div>
 
 <!-- ── CONTADOR DE EXPLORACIÓN ── -->
@@ -8540,11 +8550,6 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 </div>
     </div>
 
-    </div>
-  </div>
-
-
-
 <!-- ══════════════════ TABLA CURRÍCULO → MANGA ══════════════════ -->
 <div class="curriculo-section" id="curriculo">
   <h2>⊕ Del currículo al manga — tabla de correspondencias</h2>
@@ -8830,7 +8835,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         <h3>¿Qué sonido hace este dibujo?</h3>
         <div class="itin-meta">Ámbito: Comunicación y Representación · Eje: Alfabetización visual y educación musical</div>
         <ul>
-          <li><strong>Punto de partida:</strong> En el manga los dibujos tienen sonido propio: ドキドキ (corazón acelerado), ドーン (explosión), しーん (silencio total). ¿Podemos hacer esos sonidos con el cuerpo?</li>
+          <li><strong>Punto de partida:</strong> En el manga los dibujos tienen sonido propio: <span lang="ja">ドキドキ</span> (corazón acelerado), ドーン (explosión), しーん (silencio total). ¿Podemos hacer esos sonidos con el cuerpo?</li>
           <li><strong>Actividad 1:</strong> El docente muestra 4 onomatopeyas manga en tarjetas grandes. El grupo decide qué sonido corporal le corresponde a cada una (palmada, susurro, golpe en la mesa, silencio).</li>
           <li><strong>Actividad 2:</strong> Se proyecta una página de manga sin audio. El grupo la «sonoriza» en directo: cada viñeta tiene un sonido asignado y se ejecuta al pasarla.</li>
           <li><strong>Actividad 3:</strong> Cada alumno inventa una onomatopeya nueva para un sonido canario (el viento en el barranco, las olas, el silbido gomero) y la dibuja en estilo manga.</li>
@@ -9589,7 +9594,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«El libro que no tiene palabras» — ¿Cómo contamos sin letras?</h3>
-        <div class="sa-meta">Educación Infantil (2.º ciclo, 4–5 años) · Ámbito: Comunicación y Representación de la Realidad · Duración estimada: 3 semanas</div>
+        <div class="sa-meta">Educación Infantil (2.º ciclo, 4–5 años) · Ámbito: Comunicación y Representación de la Realidad · Duración estimada: 3 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
       </div>
       <div class="sa-body">
 
@@ -9674,7 +9679,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«Una biblioteca dentro de otra biblioteca» — El ratón de biblioteca en el aula</h3>
-        <div class="sa-meta">3.er ciclo de Primaria (5.º–6.º, 10–12 años) · Áreas: Lengua Castellana y Literatura + Ciencias Sociales · Duración estimada: 4 semanas</div>
+        <div class="sa-meta">3.er ciclo de Primaria (5.º–6.º, 10–12 años) · Áreas: Lengua Castellana y Literatura + Ciencias Sociales · Duración estimada: 4 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
       </div>
       <div class="sa-body">
 
@@ -9760,7 +9765,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«Lo que no se dice» — Silencio, elipsis y lectura multimodal</h3>
-        <div class="sa-meta">1.er ciclo de ESO (1.º–2.º, 12–14 años) · Áreas: Lengua Castellana y Literatura + Educación Plástica · Duración estimada: 3 semanas</div>
+        <div class="sa-meta">1.er ciclo de ESO (1.º–2.º, 12–14 años) · Áreas: Lengua Castellana y Literatura + Educación Plástica · Duración estimada: 3 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
       </div>
       <div class="sa-body">
 
@@ -9848,7 +9853,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«¿Puede un libro cambiar el mundo?» — Adolf y la responsabilidad del narrador</h3>
-        <div class="sa-meta">2.º ciclo de ESO (3.º–4.º, 14–16 años) · Áreas: Ciencias Sociales (Historia) + Lengua Castellana · Duración estimada: 4 semanas</div>
+        <div class="sa-meta">2.º ciclo de ESO (3.º–4.º, 14–16 años) · Áreas: Ciencias Sociales (Historia) + Lengua Castellana · Duración estimada: 4 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
       </div>
       <div class="sa-body">
 
@@ -9934,7 +9939,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«La máquina que siente» — Pluto y la filosofía de la mente en Bachillerato</h3>
-        <div class="sa-meta">Bachillerato (1.º–2.º, 16–18 años) · Materias: Filosofía + Historia de la Filosofía / Tecnología e Ingeniería · Duración estimada: 4 semanas</div>
+        <div class="sa-meta">Bachillerato (1.º–2.º, 16–18 años) · Materias: Filosofía + Historia de la Filosofía / Tecnología e Ingeniería · Duración estimada: 4 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
       </div>
       <div class="sa-body">
 
@@ -10010,7 +10015,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
         <div class="sa-block">
           <h4>7 · Recursos y materiales</h4>
-          <p>Título del fondo: <strong>Pluto</strong> (Naoki Urasawa, vol. 1–3) · <strong>Death Note</strong> (Ohba/Obata) — para el dilema del bien y el mal absoluto · Searle, J.: «Minds, Brains, and Programs» (1980) — fragmento · Turing, A.: «Computing Machinery and Intelligence» (1950) — fragmento · Ethical Guidelines for Trustworthy AI, Comisión Europea (2019).</p>
+          <p>Título del fondo: <strong>Pluto</strong> (Naoki Urasawa, vol. 1–3) · <strong>Death Note</strong> (Ohba/Obata) — para el dilema del bien y el mal absoluto · Searle, J.: <a href="https://doi.org/10.1017/S0140525X00005756" target="_blank" rel="noopener noreferrer" style="color:inherit;">«Minds, Brains, and Programs» (1980)</a> — fragmento · Turing, A.: «Computing Machinery and Intelligence» (1950) — fragmento · Ethical Guidelines for Trustworthy AI, Comisión Europea (2019).</p>
           <p class="sa-alternatives"><strong>Títulos alternativos del fondo:</strong> <strong>Tengo cáncer terminal, pero estoy bien</strong> (Hilnama) — para trabajar el eje de bioética, los límites de la tecnología médica y la dignidad de la persona; encaja especialmente bien con la variante de Tecnología e Ingeniería de esta SA · <strong>Patlabor</strong> (Masami Yuki) — tecnología, responsabilidad colectiva y consecuencias no previstas del desarrollo tecnológico; especialmente útil para el eje STEM y el debate sobre regulación de la IA · <strong>Hirayasumi</strong> (Shinzo Takamura) — para la apertura de la SA como provocación filosófica: ¿qué hace que una vida sea suficiente? Contraste entre la máquina que busca sentido (Pluto) y el humano que ya lo encontró sin buscarlo.</p>
         </div>
 
@@ -10510,6 +10515,8 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   Dir. Daniel Becerra Romero
   &nbsp;·&nbsp;
   Paula Arocha Moros · Lucía Hernández Chio · Daniel Hernández García · Zaira Rodríguez Panadero
+  &nbsp;·&nbsp;
+  <a href="mailto:daniel.becerra@ulpgc.es?subject=Recurso%20manga%20ULPGC%20—%20Sugerencia%20o%20corrección" style="color:inherit;text-decoration:underline dotted;font-size:.8em;" title="Enviar sugerencia o corrección al equipo">¿Sugerencia o error? Escríbenos →</a>
 </footer>
 
 
@@ -10937,7 +10944,9 @@ function applyFilters() {
 function filterUso(v) {
   activeUso = v;
   document.querySelectorAll('.fb-all-uso, [data-uso]').forEach(b => {
-    b.classList.toggle('active', b.dataset.uso === v);
+    const isActive = b.dataset.uso === v;
+    b.classList.toggle('active', isActive);
+    if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   });
   applyFilters();
 }
@@ -10945,7 +10954,9 @@ function filterUso(v) {
 function filterNivel(v) {
   activeNivel = v;
   document.querySelectorAll('.fb-all-nivel, [data-nivel]').forEach(b => {
-    b.classList.toggle('active', b.dataset.nivel === v);
+    const isActive = b.dataset.nivel === v;
+    b.classList.toggle('active', isActive);
+    if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   });
   applyFilters();
 }
@@ -11048,6 +11059,7 @@ function searchCatalog(q) {
       count.className = '';
     }
   }
+  updateCopyBtn();
 
   // Scroll to first result
   if (firstMatch && searching) {
@@ -11071,6 +11083,38 @@ function _restoreText(card) {
     titleEl.textContent = titleEl.textContent;
   if (authorEl?.querySelector('.search-hl'))
     authorEl.textContent = authorEl.textContent;
+}
+
+function copyFilteredList() {
+  const visible = Array.from(document.querySelectorAll('.cat-card'))
+    .filter(c => c.style.display !== 'none' && !c.classList.contains('hidden'));
+  if (!visible.length) return;
+  const lines = visible.map(c => {
+    const title  = c.querySelector('.cat-title')?.textContent?.trim() || '';
+    const author = c.querySelector('.cat-author')?.textContent?.trim() || '';
+    return `• ${title} — ${author}`;
+  });
+  const header = `Selección del catálogo — Aula de Cómic, Biblioteca ULPGC (${new Date().toLocaleDateString('es-ES')})\n${'─'.repeat(60)}\n`;
+  const text = header + lines.join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyFilteredBtn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    btn.style.color = '#2a5a2a';
+    btn.style.borderColor = '#2a5a2a';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 2500);
+  }).catch(() => {});
+}
+
+// Show/hide copy button based on filter activity
+function updateCopyBtn() {
+  const btn = document.getElementById('copyFilteredBtn');
+  if (!btn) return;
+  const total = document.querySelectorAll('.cat-card').length;
+  const visible = Array.from(document.querySelectorAll('.cat-card'))
+    .filter(c => c.style.display !== 'none' && !c.classList.contains('hidden')).length;
+  btn.style.display = (visible < total && visible > 0) ? 'inline-block' : 'none';
+  if (visible < total && visible > 0) btn.title = `Copiar ${visible} título${visible!==1?'s':''} visibles al portapapeles`;
 }
 
 function clearSearch() {
@@ -12359,7 +12403,7 @@ Tu función es ayudar a docentes y visitantes a:
 - conectar títulos con el currículo LOMLOE y las competencias clave,
 - justificar pedagógicamente el uso del manga en el aula.
 
-Responde siempre en español. Sé útil, concreto y profesional. Prioriza títulos reales del fondo mostrado en esta página.
+Responde SIEMPRE en español académico, independientemente del idioma en que escriba el usuario. Este es el idioma de trabajo del recurso. Sé útil, concreto y profesional. Prioriza títulos reales del fondo mostrado en esta página.
 
 FONDO COMPLETO (279 títulos — formato: Título|Autor|Uso pedagógico|Nivel educativo):
 ${catalogContext || 'Consulta el catálogo visible de la página para seleccionar títulos reales.'}`;
