@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛩</text></svg>">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -19,7 +18,7 @@
 <!-- ── Open Graph (LinkedIn, Facebook, WhatsApp) ── -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Las eras de Japón y el manga — Recurso didáctico · Biblioteca ULPGC">
-<meta property="og:description" content="Línea del tiempo interactiva con 48 títulos en 9 eras históricas japonesas · Catálogo pedagógico de 279 títulos del fondo · Situaciones de aprendizaje con estructura LOMLOE · Itinerarios para Infantil y Primaria · Tabla currículo → manga · Recursos para el aula.">
+<meta property="og:description" content="Línea del tiempo interactiva con 57 títulos en 9 eras históricas japonesas · Catálogo pedagógico de 279 títulos del fondo · Situaciones de aprendizaje con estructura LOMLOE · Itinerarios para Infantil y Primaria · Tabla currículo → manga · Recursos para el aula.">
 <meta property="og:url" content="https://biblioteca.ulpgc.es/manga-recurso-didactico">
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="Biblioteca del Campus del Obelisco — ULPGC">
@@ -340,8 +339,8 @@ toggleProyeccion = function() {
               </tr>`).join('')}
           </table>
           <div style="margin-top:1.1rem;display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap;">
-            <button id="statsReset" style="font-family:'Cinzel',serif;font-size:.75rem;background:none;border:1px solid var(--rule);color:var(--grey);padding:.35rem .9rem;border-radius:3px;cursor:pointer;">↺ Reiniciar</button>
-            <button id="statsCloseBtn" style="font-family:'Cinzel',serif;font-size:.75rem;background:var(--ink);border:none;color:var(--gold);padding:.35rem .9rem;border-radius:3px;cursor:pointer;">Cerrar</button>
+            <button id="statsReset" style="font-family:'Cinzel',serif;font-size:.62rem;background:none;border:1px solid var(--rule);color:var(--grey);padding:.35rem .9rem;border-radius:3px;cursor:pointer;">↺ Reiniciar</button>
+            <button id="statsCloseBtn" style="font-family:'Cinzel',serif;font-size:.62rem;background:var(--ink);border:none;color:var(--gold);padding:.35rem .9rem;border-radius:3px;cursor:pointer;">Cerrar</button>
           </div>
         </div>
       </div>`;
@@ -427,7 +426,6 @@ document.addEventListener('DOMContentLoaded', function() {
   --paper2: #e8ddc8;
   --red:    #8b1a1a;
   --gold:   #b8860b;
-  --gold-text: #7a5800;  /* #7a5800 sobre --paper = 4.6:1 — pasa WCAG AA */
   --grey:   #6b6255;
   --rule:   #c8b89a;
 
@@ -448,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
   border-bottom: 1px solid var(--rule);
 }
 .ur-intro {
-  font-family: 'Cinzel', serif; font-size: .78rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
   color: var(--grey); letter-spacing: .1em; text-transform: uppercase;
   margin-bottom: .75rem;
 }
@@ -466,8 +464,8 @@ document.addEventListener('DOMContentLoaded', function() {
   display: flex; flex-direction: column; gap: .25rem;
 }
 .ur-time {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
-  color: var(--gold-text); letter-spacing: .1em; text-transform: uppercase;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  color: var(--gold); letter-spacing: .1em; text-transform: uppercase;
 }
 .ur-label {
   font-family: 'EB Garamond', serif; font-size: 1.05rem; font-weight: 600;
@@ -493,10 +491,9 @@ document.addEventListener('DOMContentLoaded', function() {
 body {
   background-color: var(--paper);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
-  background-attachment: fixed;
   background-size: 400px 400px;
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 17px;
+  font-size: 19px;
   color: var(--ink);
   min-height: 100vh;
 }
@@ -538,15 +535,15 @@ header::after {
 }
 h1 {
   font-family: 'Cinzel', serif;
-  font-size: clamp(1.5rem, 4vw, 2.6rem);
+  font-size: clamp(1.7rem, 4vw, 2.9rem);
   letter-spacing: .08em; margin-bottom: .3rem;
   text-shadow: 0 1px 2px rgba(26,16,8,.08);
 }
 h1 em { color: var(--red); font-style: normal; }
 .sub {
-  font-family: 'EB Garamond', serif;
-  font-size: .95rem; color: var(--grey);
-  letter-spacing: .08em; margin-bottom: .3rem;
+  font-family: 'Noto Serif JP', serif;
+  font-size: .9rem; color: var(--grey);
+  letter-spacing: .18em; margin-bottom: .3rem;
 }
 /* Decorative divider between sub and jp */
 .header-rule {
@@ -587,11 +584,11 @@ h1 em { color: var(--red); font-style: normal; }
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,.18);
 }
-.badge-sm { font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; color:#fff; padding:1px 5px; border-radius:2px; }
+.badge-sm { font-family:'Cinzel',serif; font-size:.68rem; font-weight:700; color:#fff; padding:1px 5px; border-radius:2px; }
 
 .hint {
   text-align:center; padding:.5rem;
-  font-size:.92rem; color:var(--grey); opacity:1; letter-spacing:.02em;
+  font-size:1rem; color:var(--grey); opacity:.8; letter-spacing:.04em;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -699,8 +696,8 @@ h1 em { color: var(--red); font-style: normal; }
 }
 .era-name  { font-family:'Cinzel',serif; font-size:.75rem; font-weight:700; color:#fff; letter-spacing:.08em; display:block; text-shadow:0 1px 4px rgba(0,0,0,.8); }
 .era-jp    { font-family:'Noto Serif JP',serif; font-size:1.05rem; color:var(--gold); display:block; margin-top:2px; text-shadow:0 1px 3px rgba(0,0,0,.7); }
-.era-dates { font-size:.72rem; color:rgba(255,255,255,.7); display:block; margin-top:2px; }
-.era-dur   { font-size:.72rem; color:rgba(255,230,120,.9); display:block; margin-top:1px; font-style:normal; letter-spacing:.04em; }
+.era-dates { font-size:.65rem; color:rgba(255,255,255,.7); display:block; margin-top:2px; }
+.era-dur   { font-size:.6rem; color:rgba(255,210,80,.65); display:block; margin-top:1px; font-style:italic; letter-spacing:.04em; }
 
 /* ── PREGUNTA DETONADORA ─────────────────────────────────────── */
 .era-q-btn {
@@ -711,7 +708,7 @@ h1 em { color: var(--red); font-style: normal; }
   background: rgba(184,134,11,.75);
   border: 1px solid rgba(255,210,80,.5);
   color: #fff;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 900;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 900;
   cursor: pointer; z-index: 10;
   display: flex; align-items: center; justify-content: center;
   transition: background .15s, transform .1s;
@@ -755,13 +752,13 @@ h1 em { color: var(--red); font-style: normal; }
   z-index: 1;
 }
 .era-q-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
   color: var(--gold); margin-bottom: .4rem; display: block;
 }
 .era-q-nivel {
-  font-family: 'Cinzel', serif; font-size: .72rem;
-  color: rgba(245,239,224,.7); letter-spacing: .05em;
+  font-family: 'Cinzel', serif; font-size: .55rem;
+  color: rgba(245,239,224,.45); letter-spacing: .06em;
   margin-bottom: .5rem; display: block;
 }
 .era-q-list {
@@ -776,7 +773,7 @@ h1 em { color: var(--red); font-style: normal; }
 .era-q-list li::before {
   content: '✦';
   position: absolute; left: 0;
-  font-size: .72rem; color: var(--gold);
+  font-size: .5rem; color: var(--gold);
   top: .28rem;
 }
 
@@ -785,8 +782,8 @@ body.modo-proyeccion .era-q-panel {
   width: 310px;
 }
 body.modo-proyeccion .era-q-list li { font-size: 1rem; }
-body.modo-proyeccion .era-q-label   { font-size: .72rem; }
-body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .72rem; }
+body.modo-proyeccion .era-q-label   { font-size: .68rem; }
+body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .7rem; }
 
 /* ─── DIVIDER between eras ───────────────── */
 .sep {
@@ -825,14 +822,14 @@ body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .72r
 .card.note   { border-left-color:#4a7c8e; }
 .card.tai    { border-left-color:#8e6a2e; background:rgba(255,248,230,.97); }
 
-.ct { font-family:'EB Garamond',serif; font-weight:600; color:var(--ink); display:block; font-size:.95rem; }
-.ca { color:var(--grey); font-size:.82rem; display:block; margin-top:2px; }
+.ct { font-family:'EB Garamond',serif; font-weight:600; color:var(--ink); display:block; font-size:1rem; }
+.ca { color:var(--grey); font-size:.78rem; display:block; margin-top:2px; }
 
 /* vitrina badge */
 .vb {
   display: inline-block;
   font-family: 'Cinzel', serif;
-  font-size: .72rem; font-weight:700;
+  font-size: .64rem; font-weight:700;
   color: #fff;
   padding: 1px 5px;
   border-radius: 2px;
@@ -840,7 +837,7 @@ body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .72r
   letter-spacing: .03em;
 }
 
-/* ─── TOOLTIP — lives on <body> ── */
+/* ─── TOOLTIP — lives on <body style="background-color:#f5efe0;"> ── */
 #gtt {
   display: none;
   position: fixed;
@@ -884,7 +881,7 @@ body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .72r
   background: rgba(238,228,255,.14);
 }
 .adapt h2 { font-family:'Cinzel',serif; font-size:1.05rem; color:#6e2e7a; letter-spacing:.1em; margin-bottom:.3rem; }
-.adapt p  { font-size: 1.05rem; color:var(--ink); font-style:normal; margin-bottom:1.2rem; line-height:1.65; max-width:900px; }
+.adapt p  { font-size: 1.08rem; color:var(--grey); font-style:italic; margin-bottom:1.2rem; line-height:1.65; max-width:900px; }
 .adapt-grid { display:flex; flex-wrap:wrap; gap:.8rem; }
 .ac {
   background: rgba(248,238,252,.9);
@@ -897,7 +894,7 @@ body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .72r
 }
 .ac b { font-family:'EB Garamond',serif; font-weight:600; font-size:1.05rem; display:block; }
 .ac i { font-size:.88rem; color:#6e2e7a; display:block; margin-top:1px; font-style:italic; }
-.ac s { font-size:.96rem; color:var(--ink); display:block; margin-top:4px; line-height:1.6; text-decoration:none; }
+.ac s { font-size:1rem; color:var(--grey); display:block; margin-top:4px; line-height:1.6; text-decoration:none; }
 
 /* ─── BOTTOM NOTES ───────────────────────── */
 .notes {
@@ -908,14 +905,14 @@ body.modo-proyeccion .era-q-btn     { width: 22px; height: 22px; font-size: .72r
 }
 .nb { flex:1; min-width:200px; }
 .nb h3 { font-family:'Cinzel',serif; font-size:.9rem; color:var(--red); letter-spacing:.1em; margin-bottom:.35rem; text-transform:uppercase; }
-.nb p  { font-size:1rem; color:var(--ink); line-height:1.7; opacity:.85; }
+.nb p  { font-size: 1.05rem; color:var(--grey); line-height:1.7; }
 
 footer {
   text-align:center; padding:1rem;
-  font-size:.84rem; color:var(--ink); letter-spacing:.06em; opacity:.8;
+  font-size:.82rem; color:var(--grey); letter-spacing:.09em;
   border-top:1px solid var(--rule);
-  background: var(--paper2);
-  font-family:'EB Garamond',serif;
+  background: rgba(232,221,200,.4);
+  font-family:'Noto Serif JP',serif;
 }
 
 
@@ -964,7 +961,7 @@ body.compact .ct  { font-size: .75rem; }
 }
 .filter-bar label {
   font-family: 'Cinzel', serif;
-  font-size: .72rem;
+  font-size: .7rem;
   color: var(--gold);
   letter-spacing: .08em;
   margin-right: .3rem;
@@ -974,17 +971,17 @@ body.compact .ct  { font-size: .75rem; }
 }
 .fb-label {
   font-family: 'Cinzel', serif;
-  font-size: .72rem; color: rgba(184,134,11,.85);
+  font-size: .7rem; color: rgba(184,134,11,.85);
   letter-spacing: .08em; margin-right: .2rem;
   white-space: nowrap;
 }
 .fb {
   font-family: 'Cinzel', serif;
-  font-size: .74rem; font-weight: 700;
+  font-size: .68rem; font-weight: 700;
   color: #fff; border: none; cursor: pointer;
-  padding: .30rem .8rem; border-radius: 3px;
-  opacity: .80; transition: opacity .15s, transform .1s;
-  letter-spacing: .03em;
+  padding: .28rem .7rem; border-radius: 3px;
+  opacity: .72; transition: opacity .15s, transform .1s;
+  letter-spacing: .04em;
 }
 .fb:hover { opacity: 1; transform: translateY(-1px); }
 .fb.active { opacity: 1; box-shadow: 0 0 0 2px var(--gold); }
@@ -1020,16 +1017,16 @@ body.filtering-uso.filtering-nivel .card:not(.match-uso).match-nivel { opacity: 
   margin-bottom: .55rem;
 }
 .exc-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .1em; text-transform: uppercase; color: var(--gold);
   flex: 1;
 }
 .exc-total {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
   color: var(--grey); letter-spacing: .05em;
 }
 .exc-reset {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .56rem; font-weight: 700;
   color: var(--grey); background: none;
   border: 1px solid var(--rule); border-radius: 3px;
   padding: 1px 6px; cursor: pointer; letter-spacing: .04em;
@@ -1047,7 +1044,7 @@ body.filtering-uso.filtering-nivel .card:not(.match-uso).match-nivel { opacity: 
   align-items: center; gap: .5rem;
 }
 .exc-uso-name {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
   letter-spacing: .04em; color: var(--grey); text-transform: uppercase;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -1060,7 +1057,7 @@ body.filtering-uso.filtering-nivel .card:not(.match-uso).match-nivel { opacity: 
   transition: width .5s ease;
 }
 .exc-count {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   color: var(--ink); text-align: right;
 }
 
@@ -1071,12 +1068,12 @@ body.filtering-uso.filtering-nivel .card:not(.match-uso).match-nivel { opacity: 
   border-top: 1px dashed rgba(200,184,154,.4);
 }
 .exc-ods-chip {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .54rem; font-weight: 700;
   color: #fff; padding: 1px 5px; border-radius: 2px;
   letter-spacing: .02em; opacity: .85;
 }
 .exc-ods-label {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .57rem;
   color: var(--grey); letter-spacing: .05em; align-self: center;
   margin-right: 3px;
 }
@@ -1093,7 +1090,7 @@ body.filtering-uso.filtering-nivel .card:not(.match-uso).match-nivel { opacity: 
   color: var(--ink); letter-spacing: .08em; margin-bottom: .4rem;
 }
 .catalog-sub {
-  font-size: .95rem; color: var(--grey); font-style: normal; line-height: 1.6;
+  font-size: .88rem; color: var(--grey); font-style: italic; line-height: 1.6;
 }
 
 /* ── CATALOG GRID ── */
@@ -1120,7 +1117,7 @@ body.filtering-uso.filtering-nivel.filtering-ods .cat-card.match-uso.match-nivel
 
 .ods-badges { display:flex; flex-wrap:wrap; gap:3px; margin-top:4px; }
 .ods-badge {
-  font-family:'Cinzel',serif; font-size:.72rem; font-weight:700;
+  font-family:'Cinzel',serif; font-size:.56rem; font-weight:700;
   color:#fff; padding:1px 5px; border-radius:2px;
   letter-spacing:.03em; white-space:nowrap; cursor:default;
   transition: transform .1s;
@@ -1166,7 +1163,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 }
 .cat-title {
   font-family: 'EB Garamond', serif;
-  font-weight: 600; font-size: 1rem;
+  font-weight: 600; font-size: 1.05rem;
   color: var(--ink); line-height: 1.35;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
   overflow: hidden;
@@ -1174,20 +1171,20 @@ body.filtering-ods #odsCounter { display:inline-block; }
   hyphens: auto;
 }
 .cat-author {
-  font-size: .83rem; color: #555555;
+  font-size: .88rem; color: #666666;
   display: block; margin-top: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cat-badges { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 4px; }
 .cat-badge {
   font-family: 'Cinzel', serif;
-  font-size: .72rem; font-weight: 700;
-  color: #fff; padding: 2px 6px; border-radius: 2px;
-  letter-spacing: .01em;
+  font-size: .6rem; font-weight: 700;
+  color: #fff; padding: 1px 5px; border-radius: 2px;
+  letter-spacing: .02em;
 }
 .cat-nivel { margin-top: 2px; display: flex; gap: 3px; flex-wrap: wrap; }
 .niv-badge {
-  font-size: .75rem; color: var(--grey);
+  font-size: .65rem; color: var(--grey);
   border: 1px solid var(--rule);
   padding: 0 4px; border-radius: 2px;
   background: rgba(232,221,200,.5);
@@ -1205,14 +1202,14 @@ body.filtering-ods #odsCounter { display:inline-block; }
   color: #2a5a2a; letter-spacing: .08em; margin-bottom: .3rem;
 }
 .itin-section > p {
-  font-size: .95rem; color: var(--ink); font-style: normal;
-  line-height: 1.7; margin-bottom: 1.8rem; max-width: 900px;
+  font-size: .9rem; color: var(--grey); font-style: italic;
+  line-height: 1.65; margin-bottom: 1.8rem; max-width: 900px;
 }
 .itin-tabs {
   display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
 .itin-tab {
-  font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
   padding: .35rem .9rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid transparent;
   transition: all .15s;
@@ -1242,7 +1239,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
   letter-spacing: .04em;
 }
 .itin-card .itin-meta {
-  font-size: .85rem; color: var(--grey); font-style: normal;
+  font-size: .82rem; color: var(--grey); font-style: italic;
   margin-bottom: .55rem;
 }
 .itin-card ul {
@@ -1263,7 +1260,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 .itin-card .itin-progress-btn {
   display: inline-flex; align-items: center; gap: .35rem;
   margin-top: .75rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
   letter-spacing: .05em; text-transform: uppercase;
   padding: .28rem .75rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid #2a5a2a; color: #2a5a2a;
@@ -1289,7 +1286,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 .itin-card.itin-done::after {
   content: '✓ Trabajado';
   position: absolute; top: .5rem; right: .6rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .55rem; font-weight: 700;
   color: #2a5a2a; letter-spacing: .06em;
   background: rgba(42,90,42,.1); border: 1px solid rgba(42,90,42,.25);
   border-radius: 2px; padding: 1px 5px;
@@ -1314,11 +1311,11 @@ body.filtering-ods #odsCounter { display:inline-block; }
   border-radius: 3px; transition: width .35s ease;
 }
 .itin-progress-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   color: #2a5a2a; white-space: nowrap; letter-spacing: .05em;
 }
 .itin-reset-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   color: var(--grey); background: none;
   border: 1px solid var(--rule); border-radius: 3px;
   padding: 1px 6px; cursor: pointer; letter-spacing: .04em;
@@ -1327,7 +1324,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 .itin-reset-btn:hover { color: var(--red); border-color: var(--red); }
 }
 .itin-card .itin-titles strong {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .68rem;
   text-transform: uppercase; letter-spacing: .05em;
   color: #2a5a2a; display: block; margin-bottom: .2rem;
 }
@@ -1343,14 +1340,14 @@ body.filtering-ods #odsCounter { display:inline-block; }
   color: #2a3a7a; letter-spacing: .08em; margin-bottom: .3rem;
 }
 .sa-section > p {
-  font-size: .95rem; color: var(--ink); font-style: normal;
-  line-height: 1.7; margin-bottom: 1.8rem; max-width: 900px;
+  font-size: 1rem; color: var(--grey); font-style: italic;
+  line-height: 1.65; margin-bottom: 1.8rem; max-width: 900px;
 }
 .sa-tabs {
   display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
 .sa-tab {
-  font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
   padding: .35rem .9rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid transparent; transition: all .15s;
 }
@@ -1376,7 +1373,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
   font-weight: 700; letter-spacing: .05em; margin-bottom: .2rem;
 }
 .sa-header .sa-meta {
-  font-size: .83rem; opacity: .95; font-style: normal;
+  font-size: .8rem; opacity: .85; font-style: italic;
 }
 .sa-body { padding: 1.2rem 1.4rem; }
 
@@ -1387,7 +1384,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 }
 .sa-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .sa-block h4 {
-  font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .76rem; font-weight: 700;
   color: #2a3a7a; letter-spacing: .08em;
   text-transform: uppercase; margin-bottom: .4rem;
 }
@@ -1423,8 +1420,8 @@ body.filtering-ods #odsCounter { display:inline-block; }
   color: #7a4a0a; letter-spacing: .08em; margin-bottom: .3rem;
 }
 .recursos-section > p {
-  font-size: .95rem; color: var(--ink); font-style: normal;
-  line-height: 1.7; margin-bottom: 1.8rem; max-width: 900px;
+  font-size: 1rem; color: var(--grey); font-style: italic;
+  line-height: 1.65; margin-bottom: 1.8rem; max-width: 900px;
 }
 .rec-grid {
   display: grid;
@@ -1455,14 +1452,14 @@ body.filtering-ods #odsCounter { display:inline-block; }
   font-size: .8rem; color: var(--grey); line-height: 1.55;
 }
 .rec-item .rec-url {
-  font-size: .80rem; color: #2a3a7a; font-style: normal;
+  font-size: .75rem; color: #2a3a7a; font-style: italic;
   word-break: break-all;
 }
 
 
 /* ══ RECURSOS (versión actualizada) ══════════════════════════════ */
 .rec-lang {
-  display: inline-block; font-size: .72rem; font-weight: 700;
+  display: inline-block; font-size: .65rem; font-weight: 700;
   font-family: 'Cinzel', serif; padding: 1px 5px; border-radius: 2px;
   margin-right: 4px; vertical-align: middle; letter-spacing: .03em;
 }
@@ -1471,7 +1468,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 .rec-lang.both { background: #7a4a0a; color: #fff; }
 
 .rec-lic {
-  display: inline-block; font-size: .72rem; padding: 1px 5px;
+  display: inline-block; font-size: .62rem; padding: 1px 5px;
   border-radius: 2px; margin-left: 4px; vertical-align: middle;
   font-family: 'Cinzel', serif; letter-spacing: .02em;
 }
@@ -1493,7 +1490,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
   display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
 .rec-tab {
-  font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
   padding: .35rem .9rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid transparent; transition: all .15s;
 }
@@ -1506,7 +1503,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 
 /* ── CONTENIDO SENSIBLE ───────────────────────────────────────── */
 .cat-card .sens-badge {
-  display: inline-block; font-size: .72rem; font-weight: 700;
+  display: inline-block; font-size: .6rem; font-weight: 700;
   font-family: 'Cinzel', serif; padding: 1px 5px; border-radius: 2px;
   margin-top: 3px; letter-spacing: .02em;
   background: #7a2a2a; color: #fff;
@@ -1525,14 +1522,14 @@ body.filtering-ods #odsCounter { display:inline-block; }
   color: #5a3a1a; letter-spacing: .08em; margin-bottom: .3rem;
 }
 .curriculo-section > p {
-  font-size: .9rem; color: var(--grey); font-style: normal;
+  font-size: .9rem; color: var(--grey); font-style: italic;
   line-height: 1.65; margin-bottom: 1.5rem; max-width: 900px;
 }
 .cur-tabs {
   display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
 .cur-tab {
-  font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
   padding: .35rem .9rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid transparent; transition: all .15s;
 }
@@ -1543,7 +1540,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 
 .cur-table {
   width: 100%; border-collapse: collapse;
-  font-size: .85rem; margin-top: .5rem;
+  font-size: .9rem; margin-top: .5rem;
 }
 .cur-table th {
   background: #5a3a1a; color: #fff;
@@ -1566,7 +1563,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 }
 .cur-table td:nth-child(3) { width: 30%; }
 .cur-table td:last-child {
-  font-size: .8rem; color: var(--grey); font-style: normal;
+  font-size: .8rem; color: var(--grey); font-style: italic;
 }
 .cur-table .cur-title {
   font-family: 'EB Garamond', serif; font-weight: 600;
@@ -1611,7 +1608,7 @@ body.filtering-ods #odsCounter { display:inline-block; }
 .search-clear.visible { display: inline-block; }
 .search-clear:hover { color: var(--red); }
 #searchCount {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   color: var(--gold); letter-spacing: .08em;
   margin-top: .4rem; display: block; min-height: 1em;
 }
@@ -1757,8 +1754,8 @@ body.filtering-ods #odsCounter { display:inline-block; }
   outline-offset: 2px;
 }
 .wr .wr-if {
-  font-family: 'Cinzel', serif; font-size: .78rem;
-  color: var(--gold); letter-spacing: .04em;
+  font-family: 'Cinzel', serif; font-size: .68rem;
+  color: var(--gold); letter-spacing: .06em;
   text-transform: uppercase; display: block;
   margin-bottom: .25rem;
 }
@@ -1879,17 +1876,16 @@ body.filtering-ods #odsCounter { display:inline-block; }
 /* ══ RESPONSIVE / MOBILE ══════════════════════════════════════════ */
 /* ── CITA ACADÉMICA ───────────────────────────────────────────── */
 .citation-bar {
-  background: var(--paper);
-  border-top: 2px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  padding: 1rem 3rem 1.2rem;
-  font-size: .84rem; color: var(--ink);
-  line-height: 1.85;
+  background: rgba(26,16,8,.06);
+  border-top: 1px solid var(--rule);
+  padding: .8rem 3rem;
+  font-size: .78rem; color: var(--grey);
+  line-height: 1.7;
 }
 .citation-bar strong {
-  font-family: 'Cinzel', serif; font-size: .76rem;
+  font-family: 'Cinzel', serif; font-size: .72rem;
   letter-spacing: .07em; text-transform: uppercase;
-  color: var(--ink); display: block; margin-bottom: .45rem;
+  color: var(--ink); display: block; margin-bottom: .3rem;
 }
 .citation-bar code {
   font-family: 'Courier New', monospace; font-size: .78rem;
@@ -1897,10 +1893,10 @@ body.filtering-ods #odsCounter { display:inline-block; }
   border-radius: 2px; color: var(--ink);
 }
 .citation-copy {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
-  border: 1.5px solid var(--ink); border-radius: 3px;
-  padding: 3px 10px; background: var(--ink); cursor: pointer;
-  color: var(--paper); margin-left: .6rem;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
+  border: 1px solid var(--rule); border-radius: 2px;
+  padding: 2px 8px; background: #fff; cursor: pointer;
+  color: var(--grey); margin-left: .5rem;
   transition: all .15s; vertical-align: middle;
 }
 .citation-copy:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
@@ -1917,17 +1913,6 @@ body.filtering-ods #odsCounter { display:inline-block; }
 /* Hide sensitive cards in modo aula */
 body.modo-aula .cat-card[data-sensitive] {
   display: none !important;
-}
-/* Badge de aviso en tarjetas sensibles (visible solo cuando modo aula está desactivado) */
-body:not(.modo-aula) .cat-card[data-sensitive]::after {
-  content: '⚠ Adulto';
-  position: absolute; top: 6px; right: 6px;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
-  letter-spacing: .04em; text-transform: uppercase;
-  color: #7a4a00; background: rgba(255,235,180,.95);
-  border: 1px solid rgba(200,140,0,.5);
-  border-radius: 3px; padding: 2px 6px;
-  pointer-events: none; z-index: 2;
 }
 /* Show modo aula notice */
 body.modo-aula .modo-aula-notice {
@@ -2053,7 +2038,7 @@ body.modo-descubrimiento #eraDiscoveryBar { display: flex; }
   gap: .6rem; justify-content: center; flex-wrap: wrap;
 }
 #eraDiscCounter {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   color: rgba(184,134,11,.6); letter-spacing: .1em;
   white-space: nowrap;
 }
@@ -2066,14 +2051,14 @@ body.modo-descubrimiento #eraDiscoveryBar { display: flex; }
   color: var(--gold);
 }
 #eraDiscDates {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   color: rgba(255,255,255,.5); letter-spacing: .06em;
   white-space: nowrap;
 }
 
 /* Botón "Todas" */
 #eraDiscExit {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   color: rgba(184,134,11,.7); background: none;
   border: 1px solid rgba(184,134,11,.3); border-radius: 3px;
   padding: .25rem .7rem; cursor: pointer; letter-spacing: .05em;
@@ -2137,13 +2122,13 @@ body.modo-proyeccion .filter-bar {
   padding: .4rem 2rem;
   background: rgba(26,16,8,.9);
 }
-body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
+body.modo-proyeccion .fb { font-size: .7rem; padding: .3rem .7rem; }
 
 
 /* ── CONTADOR DE VISITAS ─────────────────────────────────────── */
 .visit-counter {
   display: inline-flex; align-items: center; gap: .4rem;
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .68rem;
   color: rgba(184,134,11,.7); letter-spacing: .06em;
   margin-top: .5rem;
 }
@@ -2161,7 +2146,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   flex-wrap: wrap;
 }
 .totd-label {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   font-weight: 700; letter-spacing: .12em;
   color: var(--gold); white-space: nowrap;
   text-transform: uppercase;
@@ -2173,17 +2158,17 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
 }
 .totd-author {
   font-family: 'EB Garamond', serif; font-size: .82rem;
-  font-style: normal; color: rgba(184,134,11,.7);
+  font-style: italic; color: rgba(184,134,11,.7);
 }
 .totd-uso {
-  font-size: .72rem; font-family: 'Cinzel', serif;
+  font-size: .7rem; font-family: 'Cinzel', serif;
   font-weight: 700; color: #fff;
   padding: 1px 7px; border-radius: 2px;
   margin-left: .3rem;
 }
 .totd-desc {
   font-family: 'EB Garamond', serif; font-size: .85rem;
-  color: rgba(245,239,224,.65); font-style: normal;
+  color: rgba(245,239,224,.65); font-style: italic;
   max-width: 700px; line-height: 1.5;
   flex-basis: 100%; padding-left: calc(.65rem + 1.2rem + 1.2rem);
 }
@@ -2240,13 +2225,13 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   position: absolute; top: .9rem; right: 1rem;
   background: none; border: 1px solid var(--rule);
   border-radius: 3px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .7rem;
   color: var(--grey); padding: 3px 9px;
   transition: all .12s;
 }
 .vitrina-close:hover { background: var(--ink); color: var(--gold); border-color: var(--ink); }
 .vitrina-era-tag {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   font-weight: 700; letter-spacing: .1em;
   text-transform: uppercase; color: var(--grey);
   display: block; margin-bottom: .35rem;
@@ -2278,13 +2263,13 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   margin-bottom: 1.1rem;
 }
 .vitrina-badge {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
   font-weight: 700; letter-spacing: .04em;
   color: #fff; padding: 3px 9px; border-radius: 2px;
   display: inline-block;
 }
 .vitrina-nivel-tag {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
   font-weight: 700; letter-spacing: .04em;
   color: var(--ink); padding: 2px 8px; border-radius: 2px;
   border: 1px solid var(--rule);
@@ -2292,7 +2277,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   display: inline-block;
 }
 .vitrina-section-label {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; color: var(--grey);
   margin-bottom: .45rem; display: block;
@@ -2317,7 +2302,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   font-style: italic; color: var(--grey);
 }
 .vitrina-related-era {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .58rem;
   color: var(--gold); letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -2330,7 +2315,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
 .card[data-vitrina]::after {
   content: '＋';
   position: absolute; top: 3px; right: 4px;
-  font-size: .72rem; color: var(--gold);
+  font-size: .65rem; color: var(--gold);
   opacity: .6; pointer-events: none;
 }
 @media (max-width: 768px) {
@@ -2342,7 +2327,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
 
 /* ── VITRINA → CATÁLOGO BUTTON ──────────────────────────── */
 .vitrina-catalog-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   letter-spacing: .05em; color: var(--ink);
   background: rgba(184,134,11,.12); border: 1.5px solid var(--gold);
   border-radius: 3px; padding: .35rem 1rem; cursor: pointer;
@@ -2358,7 +2343,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   margin-bottom: 1rem;
 }
 .vitrina-action-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
   letter-spacing: .04em; cursor: pointer;
   border-radius: 4px; padding: .4rem .5rem;
   transition: background .12s, color .12s;
@@ -2379,7 +2364,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   padding-top: .9rem;
 }
 .vitrina-ficha-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
   letter-spacing: .1em; text-transform: uppercase;
   color: var(--gold); display: flex; align-items: center; gap: .4rem;
   margin-bottom: .75rem;
@@ -2396,7 +2381,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
   display: flex; gap: .55rem; align-items: flex-start;
 }
 .vitrina-ficha-step-tag {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   letter-spacing: .04em; color: var(--paper);
   background: var(--grey); border-radius: 2px;
   padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
@@ -2426,7 +2411,7 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
 
 .vitrina-ficha-stage {
   display: block; margin-top: .4rem;
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
   letter-spacing: .05em; color: var(--ink);
   background: rgba(184,134,11,.1);
   border-left: 2px solid var(--gold);
@@ -2434,12 +2419,12 @@ body.modo-proyeccion .fb { font-size: .72rem; padding: .3rem .7rem; }
 }
 .vitrina-ficha-ideal {
   display: block; margin-top: .5rem;
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .6rem;
   letter-spacing: .06em; color: var(--grey);
   text-transform: uppercase;
 }
 .vitrina-ficha-tarea strong {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase;
   color: var(--gold); display: block; margin-bottom: .2rem;
 }
@@ -2469,14 +2454,14 @@ p.sa-alternatives strong { color: var(--ink); }
   color: #4A2A1A; letter-spacing: .08em; margin-bottom: .3rem;
 }
 .univ-section > .univ-intro {
-  font-size: .9rem; color: var(--grey); font-style: normal;
+  font-size: .9rem; color: var(--grey); font-style: italic;
   line-height: 1.65; margin-bottom: 1.5rem; max-width: 900px;
 }
 .univ-tabs {
   display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
 .univ-tab {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   padding: .35rem .9rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid transparent; transition: all .15s;
 }
@@ -2504,7 +2489,7 @@ p.sa-alternatives strong { color: var(--ink); }
   letter-spacing: .04em;
 }
 .univ-card .univ-meta {
-  font-size: .75rem; color: var(--grey); font-style: normal;
+  font-size: .75rem; color: var(--grey); font-style: italic;
   margin-bottom: .55rem;
 }
 .univ-card ul {
@@ -2521,13 +2506,13 @@ p.sa-alternatives strong { color: var(--ink); }
   font-size: .78rem; color: var(--grey);
 }
 .univ-card .univ-titles strong {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .68rem;
   text-transform: uppercase; letter-spacing: .05em;
   color: #4A2A1A; display: block; margin-bottom: .2rem;
 }
 .univ-badge {
   display: inline-block; font-family: 'Cinzel', serif;
-  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  font-size: .6rem; font-weight: 700; letter-spacing: .04em;
   color: #fff; background: #4A2A1A;
   padding: 2px 7px; border-radius: 2px; margin-right: 4px;
 }
@@ -2582,7 +2567,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #asist-close {
   background: none; border: 1px solid rgba(100,160,255,.3);
   border-radius: 3px; color: rgba(245,239,224,.6);
-  padding: 2px 9px; cursor: pointer; font-size: .72rem;
+  padding: 2px 9px; cursor: pointer; font-size: .7rem;
   font-family: 'Cinzel', serif;
 }
 #asist-close:hover { background: rgba(100,160,255,.15); color: var(--paper); }
@@ -2610,7 +2595,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #asist-key-save {
   background: #1A5A8B; color: #fff; border: none;
   border-radius: 3px; padding: .35rem .9rem;
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .7rem;
   font-weight: 700; cursor: pointer;
 }
 #asist-key-save:hover { background: #2A6A9B; }
@@ -2666,7 +2651,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #asist-send {
   background: #1A5A8B; color: #fff; border: none;
   border-radius: 3px; padding: .5rem .9rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   cursor: pointer; flex-shrink: 0; align-self: flex-end;
   transition: background .12s;
 }
@@ -2675,7 +2660,7 @@ p.sa-alternatives strong { color: var(--ink); }
 
 /* Disclaimer */
 #asist-disclaimer {
-  font-size: .72rem; color: rgba(245,239,224,.3);
+  font-size: .68rem; color: rgba(245,239,224,.3);
   text-align: center; padding: .3rem .8rem .5rem;
   flex-shrink: 0; line-height: 1.4;
 }
@@ -2698,8 +2683,8 @@ p.sa-alternatives strong { color: var(--ink); }
 /* ── FICHA DE AULA ───────────────────────────────────────── */
 .cat-ficha-btn {
   flex: 1;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
-  letter-spacing: .02em; color: var(--grey); cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
+  letter-spacing: .03em; color: var(--grey); cursor: pointer;
   background: rgba(184,134,11,.07); border: 1px solid rgba(184,134,11,.25);
   border-radius: 3px; padding: 3px 5px; text-align: center;
   transition: all .12s; min-width: 0;
@@ -2727,7 +2712,7 @@ p.sa-alternatives strong { color: var(--ink); }
   border-radius: 4px 4px 0 0;
 }
 #fichaModal .ficha-header .ficha-label {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   letter-spacing: .12em; text-transform: uppercase;
   color: var(--gold); display: block; margin-bottom: .3rem;
 }
@@ -2744,14 +2729,14 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #fichaModal .ficha-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 #fichaModal .ficha-section-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .1em; text-transform: uppercase;
   color: #5a3a1a; display: block; margin-bottom: .4rem;
 }
 #fichaModal .ficha-desc { font-size: .95rem; line-height: 1.7; color: #2d1a08; }
 #fichaModal .ficha-badges { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .5rem; }
 #fichaModal .ficha-badge {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
   color: #fff; padding: 2px 8px; border-radius: 2px;
 }
 #fichaModal .ficha-niv {
@@ -2770,7 +2755,7 @@ p.sa-alternatives strong { color: var(--ink); }
   border-radius: 0 0 4px 4px;
 }
 #fichaModal .ficha-actions button {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   letter-spacing: .05em; padding: .45rem 1.1rem; border-radius: 3px;
   cursor: pointer; transition: all .12s;
 }
@@ -2790,7 +2775,7 @@ p.sa-alternatives strong { color: var(--ink); }
   padding-top: .9rem; margin-top: .2rem;
 }
 .ficha-notas-title {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   letter-spacing: .1em; text-transform: uppercase;
   color: #5a3a1a; margin-bottom: .7rem; display: flex;
   align-items: center; gap: .5rem;
@@ -2802,7 +2787,7 @@ p.sa-alternatives strong { color: var(--ink); }
   color: var(--grey); text-transform: none;
 }
 .ficha-notas-saved {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .58rem;
   color: #2a5a2a; letter-spacing: .05em;
   opacity: 0; transition: opacity .3s;
   margin-left: auto;
@@ -2812,7 +2797,7 @@ p.sa-alternatives strong { color: var(--ink); }
   margin-bottom: .65rem;
 }
 .ficha-nota-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   letter-spacing: .07em; text-transform: uppercase;
   color: var(--grey); display: block; margin-bottom: .25rem;
 }
@@ -2834,7 +2819,7 @@ p.sa-alternatives strong { color: var(--ink); }
   margin-bottom: .65rem;
 }
 .ficha-implicacion-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   letter-spacing: .07em; text-transform: uppercase;
   color: var(--grey); margin-right: .4rem; white-space: nowrap;
 }
@@ -2854,7 +2839,7 @@ p.sa-alternatives strong { color: var(--ink); }
 .cat-card.has-notas::before {
   content: '📝';
   position: absolute; top: .35rem; left: .4rem;
-  font-size: .72rem; opacity: .6; pointer-events: none;
+  font-size: .7rem; opacity: .6; pointer-events: none;
   z-index: 2;
 }
 /* Notas en impresión */
@@ -2871,7 +2856,7 @@ p.sa-alternatives strong { color: var(--ink); }
 
 .cat-comp-btn {
   display: inline-flex; align-items: center; gap: 3px;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
   letter-spacing: .03em; color: #2a3a7a; cursor: pointer;
   background: rgba(42,58,122,.07); border: 1px solid rgba(42,58,122,.25);
   border-radius: 3px; padding: 3px 6px; transition: all .12s;
@@ -2906,7 +2891,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #compModal .comp-close {
   background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
 }
 #compTable {
   width: 100%; border-collapse: collapse;
@@ -2914,7 +2899,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #compTable th {
   background: rgba(232,221,200,.5); padding: .7rem 1rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   letter-spacing: .08em; text-transform: uppercase;
   text-align: left; border-bottom: 2px solid var(--rule);
   color: #5a3a1a;
@@ -2926,7 +2911,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #compTable tr:last-child td { border-bottom: none; }
 #compTable td:first-child {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .07em; text-transform: uppercase;
   color: var(--grey); background: rgba(232,221,200,.3);
 }
@@ -2960,14 +2945,14 @@ p.sa-alternatives strong { color: var(--ink); }
 #rubricaModal .rubrica-close {
   background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
 }
 #rubricaModal .rubrica-controls {
   padding: 1rem 1.4rem; border-bottom: 1px solid var(--rule);
   background: rgba(232,221,200,.3); display: flex; flex-wrap: wrap; gap: .8rem; align-items: flex-end;
 }
 #rubricaModal .rubrica-controls label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: var(--grey);
   display: block; margin-bottom: .3rem;
 }
@@ -2985,7 +2970,7 @@ p.sa-alternatives strong { color: var(--ink); }
 /* ── Grupo de competencias con checkboxes ── */
 .sec-comp-group { min-width: 200px; }
 .sec-comp-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: var(--grey);
   display: block; margin-bottom: .35rem;
 }
@@ -3008,7 +2993,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #rubricaModal .rubrica-gen-btn {
   background: #2a3a7a; color: #fff; border: none;
   border-radius: 3px; padding: .4rem 1rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   cursor: pointer; transition: background .12s; align-self: flex-end;
 }
 #rubricaModal .rubrica-gen-btn:hover { background: #3a4a8a; }
@@ -3029,7 +3014,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #rubricaModal .rubrica-content th {
   background: #2a3a7a; color: #fff; padding: .4rem .6rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
   letter-spacing: .05em; text-align: left;
 }
 #rubricaModal .rubrica-content td {
@@ -3041,7 +3026,7 @@ p.sa-alternatives strong { color: var(--ink); }
   background: rgba(232,221,200,.2); display: flex; gap: .6rem;
 }
 #rubricaModal .rubrica-actions button {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   letter-spacing: .05em; padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
 }
 #rubricaModal .rubrica-print-btn {
@@ -3142,7 +3127,7 @@ p.sa-alternatives strong { color: var(--ink); }
 /* ── OPAC LINK ───────────────────────────────────────────── */
 .cat-opac-link {
   display: block; margin-top: 3px;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
   letter-spacing: .03em; color: #2a5a2a;
   text-decoration: none;
   background: rgba(42,90,42,.07); border: 1px solid rgba(42,90,42,.22);
@@ -3155,7 +3140,7 @@ p.sa-alternatives strong { color: var(--ink); }
 /* Botón en cat-card */
 .cat-expres-btn {
   display: inline-flex; align-items: center; gap: 3px;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .57rem; font-weight: 700;
   letter-spacing: .03em; color: #7a4a00; cursor: pointer;
   background: rgba(184,134,11,.1); border: 1px solid rgba(184,134,11,.35);
   border-radius: 3px; padding: 3px 6px; transition: all .12s;
@@ -3189,7 +3174,7 @@ p.sa-alternatives strong { color: var(--ink); }
 .expres-close-x {
   background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
 }
 /* Metadata strip */
 .expres-meta {
@@ -3202,13 +3187,13 @@ p.sa-alternatives strong { color: var(--ink); }
   color: var(--ink); flex: 1; min-width: 0;
 }
 .expres-tipo-badge {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase;
   color: #fff; padding: 2px 8px; border-radius: 2px;
   white-space: nowrap;
 }
 .expres-dur {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
   color: var(--grey); white-space: nowrap;
   border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px;
 }
@@ -3226,7 +3211,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .expres-comp::before {
   content: 'LOMLOE · ';
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   letter-spacing: .07em; font-style: normal; color: var(--gold);
 }
 /* Actions */
@@ -3236,20 +3221,20 @@ p.sa-alternatives strong { color: var(--ink); }
   border-radius: 0 0 6px 6px; flex-wrap: wrap;
 }
 .expres-regen-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
   background: var(--gold); color: #0a0806; border: none;
   letter-spacing: .04em; transition: background .15s;
 }
 .expres-regen-btn:hover { background: #d4a820; }
 .expres-print-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
   background: #5a3a1a; color: #fff; border: none;
   letter-spacing: .04em;
 }
 .expres-close-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   padding: .4rem 1rem; border-radius: 3px; cursor: pointer;
   background: transparent; color: var(--grey);
   border: 1px solid var(--rule); margin-left: auto;
@@ -3284,7 +3269,7 @@ p.sa-alternatives strong { color: var(--ink); }
 .western-band:first-of-type { border-left: none; }
 .western-band-name {
   font-family: 'Cinzel', serif;
-  font-size: .72rem; font-weight: 700;
+  font-size: .62rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase;
   color: rgba(245,239,224,.9); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
@@ -3292,19 +3277,19 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .western-band-dates {
   font-family: 'EB Garamond', serif;
-  font-size: .72rem; font-style: normal;
+  font-size: .65rem; font-style: italic;
   color: rgba(245,239,224,.55); margin-top: 1px;
 }
 .western-label {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .58rem;
   font-weight: 700; letter-spacing: .1em;
   color: rgba(184,134,11,.7); text-transform: uppercase;
   margin-bottom: 4px; display: block;
   padding-left: 50px;
 }
 @media (max-width: 768px) {
-  .western-band-name { font-size: .72rem; letter-spacing: .03em; }
-  .western-band-dates { font-size: .72rem; }
+  .western-band-name { font-size: .55rem; letter-spacing: .03em; }
+  .western-band-dates { font-size: .58rem; }
 }
 @media print {
   .tl-western { display: none; }
@@ -3313,7 +3298,7 @@ p.sa-alternatives strong { color: var(--ink); }
 /* ── ETIQUETA PERÍODO HISTÓRICO OCCIDENTAL ──────────────── */
 .western-badge {
   display: inline-block;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   letter-spacing: .03em; color: rgba(245,239,224,.85);
   padding: 1px 6px; border-radius: 2px;
   margin-top: 3px; white-space: nowrap;
@@ -3321,25 +3306,25 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 /* In cat-card: small and unobtrusive */
 .cat-card .western-badge {
-  font-size: .72rem; padding: 1px 5px; display: block;
+  font-size: .55rem; padding: 1px 5px; display: block;
   margin-top: 2px;
 }
 /* In vitrina drawer: slightly larger */
 .vitrina-western-badge {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .05em; color: rgba(245,239,224,.8);
   padding: 2px 8px; border-radius: 2px; display: inline-block;
   margin-top: .3rem;
 }
 /* In timeline card tooltip context */
 .card .western-badge {
-  font-size: .72rem; display: block; margin-top: 3px;
+  font-size: .58rem; display: block; margin-top: 3px;
 }
 
 /* ── ETIQUETA PERÍODO HISTÓRICO OCCIDENTAL ───────────────── */
 .periodo-badge {
   display: inline-block;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   letter-spacing: .03em; color: #fff;
   background: #3a4a7a; border: none;
   border-radius: 3px; padding: 2px 6px; margin-top: 2px;
@@ -3348,12 +3333,12 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 /* In timeline cards */
 .card .periodo-badge {
-  font-size: .72rem; padding: 1px 4px;
+  font-size: .56rem; padding: 1px 4px;
   background: rgba(20,20,60,.7); border-color: rgba(80,80,160,.4);
 }
 /* In vitrina drawer */
 .vitrina-periodo {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
   color: rgba(100,120,200,.9); letter-spacing: .05em;
   margin-bottom: .3rem; display: block;
 }
@@ -3390,7 +3375,7 @@ p.sa-alternatives strong { color: var(--ink); }
 
 /* niv-badge — slightly more visible */
 .niv-badge {
-  font-size: .75rem; color: #5a5a5a;
+  font-size: .67rem; color: #5a5a5a;
   border: 1px solid #c8b89a;
   padding: 1px 5px; border-radius: 3px;
   background: rgba(232,221,200,.6);
@@ -3421,7 +3406,7 @@ p.sa-alternatives strong { color: var(--ink); }
   display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem;
 }
 .comp-key {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   letter-spacing: .06em; color: #fff; padding: 3px 9px;
   border-radius: 3px; flex-shrink: 0;
 }
@@ -3430,7 +3415,7 @@ p.sa-alternatives strong { color: var(--ink); }
   letter-spacing: .04em; color: var(--ink); line-height: 1.3;
 }
 .comp-desc {
-  font-size: .85rem; color: var(--grey); font-style: normal;
+  font-size: .85rem; color: var(--grey); font-style: italic;
   line-height: 1.5; margin-bottom: .7rem;
 }
 .comp-titles-list {
@@ -3449,18 +3434,13 @@ p.sa-alternatives strong { color: var(--ink); }
 
 /* ══ FICHAS DE LECTURA GUIADA ══════════════════════════════ */
 
-
-
-#lecturaModal 
-#lecturaModal 
-.lectura-title-el { font-size: 1.3rem; font-weight: 600; line-height: 1.2; margin-bottom: .2rem; }
-.lectura-author-el { font-size: .88rem; font-style: italic; color: rgba(245,239,224,.7); }
-#lecturaModal 
-.lectura-nivel-tabs {
+#lecturaModal .lectura-title-el { font-size: 1.3rem; font-weight: 600; line-height: 1.2; margin-bottom: .2rem; }
+#lecturaModal .lectura-author-el { font-size: .88rem; font-style: italic; color: rgba(245,239,224,.7); }
+#lecturaModal .lectura-nivel-tabs {
   display: flex; gap: .4rem; margin-bottom: 1.2rem;
 }
 .lectura-nivel-tab {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   padding: .28rem .8rem; border-radius: 3px; cursor: pointer;
   border: 1.5px solid var(--rule); background: rgba(232,221,200,.4);
   color: var(--grey); transition: all .12s;
@@ -3471,7 +3451,7 @@ p.sa-alternatives strong { color: var(--ink); }
 
 .lectura-panel.active { display: block; }
 .lectura-section-lbl {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .08em; text-transform: uppercase; color: #2a3a7a;
   display: block; margin: .9rem 0 .4rem;
 }
@@ -3482,13 +3462,13 @@ p.sa-alternatives strong { color: var(--ink); }
 
 .lectura-print-btn {
   background: #2a3a7a; color: #fff; border: none; border-radius: 3px;
-  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .72rem;
+  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .7rem;
   font-weight: 700; cursor: pointer; flex: 1;
 }
 .lectura-close-btn {
   background: transparent; color: var(--grey); border: 1px solid var(--rule);
   border-radius: 3px; padding: .4rem 1rem; font-family: 'Cinzel', serif;
-  font-size: .72rem; cursor: pointer;
+  font-size: .7rem; cursor: pointer;
 }
 
 /* ══ GENERADOR DE SECUENCIA DIDÁCTICA ══════════════════════ */
@@ -3516,13 +3496,13 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .sec-close { background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px; }
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px; }
 .sec-controls {
   padding: 1rem 1.4rem; border-bottom: 1px solid var(--rule);
   background: rgba(232,221,200,.3); display: flex; flex-wrap: wrap; gap: .8rem;
 }
 .sec-controls label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: var(--grey);
   display: block; margin-bottom: .3rem;
 }
@@ -3533,7 +3513,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .sec-gen-btn {
   background: #2a5a2a; color: #fff; border: none; border-radius: 3px;
-  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .72rem;
+  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .7rem;
   font-weight: 700; cursor: pointer; align-self: flex-end;
 }
 .sec-gen-btn:hover { background: #3a6a3a; }
@@ -3557,12 +3537,12 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .sec-print-btn {
   background: #2a5a2a; color: #fff; border: none; border-radius: 3px;
-  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .72rem;
+  padding: .4rem 1rem; font-family: 'Cinzel', serif; font-size: .7rem;
   font-weight: 700; cursor: pointer; flex: 1;
 }
 .sec-close2 { background: transparent; color: var(--grey);
   border: 1px solid var(--rule); border-radius: 3px; padding: .4rem 1rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; cursor: pointer; }
+  font-family: 'Cinzel', serif; font-size: .7rem; cursor: pointer; }
 
 /* ══ MAPA DE CONEXIONES ════════════════════════════════════ */
 
@@ -3593,11 +3573,11 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .mapa-close { background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px; }
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px; }
 .mapa-view-btn {
   background: rgba(255,255,255,.08); border: 1px solid rgba(245,239,224,.25);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .65rem; border-radius: 3px;
   transition: all .15s;
 }
 .mapa-view-btn.active {
@@ -3621,11 +3601,11 @@ p.sa-alternatives strong { color: var(--ink); }
   padding: .5rem .8rem;
 }
 .mapa-group-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: #fff;
 }
 .mapa-group-count {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   color: rgba(255,255,255,.7);
   background: rgba(0,0,0,.2); border-radius: 10px;
   padding: 1px 7px;
@@ -3706,12 +3686,12 @@ p.sa-alternatives strong { color: var(--ink); }
 .cat-comp-btn {
   display: flex; align-items: center; justify-content: center; gap: 3px;
   width: 100%; padding: 4px 0; margin-top: 3px;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   letter-spacing: .04em; color: var(--grey); cursor: pointer;
   background: rgba(232,221,200,.4); border: 1px solid rgba(200,184,154,.5);
   border-radius: 0 0 5px 5px; transition: all .12s;
 }
-.cat-comp-btn::before { content: '○ '; font-size: .72rem; }
+.cat-comp-btn::before { content: '○ '; font-size: .7rem; }
 .cat-comp-btn:hover { background: rgba(42,58,122,.12); color: #2a3a7a; border-color: #2a3a7a; }
 .cat-comp-btn.selected {
   background: #2a3a7a; color: #fff; border-color: #2a3a7a;
@@ -3737,7 +3717,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #compDrawer.visible { transform: translateY(0); }
 
 .comp-drawer-title {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .65rem; font-weight: 700;
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--gold); flex-shrink: 0;
 }
@@ -3780,7 +3760,7 @@ p.sa-alternatives strong { color: var(--ink); }
 .comp-drawer-actions { display: flex; gap: .5rem; flex-shrink: 0; }
 
 .comp-drawer-btn {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   letter-spacing: .05em; padding: .4rem .9rem; border-radius: 3px;
   cursor: pointer; transition: all .12s;
 }
@@ -3810,7 +3790,7 @@ p.sa-alternatives strong { color: var(--ink); }
 #compModal .comp-modal-close {
   background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 3px 10px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
 }
 #compCards {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -3831,14 +3811,14 @@ p.sa-alternatives strong { color: var(--ink); }
   display: flex; flex-direction: column; gap: .2rem; margin-bottom: .7rem;
 }
 .comp-card-col .cc-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   letter-spacing: .08em; text-transform: uppercase; color: var(--grey);
 }
 .comp-card-col .cc-val {
   font-size: .9rem; color: var(--ink); line-height: 1.5;
 }
 .comp-card-col .cc-badge {
-  display: inline-block; font-family: 'Cinzel', serif; font-size: .72rem;
+  display: inline-block; font-family: 'Cinzel', serif; font-size: .6rem;
   font-weight: 700; color: #fff; padding: 2px 7px; border-radius: 3px;
   margin-right: 3px; margin-bottom: 2px;
 }
@@ -3854,7 +3834,7 @@ p.sa-alternatives strong { color: var(--ink); }
 .comp-card-col .cc-desc { font-size: .88rem; line-height: 1.65; color: #3a2a1a; }
 .comp-card-col .cc-opac {
   display: inline-block; margin-top: .8rem; font-family: 'Cinzel', serif;
-  font-size: .72rem; font-weight: 700; color: #2a5a2a; text-decoration: none;
+  font-size: .62rem; font-weight: 700; color: #2a5a2a; text-decoration: none;
   background: rgba(42,90,42,.07); border: 1px solid rgba(42,90,42,.25);
   border-radius: 3px; padding: 4px 10px; transition: all .12s;
 }
@@ -3891,14 +3871,14 @@ p.sa-alternatives strong { color: var(--ink); }
 #compModal .comp-close {
   background: none; border: 1px solid rgba(245,239,224,.3);
   color: rgba(245,239,224,.6); padding: 2px 9px; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: .72rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .7rem; border-radius: 3px;
 }
 #compTable {
   width: 100%; border-collapse: collapse; font-size: .9rem;
 }
 #compTable th {
   background: rgba(232,221,200,.5); padding: .75rem 1rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   letter-spacing: .07em; text-transform: uppercase;
   text-align: left; border-bottom: 2px solid var(--rule);
   color: #5a3a1a; vertical-align: top;
@@ -3921,7 +3901,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 #compTable tr:last-child td { border-bottom: none; }
 #compTable td.comp-row-label {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .63rem; font-weight: 700;
   letter-spacing: .07em; text-transform: uppercase;
   color: var(--grey); background: rgba(232,221,200,.25);
   width: 130px; vertical-align: middle;
@@ -3929,12 +3909,12 @@ p.sa-alternatives strong { color: var(--ink); }
 #compTable tr:nth-child(even) td:not(.comp-row-label) { background: rgba(232,221,200,.15); }
 .comp-badge-cell { display: flex; flex-wrap: wrap; gap: .3rem; }
 .comp-uso-chip {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .58rem; font-weight: 700;
   color: #fff; padding: 2px 7px; border-radius: 3px;
 }
 .comp-opac-link {
   display: inline-block; margin-top: .3rem;
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   color: #2a5a2a; text-decoration: none;
   border: 1px solid rgba(42,90,42,.25); border-radius: 3px;
   padding: 2px 7px; background: rgba(42,90,42,.06);
@@ -3947,7 +3927,7 @@ p.sa-alternatives strong { color: var(--ink); }
   border-radius: 0 0 6px 6px; justify-content: flex-end;
 }
 .comp-close-btn2 {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .7rem; font-weight: 700;
   padding: .4rem 1.2rem; border-radius: 3px; cursor: pointer;
   background: var(--ink); color: var(--gold); border: none;
 }
@@ -3968,7 +3948,7 @@ p.sa-alternatives strong { color: var(--ink); }
   display: flex; align-items: center;
 }
 .comp-card-uso {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: #fff;
 }
 .comp-card-body {
@@ -3982,7 +3962,7 @@ p.sa-alternatives strong { color: var(--ink); }
   font-size: .82rem; color: var(--grey); font-style: italic; margin: 0;
 }
 .comp-card-periodo {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   color: #fff; background: #3a4a7a; border-radius: 3px;
   padding: 2px 7px; display: inline-block; width: fit-content;
 }
@@ -3995,7 +3975,7 @@ p.sa-alternatives strong { color: var(--ink); }
   border-top: 1px dashed var(--rule);
 }
 .comp-card-opac {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .6rem; font-weight: 700;
   letter-spacing: .04em; color: #2a5a2a; text-decoration: none;
   margin-top: auto; padding-top: .5rem; display: block;
 }
@@ -4006,24 +3986,24 @@ p.sa-alternatives strong { color: var(--ink); }
 #lecturaOverlay.open { display:flex; align-items:center; justify-content:center; padding:1rem; }
 #lecturaModal { background:#fff; color:var(--ink); width:min(580px,98vw); max-height:90vh; overflow-y:auto; border-radius:6px; box-shadow:0 8px 40px rgba(0,0,0,.35); font-family:'EB Garamond',serif; }
 #lecturaModal .lectura-header { background:linear-gradient(135deg,#1a2a6a,#2a3a8a); color:#f5efe0; padding:1.2rem 1.4rem .9rem; border-radius:6px 6px 0 0; }
-.lectura-label { font-family:'Cinzel',serif; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:#aac4ff; display:block; margin-bottom:.3rem; }
+.lectura-label { font-family:'Cinzel',serif; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:#aac4ff; display:block; margin-bottom:.3rem; }
 .lectura-title-el { font-size:1.25rem; font-weight:600; line-height:1.2; margin:0 0 .2rem; }
 .lectura-author-el { font-size:.85rem; font-style:italic; color:rgba(245,239,224,.7); }
 .lectura-nivel-tabs { display:flex; gap:.4rem; padding:.8rem 1.4rem; border-bottom:1px solid var(--rule); flex-wrap:wrap; background:rgba(232,221,200,.3); }
-.lectura-nivel-tab { font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; padding:.28rem .8rem; border-radius:3px; cursor:pointer; border:1.5px solid var(--rule); background:rgba(232,221,200,.4); color:var(--grey); transition:all .12s; }
+.lectura-nivel-tab { font-family:'Cinzel',serif; font-size:.63rem; font-weight:700; padding:.28rem .8rem; border-radius:3px; cursor:pointer; border:1.5px solid var(--rule); background:rgba(232,221,200,.4); color:var(--grey); transition:all .12s; }
 .lectura-nivel-tab.active { background:#1a2a6a; color:#fff; border-color:#1a2a6a; }
 .lectura-panel { display:none; }
 .lectura-panel.active { display:block; }
 .lectura-body { padding:1.1rem 1.4rem; }
-.lectura-section-lbl { font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1a2a6a; display:block; margin:.9rem 0 .4rem; }
+.lectura-section-lbl { font-family:'Cinzel',serif; font-size:.63rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1a2a6a; display:block; margin:.9rem 0 .4rem; }
 .lectura-qs ol { padding-left:1.2rem; margin:.2rem 0 .8rem; }
 .lectura-qs li { font-size:.92rem; line-height:1.65; margin-bottom:.3rem; }
 .lectura-visual-box { background:rgba(42,58,122,.06); border-left:3px solid #2a3a7a; border-radius:0 3px 3px 0; padding:.6rem .9rem; font-size:.9rem; line-height:1.6; margin-bottom:.7rem; }
 .lectura-reflection { background:rgba(184,134,11,.07); border-left:3px solid var(--gold); border-radius:0 3px 3px 0; padding:.6rem .9rem; font-size:.9rem; line-height:1.6; font-style:italic; }
 .lectura-actions { padding:.8rem 1.4rem 1rem; border-top:1px solid var(--rule); background:rgba(232,221,200,.2); display:flex; gap:.5rem; border-radius:0 0 6px 6px; }
-.lectura-print-btn { background:#1a2a6a; color:#fff; border:none; border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; cursor:pointer; flex:1; }
-.lectura-close-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.72rem; cursor:pointer; }
-.cat-lectura-btn { flex:1; min-width:0; font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; letter-spacing:.02em; cursor:pointer; border-radius:3px; padding:5px 4px; text-align:center; transition:all .12s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a3a6a; background:rgba(26,58,106,.07); border:1px solid rgba(26,58,106,.25); }
+.lectura-print-btn { background:#1a2a6a; color:#fff; border:none; border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; font-weight:700; cursor:pointer; flex:1; }
+.lectura-close-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; cursor:pointer; }
+.cat-lectura-btn { flex:1; min-width:0; font-family:'Cinzel',serif; font-size:.6rem; font-weight:700; letter-spacing:.02em; cursor:pointer; border-radius:3px; padding:5px 4px; text-align:center; transition:all .12s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a3a6a; background:rgba(26,58,106,.07); border:1px solid rgba(26,58,106,.25); }
 .cat-lectura-btn:hover { background:rgba(26,58,106,.18); }
 
 #histOverlay { display:none; position:fixed; inset:0; z-index:4000; background:rgba(10,8,4,.72); backdrop-filter:blur(2px); }
@@ -4031,22 +4011,22 @@ p.sa-alternatives strong { color: var(--ink); }
 #histModal { background:var(--paper); color:var(--ink); width:min(600px,98vw); max-height:88vh; overflow-y:auto; border-radius:6px; box-shadow:0 8px 40px rgba(0,0,0,.35); font-family:'EB Garamond',serif; }
 .hist-header { background:linear-gradient(135deg,#1a1008,#2a1a08); color:#f5efe0; padding:1rem 1.4rem; display:flex; align-items:center; justify-content:space-between; border-radius:6px 6px 0 0; }
 .hist-header h2 { font-family:'Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:0; }
-.hist-close { background:none; border:1px solid rgba(245,239,224,.3); color:rgba(245,239,224,.6); padding:2px 9px; cursor:pointer; font-family:'Cinzel',serif; font-size:.72rem; border-radius:3px; }
+.hist-close { background:none; border:1px solid rgba(245,239,224,.3); color:rgba(245,239,224,.6); padding:2px 9px; cursor:pointer; font-family:'Cinzel',serif; font-size:.7rem; border-radius:3px; }
 #histBody { padding:1.2rem 1.4rem; min-height:80px; }
 .hist-section { margin-bottom:1rem; padding-bottom:.8rem; border-bottom:1px dashed var(--rule); }
 .hist-section:last-child { border-bottom:none; }
-.hist-section-title { font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); margin-bottom:.4rem; display:block; }
+.hist-section-title { font-family:'Cinzel',serif; font-size:.65rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); margin-bottom:.4rem; display:block; }
 .hist-item { font-size:.9rem; line-height:1.6; color:var(--ink); padding:.15rem 0; }
 .hist-item-time { font-size:.72rem; color:var(--grey); font-style:italic; margin-right:.4rem; }
 .hist-empty { text-align:center; padding:1.5rem; color:var(--grey); font-style:italic; font-size:.9rem; }
 .hist-actions { padding:.8rem 1.4rem; border-top:1px solid var(--rule); background:rgba(232,221,200,.2); display:flex; gap:.5rem; border-radius:0 0 6px 6px; flex-wrap:wrap; }
-.hist-export-btn { background:#5a3a1a; color:#fff; border:none; border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.72rem; font-weight:700; cursor:pointer; flex:1; }
-.hist-clear-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.72rem; cursor:pointer; }
+.hist-export-btn { background:#5a3a1a; color:#fff; border:none; border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; font-weight:700; cursor:pointer; flex:1; }
+.hist-clear-btn { background:transparent; color:var(--grey); border:1px solid var(--rule); border-radius:3px; padding:.4rem 1rem; font-family:'Cinzel',serif; font-size:.7rem; cursor:pointer; }
 @media print { #histOverlay { display:none !important; } }
 
 /* ── TAB SYSTEM — tamaños uniformes, colores por sección ── */
 .cur-tab, .sa-tab, .itin-tab, .univ-tab, .rec-tab {
-  font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700;
+  font-family: 'Cinzel', serif; font-size: .68rem; font-weight: 700;
   letter-spacing: .05em; padding: .38rem 1rem;
   border: 1.5px solid var(--rule); border-radius: 3px 3px 0 0;
   cursor: pointer; background: rgba(232,221,200,.45); color: var(--grey);
@@ -4118,7 +4098,7 @@ p.sa-alternatives strong { color: var(--ink); }
 }
 .cat-author {
   font-size: .75rem; color: #5a5249;
-  font-style: normal; line-height: 1.3;
+  font-style: italic; line-height: 1.3;
 }
 
 /* Action buttons — bigger touch targets */
@@ -4127,8 +4107,8 @@ p.sa-alternatives strong { color: var(--ink); }
 button[onclick*="openRubrica"] {
   flex: 1; min-width: 0;
   font-family: 'Cinzel', serif;
-  font-size: .72rem; font-weight: 700;
-  padding: 6px 4px !important;
+  font-size: .6rem; font-weight: 700;
+  padding: 5px 4px !important;
   border-radius: 3px; text-align: center;
   cursor: pointer; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
@@ -4187,17 +4167,17 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   gap: .75rem; flex-wrap: wrap;
 }
 .search-bar label {
-  font-family: 'Cinzel', serif; font-size: .72rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
   font-weight: 700; letter-spacing: .07em;
   color: var(--grey); text-transform: uppercase;
   white-space: nowrap;
 }
 /* Filter buttons */
 .fb {
-  font-family: 'Cinzel', serif; font-size: .78rem !important;
+  font-family: 'Cinzel', serif; font-size: .65rem !important;
   font-weight: 700; color: #fff; border: none;
-  cursor: pointer; padding: .32rem .85rem !important;
-  border-radius: 3px; letter-spacing: .02em;
+  cursor: pointer; padding: .3rem .75rem !important;
+  border-radius: 3px; letter-spacing: .03em;
   transition: opacity .15s, transform .1s; white-space: nowrap;
 }
 .fb:hover { opacity: .85; transform: translateY(-1px); }
@@ -4206,9 +4186,9 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
 /* Tab system — clean */
 .cur-tab, .sa-tab, .itin-tab, .univ-tab, .rec-tab {
-  font-family: 'Cinzel', serif; font-size: .82rem;
-  font-weight: 700; letter-spacing: .03em;
-  padding: .42rem 1rem; white-space: nowrap;
+  font-family: 'Cinzel', serif; font-size: .67rem;
+  font-weight: 700; letter-spacing: .05em;
+  padding: .38rem .95rem; white-space: nowrap;
   border: 1.5px solid var(--rule);
   border-radius: 3px 3px 0 0;
   cursor: pointer;
@@ -4234,7 +4214,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
   /* CABECERA */
   header { padding: 1.4rem 1rem .9rem; }
-  h1 { font-size: clamp(1rem, 5.5vw, 1.7rem) !important; }
+  h1 { font-size: clamp(1.15rem, 5.5vw, 1.85rem) !important; }
   .sub { font-size: .78rem !important; }
   .jp  { font-size: 1.2rem !important; }
   .kamon { font-size: 2rem; }
@@ -4243,13 +4223,13 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   /* BARRA DE FILTROS — compactar y hacer colapsable el ODS */
   .filter-bar { padding: .4rem .8rem .5rem; gap: .3rem; }
   .fb-row { gap: .25rem; }
-  .fb { font-size: .72rem; padding: .2rem .45rem; }
-  .fb-label { font-size: .72rem; width: 100%; margin-bottom: .15rem; }
+  .fb { font-size: .6rem; padding: .2rem .45rem; }
+  .fb-label { font-size: .6rem; width: 100%; margin-bottom: .15rem; }
 
   /* Fila ODS: colapsar en acordeón en móvil */
   #ods-filter-row { flex-direction: column; align-items: flex-start; }
   #ods-filter-row .fb-label { cursor: pointer; user-select: none; }
-  #ods-filter-row .fb-label::after { content: ' ▾'; font-size: .72rem; }
+  #ods-filter-row .fb-label::after { content: ' ▾'; font-size: .55rem; }
   #ods-filter-row .fb-ods-icon,
   #ods-filter-row .fb-all-ods,
   #ods-filter-row #odsCounter {
@@ -4276,14 +4256,14 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   .cat-card { width: calc(50% - .25rem); min-width: 140px; }
   .cat-card-body { padding: 8px 9px 6px; gap: 3px; }
   .cat-title { font-size: .86rem; -webkit-line-clamp: 2; }
-  .cat-author { font-size: .72rem; }
-  .cat-badge { font-size: .72rem; padding: 1px 5px; }
-  .niv-badge { font-size: .72rem; }
-  .periodo-badge { font-size: .72rem; padding: 1px 4px; }
+  .cat-author { font-size: .68rem; }
+  .cat-badge { font-size: .56rem; padding: 1px 4px; }
+  .niv-badge { font-size: .6rem; }
+  .periodo-badge { font-size: .52rem; padding: 1px 4px; }
 
   /* ODS badges en tarjeta: mostrar solo 1 */
   .ods-badges { gap: 2px; margin-top: 3px; }
-  .ods-badge { font-size: .72rem; padding: 1px 4px; }
+  .ods-badge { font-size: .52rem; padding: 1px 4px; }
   .ods-badge:nth-child(n+3) { display: none; }
 
   /* Acciones tarjeta: 2 filas de 2 */
@@ -4298,16 +4278,16 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   #explorerCounter { margin: .6rem .8rem .2rem; padding: .55rem .8rem .6rem; }
   .exc-header { flex-wrap: wrap; gap: .3rem; }
   .exc-row { grid-template-columns: 90px 1fr 22px; gap: .3rem; }
-  .exc-uso-name { font-size: .72rem; }
-  .exc-count { font-size: .72rem; }
-  .exc-ods-chip { font-size: .72rem; }
+  .exc-uso-name { font-size: .54rem; }
+  .exc-count { font-size: .58rem; }
+  .exc-ods-chip { font-size: .5rem; }
 
   /* BARRA DE PROGRESO ITINERARIO */
   .itin-progress-bar-wrap {
     flex-wrap: wrap; gap: .4rem; padding: .4rem .6rem;
   }
-  .itin-progress-label { font-size: .72rem; order: 3; width: 100%; }
-  .itin-reset-btn { font-size: .72rem; margin-left: 0; }
+  .itin-progress-label { font-size: .6rem; order: 3; width: 100%; }
+  .itin-reset-btn { font-size: .54rem; margin-left: 0; }
 
   /* ITINERARIO — tarjetas */
   .itin-grid { grid-template-columns: 1fr !important; gap: .8rem; }
@@ -4315,12 +4295,12 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   .itin-card h3 { font-size: .78rem; }
   .itin-card ul li { font-size: .8rem; }
   .itin-titles { font-size: .74rem; }
-  .itin-progress-btn { font-size: .72rem; padding: .22rem .6rem; margin-top: .5rem; }
+  .itin-progress-btn { font-size: .58rem; padding: .22rem .6rem; margin-top: .5rem; }
 
   /* TABS universales */
   .cur-tabs, .itin-tabs, .sa-tabs, .rec-tabs, .univ-tabs { gap: .3rem; }
   .cur-tab, .itin-tab, .sa-tab, .rec-tab, .univ-tab {
-    font-size: .72rem; padding: .26rem .55rem;
+    font-size: .62rem; padding: .26rem .55rem;
   }
 
   /* SITUACIONES DE APRENDIZAJE */
@@ -4351,12 +4331,12 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   .rubrica-header, .sec-header, .expres-header,
   .mapa-header { padding: .65rem 1rem; }
   .rubrica-controls { flex-wrap: wrap; gap: .4rem .6rem; padding: .6rem 1rem; }
-  .rubrica-controls label { font-size: .72rem; }
+  .rubrica-controls label { font-size: .62rem; }
   .rubrica-controls input[type="text"],
   .rubrica-controls select { font-size: .82rem; }
-  .ficha-notas-title { font-size: .72rem; }
+  .ficha-notas-title { font-size: .62rem; }
   .ficha-nota-field textarea { min-height: 44px; font-size: .86rem; }
-  .ficha-implicacion-label { font-size: .72rem; }
+  .ficha-implicacion-label { font-size: .56rem; }
   .ficha-star { font-size: 1rem; }
 
   /* ERA DISCOVERY BAR */
@@ -4365,13 +4345,13 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   #eraDiscName { font-size: .82rem; }
   #eraDiscJp   { font-size: .95rem; }
   #eraDiscDates { display: none; }
-  #eraDiscExit { font-size: .72rem; padding: .2rem .55rem; }
-  #eraDiscCounter { font-size: .72rem; }
+  #eraDiscExit { font-size: .58rem; padding: .2rem .55rem; }
+  #eraDiscCounter { font-size: .58rem; }
 
   /* COMP DRAWER */
   #compDrawer { padding: .5rem 1rem; }
   .comp-slot { min-width: 80px; max-width: 140px; font-size: .78rem; }
-  .comp-drawer-btn { font-size: .72rem; padding: .32rem .7rem; }
+  .comp-drawer-btn { font-size: .62rem; padding: .32rem .7rem; }
 
   /* FAB — ligeramente más pequeño */
   #tools-fab { bottom: 1rem; right: 1rem; }
@@ -4405,7 +4385,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   .cat-expres-btn { grid-column: auto; }
 
   /* Tabla currículo */
-  .cur-table { font-size: .72rem; }
+  .cur-table { font-size: .7rem; }
 
   /* Modales a pantalla completa */
   #fichaOverlay, #compOverlay, #rubricaOverlay,
@@ -4439,7 +4419,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   .itin-progress-track { flex: none; }
 
   /* Texto hint */
-  .hint { font-size: .72rem; }
+  .hint { font-size: .68rem; }
 }
 
 /* ── Dispositivos táctiles — áreas mínimas de toque ────────── */
@@ -4458,15 +4438,11 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <button type="button" class="compact-btn" id="cmpBtn" onclick="toggleCompact()" title="Vista panorámica / Vista completa">⊟ Solo títulos</button>
 
 
 <!-- ══════════════════ PANEL DE BIENVENIDA ══════════════════ -->
-</div>
-
-<div class="totd-bar" id="totdBar" role="complementary" aria-label="Título del día"></div>
 <div class="welcome-panel">
   <h2>¿Por dónde empiezo?</h2>
   <div class="welcome-routes">
@@ -4502,10 +4478,14 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     </a>
     <a class="wr" href="#sc" onclick="document.getElementById('sc').scrollIntoView({behavior:'smooth'}); return false;">
       <span class="wr-if">Si quiero explorar la historia del manga</span>
-      <span class="wr-do">Línea del tiempo interactiva: 48 títulos en 9 eras históricas japonesas</span>
+      <span class="wr-do">Línea del tiempo interactiva: 57 títulos en 9 eras históricas japonesas</span>
       <span class="wr-arrow">→ Línea del tiempo</span>
     </a>
   </div>
+</div>
+
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+<div class="totd-bar" id="totdBar" role="complementary" aria-label="Título del día"></div>
 <header>
   <div class="kamon" role="img" aria-label="Torii, símbolo de la cultura japonesa">⛩</div>
   <h1>Las eras de <em>Japón</em> y el manga</h1>
@@ -4514,7 +4494,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <div class="jp" lang="ja">日本の時代と漫画</div>
   <div class="visit-counter" aria-live="polite" aria-label="Contador de visitas">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    <span id="visitCountGlobal">…</span> visitas en este navegador · <button onclick="showStats()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.75rem;color:var(--gold-text);cursor:pointer;letter-spacing:.06em;padding:0;text-decoration:underline dotted;">ver estadísticas</button>
+    <span id="visitCountGlobal">…</span> visitas · <button onclick="showStats()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.65rem;color:rgba(184,134,11,.8);cursor:pointer;letter-spacing:.06em;padding:0;text-decoration:underline dotted;">ver estadísticas</button>
   </div>
 </header>
 
@@ -4530,28 +4510,28 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <span><span class="dot" style="background:var(--gold)"></span>★ Hito fundacional</span>
 </div>
 
-<div class="hint">← Arrastra para explorar · Pasa el cursor sobre cada título → &nbsp;|&nbsp; <a href="#glosario" style="color:var(--gold);text-decoration:none;" title="Glosario de términos japoneses"><span lang="ja">辞書</span> Glosario</a> &nbsp;|&nbsp; <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos digitales</a> · <a href="#curriculo" style="color:var(--gold);text-decoration:none;">Currículo → Manga</a> · <a href="#itinerarios" style="color:var(--gold);text-decoration:none;">Itinerarios</a> · <a href="#universidad" style="color:var(--gold);text-decoration:none;">Universidad</a> · <a href="#situaciones" style="color:var(--gold);text-decoration:none;">Situaciones de aprendizaje</a> · <a href="#catalogo" style="color:var(--gold);text-decoration:none;">Catálogo</a> · <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos</a></div>
+<div class="hint">← Arrastra para explorar · Pasa el cursor sobre cada título → &nbsp;|&nbsp; <a href="#glosario" style="color:var(--gold);text-decoration:none;" title="Glosario de términos japoneses">辞書 Glosario</a> &nbsp;|&nbsp; <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos digitales</a> · <a href="#curriculo" style="color:var(--gold);text-decoration:none;">Currículo → Manga</a> · <a href="#itinerarios" style="color:var(--gold);text-decoration:none;">Itinerarios</a> · <a href="#universidad" style="color:var(--gold);text-decoration:none;">Universidad</a> · <a href="#situaciones" style="color:var(--gold);text-decoration:none;">Situaciones de aprendizaje</a> · <a href="#catalogo" style="color:var(--gold);text-decoration:none;">Catálogo</a> · <a href="#recursos" style="color:var(--gold);text-decoration:none;">Recursos</a></div>
 
 <div class="filter-bar" id="filterBar" role="search" aria-label="Filtros de la línea del tiempo">
   <div class="fb-row">
     <span class="fb-label" id="uso-label">Uso pedagógico →</span>
-    <button type="button" class="fb fb-all-uso active" data-uso="all" aria-pressed="true" onclick="filterUso('all')">Todos</button>
-    <button type="button" class="fb" style="background:#5A3A1A;" data-uso="historia" aria-pressed="false" onclick="filterUso('historia')">Historia</button>
-    <button type="button" class="fb" style="background:#4A2A6A;" data-uso="filosofia" aria-pressed="false" onclick="filterUso('filosofia')">Filosofía y ética</button>
-    <button type="button" class="fb" style="background:#7A5A0A;" data-uso="emocional" aria-pressed="false" onclick="filterUso('emocional')">Educación emocional</button>
-    <button type="button" class="fb" style="background:#2E6E3A;" data-uso="lenguas" aria-pressed="false" onclick="filterUso('lenguas')">Lengua extranjera</button>
-    <button type="button" class="fb" style="background:#3A4A8A;" data-uso="inclusion" aria-pressed="false" onclick="filterUso('inclusion')">Inclusión</button>
-    <button type="button" class="fb" style="background:#5E3A8A;" data-uso="visual" aria-pressed="false" onclick="filterUso('visual')">Alfabetización visual</button>
-    <button type="button" class="fb" style="background:#1A5A8B;" data-uso="ciencia" aria-pressed="false" onclick="filterUso('ciencia')">Ciencia y tecnología</button>
-    <button type="button" class="fb" style="background:#8B1A4A;" data-uso="genero" aria-pressed="false" onclick="filterUso('genero')">Género e identidad</button>
+    <button type="button" class="fb fb-all-uso active" data-uso="all" onclick="filterUso('all')">Todos</button>
+    <button type="button" class="fb" style="background:#5A3A1A;" data-uso="historia" onclick="filterUso('historia')">Historia</button>
+    <button type="button" class="fb" style="background:#4A2A6A;" data-uso="filosofia" onclick="filterUso('filosofia')">Filosofía y ética</button>
+    <button type="button" class="fb" style="background:#7A5A0A;" data-uso="emocional" onclick="filterUso('emocional')">Educación emocional</button>
+    <button type="button" class="fb" style="background:#2E6E3A;" data-uso="lenguas" onclick="filterUso('lenguas')">Lengua extranjera</button>
+    <button type="button" class="fb" style="background:#3A4A8A;" data-uso="inclusion" onclick="filterUso('inclusion')">Inclusión</button>
+    <button type="button" class="fb" style="background:#5E3A8A;" data-uso="visual" onclick="filterUso('visual')">Alfabetización visual</button>
+    <button type="button" class="fb" style="background:#1A5A8B;" data-uso="ciencia" onclick="filterUso('ciencia')">Ciencia y tecnología</button>
+    <button type="button" class="fb" style="background:#8B1A4A;" data-uso="genero" onclick="filterUso('genero')">Género e identidad</button>
   </div>
   <div class="fb-row" style="margin-top:.4rem;">
     <span class="fb-label" id="nivel-label">Nivel educativo →</span>
-    <button type="button" class="fb fb-all-nivel active" data-nivel="all" aria-pressed="true" onclick="filterNivel('all')">Todos</button>
-    <button type="button" class="fb" style="background:#2E7B6E;" data-nivel="primaria" aria-pressed="false" onclick="filterNivel('primaria')">Primaria</button>
-    <button type="button" class="fb" style="background:#B85A1A;" data-nivel="secundaria" aria-pressed="false" onclick="filterNivel('secundaria')">Secundaria</button>
-    <button type="button" class="fb" style="background:#8B6914;" data-nivel="bachillerato" aria-pressed="false" onclick="filterNivel('bachillerato')">Bachillerato</button>
-    <button type="button" class="fb" style="background:#4A2A6A;" data-nivel="universidad" aria-pressed="false" onclick="filterNivel('universidad')">Universidad</button>
+    <button type="button" class="fb fb-all-nivel active" data-nivel="all" onclick="filterNivel('all')">Todos</button>
+    <button type="button" class="fb" style="background:#2E7B6E;" data-nivel="primaria" onclick="filterNivel('primaria')">Primaria</button>
+    <button type="button" class="fb" style="background:#B85A1A;" data-nivel="secundaria" onclick="filterNivel('secundaria')">Secundaria</button>
+    <button type="button" class="fb" style="background:#8B6914;" data-nivel="bachillerato" onclick="filterNivel('bachillerato')">Bachillerato</button>
+    <button type="button" class="fb" style="background:#4A2A6A;" data-nivel="universidad" onclick="filterNivel('universidad')">Universidad</button>
   </div>
   <div class="fb-row" style="margin-top:.4rem;" id="ods-filter-row" aria-label="Filtrar por ODS">
     <span class="fb-label">ODS →</span>
@@ -4597,8 +4577,8 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
 <!-- ══════════════════ HEIAN ══════════════════ -->
 <div class="col" style="width:170px;animation-delay:.04s">
-  <div class="cards" data-tip="Las Pinturas Satíricas de Animales (<span lang="ja">鳥獣戯画</span>, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval.">Pinturas Satíricas de Animales</em> (<span lang="ja">鳥獣戯画</span>) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
-    <div data-vitrina="V1" data-uso="historia visual" data-nivel="universidad" class="card note" data-tip="Las Pinturas Satíricas de Animales (<span lang="ja">鳥獣戯画</span>, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje budista Kakuyū. Consideradas el «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
+  <div class="cards" data-tip="Las Pinturas Satíricas de Animales (鳥獣戯画, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval.">Pinturas Satíricas de Animales</em> (鳥獣戯画) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje Kakuyū. El «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
+    <div data-vitrina="V1" data-uso="historia visual" data-nivel="universidad" class="card note" data-tip="Las Pinturas Satíricas de Animales (鳥獣戯画, s. XII) son el primer antecedente del manga: narrativa visual secuencial con humor y expresividad. Atribuidas al monje budista Kakuyū. Consideradas el «proto-manga» del Japón medieval, siglos antes de que existiera el término.">
       <span class="ct">Chōjū-giga</span>
       <span class="ca">s. XII — Proto-manga</span></div>
   </div>
@@ -4667,7 +4647,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="card" data-tip="Basado en Miyamoto Musashi (1584–1645), el samurái más legendario de Japón. Una de las obras mejor dibujadas de la historia del manga; sus composiciones de página son estudiadas en escuelas de arte." data-vitrina="V7" data-uso="historia visual" data-nivel="bachillerato universidad">
       <span class="ct">Vagabond</span>
       <span class="ca">INOUE, Takehiko · Edo temprano</span></div>
-    <div data-vitrina="V1" data-uso="historia visual" data-nivel="secundaria bachillerato universidad" class="card origin" data-tip="El término <span lang="ja">漫画</span> (manga) nace aquí. Hokusai publica en 1814 sus cuadernos de bocetos bajo el título «imágenes espontáneas o caprichosas». El fondo de esta biblioteca posee un ejemplar de este título fundacional." data-uso="historia visual" data-nivel="universidad">
+    <div data-vitrina="V1" data-uso="historia visual" data-nivel="secundaria bachillerato universidad" class="card origin" data-tip="El término 漫画 (manga) nace aquí. Hokusai publica en 1814 sus cuadernos de bocetos bajo el título «imágenes espontáneas o caprichosas». El fondo de esta biblioteca posee un ejemplar de este título fundacional." data-uso="historia visual" data-nivel="universidad">
       <span class="ct">★ Hokusai Manga · 1814</span>
       <span class="ca">KATSUSHIKA, Hokusai</span></div>
   </div>
@@ -4686,7 +4666,10 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
 <!-- ══════════════════ MEIJI ══════════════════ -->
 <div class="col" style="width:200px;animation-delay:.20s">
-  <div class="cards" data-tip="Adaptación del clásico japonés ambientado en la Era Meiji (1868–1912). Narra el choque entre tradición e influencia occidental a través de la mirada irónica de un maestro tokyota en provincias." data-vitrina="V8" data-uso="historia lenguas" data-nivel="bachillerato">
+  <div class="cards" data-tip="Manga japonés ambientado en la Europa vikinga del s. X–XI. Demuestra que el formato puede tratar historia no japonesa con rigor documental y complejidad moral." data-vitrina="V7" data-uso="historia" data-nivel="bachillerato">
+    <div data-vitrina="V7" data-uso="historia" data-nivel="bachillerato" class="card hist" data-tip="Manga japonés ambientado en la Europa vikinga del s. X-XI. Demuestra que el formato puede tratar historia no japonesa con rigor documental y complejidad moral. Sus reflexiones sobre la violencia y la identidad lo hacen imprescindible.">
+      <span class="ct">Vinland Saga</span>
+      <span class="ca">YUKIMURA · Pub. en Heisei</span></div>
     <div class="card" data-tip="Adaptación del clásico japonés ambientado en la Era Meiji (1868–1912). Narra el choque entre tradición e influencia occidental a través de la mirada irónica de un maestro tokyota en provincias." data-vitrina="V8" data-uso="historia lenguas" data-nivel="bachillerato">
       <span class="ct">La época de Botchan</span>
       <span class="ca">Adaptación de NATSUME Soseki</span></div>
@@ -4708,9 +4691,9 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <div class="col" style="width:200px;animation-delay:.24s">
   <div class="cards" data-tip="Taishō Roman: mezcla de kimono y sombrero de copa, calles adoquinadas con gas, jazz en cafeterías. Numerosos mangas actuales recuperan esta ambientación como marco de aventura y romance." data-uso="historia" data-nivel="secundaria bachillerato">
     <div data-vitrina="V11" data-uso="visual historia" data-nivel="secundaria bachillerato" class="card note" data-tip="Taishō Roman designa la estética nostálgica de esta era: mezcla de kimono y sombrero de copa, calles adoquinadas con gas, jazz en cafeterías. Numerosos mangas actuales recuperan esta ambientación como marco de aventura y romance. El equivalente japonés del ambiente Art Déco europeo.">
-      <span class="ct">Taisho Roman (<span lang="ja">大正ロマン</span>)</span>
+      <span class="ct">Taisho Roman (大正ロマン)</span>
       <span class="ca">Estética de era · Nota cultural</span></div>
-    <div data-vitrina="V2" data-uso="historia emocional" data-nivel="secundaria bachillerato" class="card tai" data-tip="Ambientado en el Japón Taishō con fidelidad extraordinaria. Esta era es percibida en Japón como una edad dorada de elegancia y melancolía justo antes de la catástrofe de la WWII — el equivalente japonés del Art Déco." data-uso="historia emocional" data-nivel="secundaria">
+    <div data-vitrina="V2" data-uso="historia emocional" data-nivel="secundaria bachillerato" class="card tai" data-tip="Ambientado en el Japón Taishō con fidelidad extraordinaria. ambientado en el Japón Taishō con fidelidad extraordinaria. Esta era es percibida en Japón como una edad dorada de elegancia y melancolía justo antes de la catástrofe de la WWII — el equivalente japonés del Art Déco." data-uso="historia emocional" data-nivel="secundaria">
       <span class="ct">Kimetsu no Yaiba</span>
       <span class="ca">GOTOUGE, Koyoharu · 2016</span></div>
   </div>
@@ -4786,10 +4769,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <!-- ══════════════════ HEISEI ══════════════════ -->
 <div class="col" style="width:215px;animation-delay:.32s">
   <div class="cards" data-tip="Dragon Ball, Sailor Moon, Naruto, One Piece y Death Note crean generaciones de lectores en todos los continentes. El manga se convierte en un lenguaje visual universal durante esta era." data-vitrina="V11" data-uso="visual filosofia" data-nivel="bachillerato universidad">
-    <div data-vitrina="V7" data-uso="historia" data-nivel="bachillerato" class="card hist" data-tip="Publicado en Heisei (2005–2013), Vinland Saga es un manga japonés ambientado en la Europa vikinga del s. X–XI. Demuestra que el formato puede tratar historia no japonesa con rigor documental y complejidad moral excepcionales. Sus reflexiones sobre la violencia, la identidad y la búsqueda de paz lo hacen imprescindible en bachillerato.">
-      <span class="ct">Vinland Saga</span>
-      <span class="ca">YUKIMURA, Makoto · 2005–2013</span></div>
-        <div data-vitrina="V11" data-uso="visual filosofia" data-nivel="bachillerato universidad" class="card" data-tip="Berserk (1989-2021) es la obra más influyente del manga dark fantasy. Inconclusa por la muerte de Kentaro Miura en 2021, su final póstumo generó uno de los debates más intensos de la cultura manga: ¿debe continuarse la obra de un autor fallecido? Ningún otro título ilustra mejor la tensión entre obra y autor, ni la relación entre el manga y el duelo de los lectores.">
+    <div data-vitrina="V11" data-uso="visual filosofia" data-nivel="bachillerato universidad" class="card" data-tip="Berserk (1989-2021) es la obra más influyente del manga dark fantasy. Inconclusa por la muerte de Kentaro Miura en 2021, su final póstumo generó uno de los debates más intensos de la cultura manga: ¿debe continuarse la obra de un autor fallecido? Ningún otro título ilustra mejor la tensión entre obra y autor, ni la relación entre el manga y el duelo de los lectores.">
       <span class="ct">Berserk</span>
       <span class="ca">MIURA, Kentaro · 1989–2021</span></div>
     <div class="card" data-tip="One Piece (1997–presente) lleva 27 años publicándose y es el manga más vendido de la historia: más de 520 millones de copias. Es el caso de estudio definitivo sobre narrativa de largo aliento, construcción de mundo y fidelización de comunidades globales de lectores. Eiichiro Oda ha mantenido coherencia narrativa durante casi tres décadas de serialización semanal — un logro sin precedentes en cualquier medio." data-vitrina="V2" data-uso="lenguas" data-nivel="secundaria">
@@ -4945,7 +4925,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="ac" style="border-left-color:#6e2e7a; background:rgba(248,235,255,.5);">
       <b>🔊 Nota: onomatopeyas y expresión oral</b>
       <i>Recurso para expresión oral y lectura dramatizada</i>
-      <s>El manga japonés tiene un sistema de onomatopeyas único: no solo ruidos (<span lang="ja">ドカン</span>, BOOM) sino estados emocionales y ambientales (しーん, silencio absoluto; <span lang="ja">ドキドキ</span>, corazón acelerado). Trabajar estas onomatopeyas en voz alta desarrolla la conciencia fonológica, la entonación y la lectura expresiva. Además introduce vocabulario japonés de forma natural y motivadora.</s>
+      <s>El manga japonés tiene un sistema de onomatopeyas único: no solo ruidos (ドカン, BOOM) sino estados emocionales y ambientales (しーん, silencio absoluto; ドキドキ, corazón acelerado). Trabajar estas onomatopeyas en voz alta desarrolla la conciencia fonológica, la entonación y la lectura expresiva. Además introduce vocabulario japonés de forma natural y motivadora.</s>
     </div>
   </div>
 </div>
@@ -5012,98 +4992,98 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="ac" style="border-left-color:#1A5A8B; background:rgba(210,235,255,.4); max-width:280px;">
       <b>⑥ Leer en voz alta con bocadillos (Primaria · 1.º–4.º)</b>
       <i>Expresión oral · Entonación lectora</i>
-      <s>El manga ofrece un recurso único para trabajar la lectura expresiva: el bocadillo indica quién habla, la tipografía y el tamaño de letra marcan la intensidad, y las onomatopeyas (¡ZAS! ¡POOM! <span lang="ja">しーん</span>…) exigen interpretación vocal. Actividad: reparto de personajes, lectura dramatizada en voz alta de una página. Evalúa: ¿cambia el significado según cómo lo lees? Títulos recomendados: Helena y el Señor Lobo malo, El zorro y el pequeño tanuki.</s>
+      <s>El manga ofrece un recurso único para trabajar la lectura expresiva: el bocadillo indica quién habla, la tipografía y el tamaño de letra marcan la intensidad, y las onomatopeyas (¡ZAS! ¡POOM! しーん…) exigen interpretación vocal. Actividad: reparto de personajes, lectura dramatizada en voz alta de una página. Evalúa: ¿cambia el significado según cómo lo lees? Títulos recomendados: Helena y el Señor Lobo malo, El zorro y el pequeño tanuki.</s>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════ GLOSARIO ══════════════════ -->
 <div class="adapt" id="glosario" style="background:rgba(245,239,224,.6); border-top-color:var(--gold);">
-  <h2 style="color:var(--gold); font-size:1.1rem;"><span lang="ja">辞書</span> Glosario de términos japoneses</h2>
+  <h2 style="color:var(--gold); font-size:1.1rem;">辞書 Glosario de términos japoneses</h2>
   <p style="font-size:.9rem; color:var(--grey); font-style:italic; margin-bottom:1.2rem;">Términos usados en esta línea del tiempo y en la exposición. Para consulta rápida del equipo docente y del público universitario.</p>
   <div class="adapt-grid">
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-manga">Manga (<span lang="ja">漫画</span>)</b>
+      <b id="gloss-manga">Manga (漫画)</b>
       <i>Imágenes espontáneas o caprichosas</i>
       <s>Término acuñado por Hokusai en 1814. Hoy designa la narrativa gráfica secuencial japonesa. Fuera de Japón se usa para cualquier cómic de estética japonesa.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-gengo">Gengō (<span lang="ja">元号</span>)</b>
+      <b id="gloss-gengo">Gengō (元号)</b>
       <i>Sistema de eras imperiales</i>
       <s>Sistema japonés que numera los años según el reinado del Emperador. La era actual es Reiwa (令和, «bella armonía»), iniciada en 2019.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-tankobon">Tankōbon (<span lang="ja">単行本</span>)</b>
+      <b id="gloss-tankobon">Tankōbon (単行本)</b>
       <i>Volumen recopilatorio</i>
       <s>Volumen que recopila capítulos previamente publicados en revista. El formato de libro estándar del manga. Equivale al «tomo» en España.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-demographics">Shōnen (<span lang="ja">少年</span>) · Shōjo (<span lang="ja">少女</span>)</b>
+      <b id="gloss-demographics">Shōnen (少年) · Shōjo (少女)</b>
       <i>Géneros editoriales por público</i>
       <s>Shōnen: manga para chicos jóvenes (acción, amistad, superación). Shōjo: manga para chicas jóvenes (emociones, relaciones, identidad). No son géneros narrativos sino categorías editoriales.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-demographics-b">Seinen (<span lang="ja">青年</span>) · Josei (<span lang="ja">女性</span>)</b>
+      <b id="gloss-demographics-b">Seinen (青年) · Josei (女性)</b>
       <i>Géneros editoriales adultos</i>
       <s>Seinen: manga para hombres adultos — mayor complejidad narrativa y temática. Josei: manga para mujeres adultas — cotidianidad, romance realista, madurez emocional.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-gekiga">Gekiga (<span lang="ja">劇画</span>)</b>
+      <b id="gloss-gekiga">Gekiga (劇画)</b>
       <i>Imagen dramática</i>
       <s>Movimiento de los años 60 que reivindica un manga adulto, político y expresionista. Fundado por Yoshihiro Tatsumi como reacción al manga infantil de Tezuka.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-yokai">Yokai (<span lang="ja">妖怪</span>)</b>
+      <b id="gloss-yokai">Yokai (妖怪)</b>
       <i>Criatura sobrenatural del folklore japonés</i>
       <s>Amplia categoría de seres sobrenaturales — monstruos, espíritus, fenómenos animados — del imaginario popular japonés. Kappa, tanuki, kitsune y oni son los más conocidos.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-furigana">Furigana (<span lang="ja">振り仮名</span>)</b>
+      <b id="gloss-furigana">Furigana (振り仮名)</b>
       <i>Guía de pronunciación</i>
       <s>Caracteres fonéticos pequeños escritos junto a los kanjis para indicar su pronunciación. Presentes en manga infantil y escolar; ausentes en manga adulto. Indicador del nivel de dificultad lectora.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-taisho">Taishō Roman (<span lang="ja">大正ロマン</span>)</b>
+      <b id="gloss-taisho">Taishō Roman (大正ロマン)</b>
       <i>Romanticismo de la Era Taishō</i>
       <s>Estética nostálgica de la Era Taishō (1912–1926): mezcla de kimono y moda occidental, jazz, calles adoquinadas. El equivalente japonés del Art Déco europeo. Muy recuperada en el manga actual.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
       <b id="gloss-onomatopeya">Onomatopeya manga</b>
       <i>Sistema sonoro visual único</i>
-      <s>El manga japonés usa onomatopeyas no solo para ruidos sino para estados emocionales (<span lang="ja">ドキドキ</span>, corazón acelerado) y ambientales (<span lang="ja">しーん</span>, silencio absoluto). Sistema sin equivalente en el cómic occidental.</s>
+      <s>El manga japonés usa onomatopeyas no solo para ruidos sino para estados emocionales (ドキドキ, corazón acelerado) y ambientales (しーん, silencio absoluto). Sistema sin equivalente en el cómic occidental.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-koma">Koma (<span lang="ja">コマ</span>)</b>
+      <b id="gloss-koma">Koma (コマ)</b>
       <i>La viñeta</i>
       <s>Unidad mínima de narración en el manga. A diferencia del cómic occidental, el koma puede variar radicalmente de tamaño dentro de una misma página para marcar el ritmo. Una viñeta a página completa se llama <em>tobikomi</em>.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-fukidashi">Fukidashi (<span lang="ja">吹き出し</span>)</b>
+      <b id="gloss-fukidashi">Fukidashi (吹き出し)</b>
       <i>El bocadillo de texto</i>
       <s>Existe más de una docena de formas distintas, cada una con un significado preciso: redondo (voz normal), dentado (grito o sorpresa), nube (pensamiento), rectángulo (voz en off o narrador). La forma comunica tanto como las palabras.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-ma">Ma (<span lang="ja">間</span>)</b>
+      <b id="gloss-ma">Ma (間)</b>
       <i>El espacio entre viñetas</i>
       <s>El espacio en blanco entre dos koma que el lector rellena mentalmente. Es donde ocurre la acción invisible — la «clausura» en términos de Scott McCloud. Concepto fundamental para enseñar lectura multimodal e inferencia narrativa.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-chibi">Chibi (<span lang="ja">ちび</span>)</b>
+      <b id="gloss-chibi">Chibi (ちび)</b>
       <i>Estilo de proporción exagerada</i>
       <s>Personaje con cabeza desproporcionadamente grande y cuerpo pequeño. Se usa para expresar emoción intensa (ternura, vergüenza, humor) y está presente en el manga infantil y en los momentos cómicos del manga adulto. Muy reconocible por el alumnado de Infantil y Primaria.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-mangaka">Mangaka (<span lang="ja">漫画家</span>)</b>
+      <b id="gloss-mangaka">Mangaka (漫画家)</b>
       <i>Autor o autora de manga</i>
       <s>Término para designar a quien crea manga profesionalmente. A diferencia del cómic europeo, muchos mangaka trabajan solos guion y dibujo; otros trabajan con un asistente (<em>assistant</em>) o con un equipo. El ritmo de publicación semanal en revista impone condiciones de trabajo muy exigentes.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-jidaigeki">Jidaigeki (<span lang="ja">時代劇</span>)</b>
+      <b id="gloss-jidaigeki">Jidaigeki (時代劇)</b>
       <i>Drama histórico</i>
       <s>Género ambientado en el Japón preindustrial, especialmente en el período Edo. Equivale al <em>western</em> o al drama de época europeo. Muy presente en el fondo: Vagabond, Dororo, Usagi Yojimbo, El Lobo solitario y su cachorro.</s>
     </div>
     <div class="ac" style="border-left-color:var(--gold); background:rgba(255,252,235,.7);">
-      <b id="gloss-nichijokei">Nichijō-kei (<span lang="ja">日常系</span>)</b>
+      <b id="gloss-nichijokei">Nichijō-kei (日常系)</b>
       <i>La historia de lo cotidiano</i>
       <s>Subgénero centrado en la vida ordinaria sin conflicto central ni resolución dramática. El valor narrativo está en los momentos pequeños. Ejemplos en el fondo: Yotsuba!, Hirayasumi, El gourmet solitario. Muy accesible como entrada al manga para lectores nuevos.</s>
     </div>
@@ -5149,14 +5129,6 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <button type="button" class="search-clear" id="searchClear" aria-label="Limpiar búsqueda" onclick="clearSearch()" title="Limpiar (Escape)">✕</button>
   </div>
   <span id="searchCount" role="status" aria-live="polite" aria-atomic="true"></span>
-  <button type="button" id="copyFilteredBtn" onclick="copyFilteredList()"
-    title="Copiar la lista de títulos visibles al portapapeles"
-    style="display:none; font-family:'Cinzel',serif; font-size:.75rem; font-weight:700;
-           letter-spacing:.06em; text-transform:uppercase; padding:.3rem .85rem;
-           background:none; border:1.5px solid var(--rule); border-radius:3px;
-           color:var(--grey); cursor:pointer; white-space:nowrap; transition:all .15s;">
-    ↗ Copiar lista
-  </button>
 </div>
 
 <!-- ── CONTADOR DE EXPLORACIÓN ── -->
@@ -5195,13 +5167,13 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 <div class="cat-card-actions"><button type="button" class="cat-comp-btn" onclick="toggleComp(this)" title="Añadir al comparador">⊕ Comparar</button><button type="button" class="cat-ficha-btn" onclick="openFicha(this.closest('.cat-card'))" title="Ver ficha de aula">Ficha aula</button><button type="button" class="cat-ficha-btn" style="background:rgba(42,58,122,.08);border-color:rgba(42,58,122,.3)" onclick="openRubrica(this.closest('.cat-card'))" title="Generar rúbrica IA">Rúbrica IA</button><button type="button" class="cat-lectura-btn" onclick="openLectura(this.closest('.cat-card'))" title="Ficha de lectura guiada">Lectura</button></div><a class="cat-opac-link" href="https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3DEagle" target="_blank" rel="noopener noreferrer" aria-label="Buscar «Eagle» en el catálogo de la ULPGC">Ver en catálogo ULPGC →</a>
 </div>
     </div>
-    <div class="cat-card" data-uso="filosofia" data-nivel="secundaria"
-         data-tip="Una chica de tres ojos busca convertirse en humana. Manga de acción con mitología hindú. Trabaja identidad, dualidad y transformación. Para lectores de secundaria.">
-      <div class="cat-card-bar" style="background:#4A2A6A"></div>
+    <div class="cat-card" data-uso="ciencia" data-nivel="secundaria"
+         data-tip="Una chica de tres ojos busca convertirse en humana. Manga de acción con mitología hindú. Para lectores de secundaria.">
+      <div class="cat-card-bar" style="background:#1A5A8B"></div>
       <div class="cat-card-body">
         <span class="cat-title">3 x 3 eyes</span>
         <span class="cat-author">Yuzo Takada · 2019-</span>
-        <div class="cat-badges"><span class="cat-badge" style="background:#4A2A6A">Filosofía y ética</span></div>
+        <div class="cat-badges"><span class="cat-badge" style="background:#1A5A8B">Ciencia y tecnología</span></div>
         <div class="cat-nivel"><span class="niv-badge">Secundaria</span></div>
         <span class="periodo-badge" title="Contexto histórico occidental">Siglo XXI</span>
 <div class="cat-card-actions"><button type="button" class="cat-comp-btn" onclick="toggleComp(this)" title="Añadir al comparador">⊕ Comparar</button><button type="button" class="cat-ficha-btn" onclick="openFicha(this.closest('.cat-card'))" title="Ver ficha de aula">Ficha aula</button><button type="button" class="cat-ficha-btn" style="background:rgba(42,58,122,.08);border-color:rgba(42,58,122,.3)" onclick="openRubrica(this.closest('.cat-card'))" title="Generar rúbrica IA">Rúbrica IA</button><button type="button" class="cat-lectura-btn" onclick="openLectura(this.closest('.cat-card'))" title="Ficha de lectura guiada">Lectura</button></div><a class="cat-opac-link" href="https://opac.ulpgc.es/cgi-bin/abnetopac?ACCION=SREQ&q=TI%3D3+x+3+eyes" target="_blank" rel="noopener noreferrer" aria-label="Buscar «3 x 3 eyes» en el catálogo de la ULPGC">Ver en catálogo ULPGC →</a>
@@ -5212,7 +5184,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
       <div class="cat-card-bar" style="background:#5A3A1A"></div>
       <div class="cat-card-body">
         <span class="cat-title">Mangavisión : [Guía del tebeo japonés]</span>
-        <span class="cat-author">Trajano Bermúdez · 1995</span>
+        <span class="cat-author">Santiago García · 1995</span>
         <div class="cat-badges"><span class="cat-badge" style="background:#5A3A1A">Historia</span></div>
         <div class="cat-nivel"><span class="niv-badge">Bachillerato</span><span class="niv-badge">Universidad</span></div>
         <span class="periodo-badge" title="Contexto histórico occidental">Globalización · Posguerra Fría</span>
@@ -8551,6 +8523,11 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 </div>
     </div>
 
+    </div>
+  </div>
+
+
+
 <!-- ══════════════════ TABLA CURRÍCULO → MANGA ══════════════════ -->
 <div class="curriculo-section" id="curriculo">
   <h2>⊕ Del currículo al manga — tabla de correspondencias</h2>
@@ -8836,7 +8813,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         <h3>¿Qué sonido hace este dibujo?</h3>
         <div class="itin-meta">Ámbito: Comunicación y Representación · Eje: Alfabetización visual y educación musical</div>
         <ul>
-          <li><strong>Punto de partida:</strong> En el manga los dibujos tienen sonido propio: <span lang="ja">ドキドキ</span> (corazón acelerado), ドーン (explosión), しーん (silencio total). ¿Podemos hacer esos sonidos con el cuerpo?</li>
+          <li><strong>Punto de partida:</strong> En el manga los dibujos tienen sonido propio: ドキドキ (corazón acelerado), ドーン (explosión), しーん (silencio total). ¿Podemos hacer esos sonidos con el cuerpo?</li>
           <li><strong>Actividad 1:</strong> El docente muestra 4 onomatopeyas manga en tarjetas grandes. El grupo decide qué sonido corporal le corresponde a cada una (palmada, susurro, golpe en la mesa, silencio).</li>
           <li><strong>Actividad 2:</strong> Se proyecta una página de manga sin audio. El grupo la «sonoriza» en directo: cada viñeta tiene un sonido asignado y se ejecuta al pasarla.</li>
           <li><strong>Actividad 3:</strong> Cada alumno inventa una onomatopeya nueva para un sonido canario (el viento en el barranco, las olas, el silbido gomero) y la dibuja en estilo manga.</li>
@@ -9595,7 +9572,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«El libro que no tiene palabras» — ¿Cómo contamos sin letras?</h3>
-        <div class="sa-meta">Educación Infantil (2.º ciclo, 4–5 años) · Ámbito: Comunicación y Representación de la Realidad · Duración estimada: 3 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
+        <div class="sa-meta">Educación Infantil (2.º ciclo, 4–5 años) · Ámbito: Comunicación y Representación de la Realidad · Duración estimada: 3 semanas</div>
       </div>
       <div class="sa-body">
 
@@ -9680,7 +9657,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«Una biblioteca dentro de otra biblioteca» — El ratón de biblioteca en el aula</h3>
-        <div class="sa-meta">3.er ciclo de Primaria (5.º–6.º, 10–12 años) · Áreas: Lengua Castellana y Literatura + Ciencias Sociales · Duración estimada: 4 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
+        <div class="sa-meta">3.er ciclo de Primaria (5.º–6.º, 10–12 años) · Áreas: Lengua Castellana y Literatura + Ciencias Sociales · Duración estimada: 4 semanas</div>
       </div>
       <div class="sa-body">
 
@@ -9766,7 +9743,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«Lo que no se dice» — Silencio, elipsis y lectura multimodal</h3>
-        <div class="sa-meta">1.er ciclo de ESO (1.º–2.º, 12–14 años) · Áreas: Lengua Castellana y Literatura + Educación Plástica · Duración estimada: 3 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
+        <div class="sa-meta">1.er ciclo de ESO (1.º–2.º, 12–14 años) · Áreas: Lengua Castellana y Literatura + Educación Plástica · Duración estimada: 3 semanas</div>
       </div>
       <div class="sa-body">
 
@@ -9854,7 +9831,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«¿Puede un libro cambiar el mundo?» — Adolf y la responsabilidad del narrador</h3>
-        <div class="sa-meta">2.º ciclo de ESO (3.º–4.º, 14–16 años) · Áreas: Ciencias Sociales (Historia) + Lengua Castellana · Duración estimada: 4 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
+        <div class="sa-meta">2.º ciclo de ESO (3.º–4.º, 14–16 años) · Áreas: Ciencias Sociales (Historia) + Lengua Castellana · Duración estimada: 4 semanas</div>
       </div>
       <div class="sa-body">
 
@@ -9940,7 +9917,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
     <div class="sa-card">
       <div class="sa-header">
         <h3>«La máquina que siente» — Pluto y la filosofía de la mente en Bachillerato</h3>
-        <div class="sa-meta">Bachillerato (1.º–2.º, 16–18 años) · Materias: Filosofía + Historia de la Filosofía / Tecnología e Ingeniería · Duración estimada: 4 semanas &nbsp;·&nbsp; <span style="font-size:.8em;opacity:.75;">Revisión normativa: marzo 2026</span></div>
+        <div class="sa-meta">Bachillerato (1.º–2.º, 16–18 años) · Materias: Filosofía + Historia de la Filosofía / Tecnología e Ingeniería · Duración estimada: 4 semanas</div>
       </div>
       <div class="sa-body">
 
@@ -10016,7 +9993,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
 
         <div class="sa-block">
           <h4>7 · Recursos y materiales</h4>
-          <p>Título del fondo: <strong>Pluto</strong> (Naoki Urasawa, vol. 1–3) · <strong>Death Note</strong> (Ohba/Obata) — para el dilema del bien y el mal absoluto · Searle, J.: <a href="https://doi.org/10.1017/S0140525X00005756" target="_blank" rel="noopener noreferrer" style="color:inherit;">«Minds, Brains, and Programs» (1980)</a> — fragmento · Turing, A.: «Computing Machinery and Intelligence» (1950) — fragmento · Ethical Guidelines for Trustworthy AI, Comisión Europea (2019).</p>
+          <p>Título del fondo: <strong>Pluto</strong> (Naoki Urasawa, vol. 1–3) · <strong>Death Note</strong> (Ohba/Obata) — para el dilema del bien y el mal absoluto · Searle, J.: «Minds, Brains, and Programs» (1980) — fragmento · Turing, A.: «Computing Machinery and Intelligence» (1950) — fragmento · Ethical Guidelines for Trustworthy AI, Comisión Europea (2019).</p>
           <p class="sa-alternatives"><strong>Títulos alternativos del fondo:</strong> <strong>Tengo cáncer terminal, pero estoy bien</strong> (Hilnama) — para trabajar el eje de bioética, los límites de la tecnología médica y la dignidad de la persona; encaja especialmente bien con la variante de Tecnología e Ingeniería de esta SA · <strong>Patlabor</strong> (Masami Yuki) — tecnología, responsabilidad colectiva y consecuencias no previstas del desarrollo tecnológico; especialmente útil para el eje STEM y el debate sobre regulación de la IA · <strong>Hirayasumi</strong> (Shinzo Takamura) — para la apertura de la SA como provocación filosófica: ¿qué hace que una vida sea suficiente? Contraste entre la máquina que busca sentido (Pluto) y el humano que ya lo encontró sin buscarlo.</p>
         </div>
 
@@ -10484,24 +10461,24 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   <strong>Cómo citar este recurso</strong>
   <span>
     <strong style="font-size:.7rem;display:inline;text-transform:none;letter-spacing:0;">APA 7.ª ed.:</strong>
-    Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., &amp; Rodríguez Panadero, Z. (2026). <em>El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.</em> Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. <a href="https://danielulpgc.github.io/manga-biblioteca/" target="_blank" rel="noopener" style="color:var(--gold);word-break:break-all;">https://danielulpgc.github.io/manga-biblioteca/</a>
+    Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., &amp; Rodríguez Panadero, Z. (2026). <em>El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.</em> Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria.
     <button type="button" class="citation-copy" onclick="copyCitation()" aria-label="Copiar referencia APA al portapapeles">
       Copiar
     </button>
   </span>
   <br>
-  <span style="font-size:.76rem; color:var(--grey);">
+  <span style="font-size:.74rem; color:var(--grey); font-style:italic;">
     Última actualización: 26 de marzo de 2026 · v4.0 &nbsp;·&nbsp;
     Fondo: 279 títulos &nbsp;·&nbsp;
     Licencia de los contenidos propios: CC BY-NC 4.0 &nbsp;·&nbsp;
     Los derechos de los títulos reseñados pertenecen a sus respectivos autores y editoriales.
   </span>
   <br>
-  <span style="font-size:.78rem; color:var(--ink); margin-top:.35rem; display:inline-block; line-height:1.8; opacity:.85;">
-    <strong style="font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); font-weight:700;">Dirección</strong>
+  <span style="font-size:.76rem; color:var(--grey); margin-top:.35rem; display:inline-block; line-height:1.8;">
+    <strong style="font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); font-weight:700;">Dirección</strong>
     &nbsp;·&nbsp; Daniel Becerra Romero
     &nbsp;&nbsp;
-    <strong style="font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); font-weight:700;">Equipo</strong>
+    <strong style="font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); font-weight:700;">Equipo</strong>
     &nbsp;·&nbsp;
     Paula Arocha Moros &nbsp;·&nbsp;
     Lucía Hernández Chio &nbsp;·&nbsp;
@@ -10516,8 +10493,6 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
   Dir. Daniel Becerra Romero
   &nbsp;·&nbsp;
   Paula Arocha Moros · Lucía Hernández Chio · Daniel Hernández García · Zaira Rodríguez Panadero
-  &nbsp;·&nbsp;
-  <a href="mailto:daniel.becerra@ulpgc.es?subject=Recurso%20manga%20ULPGC%20—%20Sugerencia%20o%20corrección" style="color:inherit;text-decoration:underline dotted;font-size:.8em;" title="Enviar sugerencia o corrección al equipo">¿Sugerencia o error? Escríbenos →</a>
 </footer>
 
 
@@ -10648,7 +10623,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         </select>
       </div>
       <div class="sec-comp-group">
-        <label class="sec-comp-label">Competencias clave <span style="font-size:.75rem;opacity:.75">(una o varias)</span></label>
+        <label class="sec-comp-label">Competencias clave <span style="font-size:.6rem;opacity:.6">(una o varias)</span></label>
         <div class="sec-comp-checks" id="rubricaCompChecks">
           <label><input type="checkbox" value="CCL" checked> CCL — Lingüística</label>
           <label><input type="checkbox" value="CP"> CP — Plurilingüe</label>
@@ -10708,7 +10683,7 @@ button[onclick*="openRubrica"]:hover { background: rgba(58,26,106,.18); }
         </select>
       </div>
       <div class="sec-comp-group">
-        <label class="sec-comp-label">Competencias clave <span style="font-size:.75rem;opacity:.75">(selecciona una o varias)</span></label>
+        <label class="sec-comp-label">Competencias clave <span style="font-size:.6rem;opacity:.6">(selecciona una o varias)</span></label>
         <div class="sec-comp-checks" id="secCompChecks">
           <label><input type="checkbox" value="CCL" checked> CCL — Lingüística</label>
           <label><input type="checkbox" value="CP"> CP — Plurilingüe</label>
@@ -10945,9 +10920,7 @@ function applyFilters() {
 function filterUso(v) {
   activeUso = v;
   document.querySelectorAll('.fb-all-uso, [data-uso]').forEach(b => {
-    const isActive = b.dataset.uso === v;
-    b.classList.toggle('active', isActive);
-    if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    b.classList.toggle('active', b.dataset.uso === v);
   });
   applyFilters();
 }
@@ -10955,9 +10928,7 @@ function filterUso(v) {
 function filterNivel(v) {
   activeNivel = v;
   document.querySelectorAll('.fb-all-nivel, [data-nivel]').forEach(b => {
-    const isActive = b.dataset.nivel === v;
-    b.classList.toggle('active', isActive);
-    if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    b.classList.toggle('active', b.dataset.nivel === v);
   });
   applyFilters();
 }
@@ -11060,7 +11031,6 @@ function searchCatalog(q) {
       count.className = '';
     }
   }
-  updateCopyBtn();
 
   // Scroll to first result
   if (firstMatch && searching) {
@@ -11084,38 +11054,6 @@ function _restoreText(card) {
     titleEl.textContent = titleEl.textContent;
   if (authorEl?.querySelector('.search-hl'))
     authorEl.textContent = authorEl.textContent;
-}
-
-function copyFilteredList() {
-  const visible = Array.from(document.querySelectorAll('.cat-card'))
-    .filter(c => c.style.display !== 'none' && !c.classList.contains('hidden'));
-  if (!visible.length) return;
-  const lines = visible.map(c => {
-    const title  = c.querySelector('.cat-title')?.textContent?.trim() || '';
-    const author = c.querySelector('.cat-author')?.textContent?.trim() || '';
-    return `• ${title} — ${author}`;
-  });
-  const header = `Selección del catálogo — Aula de Cómic, Biblioteca ULPGC (${new Date().toLocaleDateString('es-ES')})\n${'─'.repeat(60)}\n`;
-  const text = header + lines.join('\n');
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyFilteredBtn');
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copiado';
-    btn.style.color = '#2a5a2a';
-    btn.style.borderColor = '#2a5a2a';
-    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 2500);
-  }).catch(() => {});
-}
-
-// Show/hide copy button based on filter activity
-function updateCopyBtn() {
-  const btn = document.getElementById('copyFilteredBtn');
-  if (!btn) return;
-  const total = document.querySelectorAll('.cat-card').length;
-  const visible = Array.from(document.querySelectorAll('.cat-card'))
-    .filter(c => c.style.display !== 'none' && !c.classList.contains('hidden')).length;
-  btn.style.display = (visible < total && visible > 0) ? 'inline-block' : 'none';
-  if (visible < total && visible > 0) btn.title = `Copiar ${visible} título${visible!==1?'s':''} visibles al portapapeles`;
 }
 
 function clearSearch() {
@@ -11287,7 +11225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── Copiar cita APA ──────────────────────────────────────────────
 function copyCitation() {
-  const text = `Becerra Romero, D. (Dir.), Arocha Moros, P., Hernández Chio, L., Hernández García, D., & Rodríguez Panadero, Z. (2026). El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico. Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. https://danielulpgc.github.io/manga-biblioteca/`;
+  const text = `Biblioteca del Campus del Obelisco · Aula de Cómic, Facultad de Ciencias de la Educación, Universidad de Las Palmas de Gran Canaria. (2026). El manga como recurso didáctico: línea del tiempo interactiva y catálogo pedagógico.`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.citation-copy');
     btn.textContent = '✓ Copiado';
@@ -12381,17 +12319,16 @@ Solo HTML: <h3><h4><p><ul><li><table><thead><tbody><tr><th><td>`;
   let apiKey = sessionStorage.getItem(SESS_KEY) || '';
   let hasWelcomed = false;
 
-  function extractCatalogContext() {
-    // Pasa TODAS las tarjetas en formato compacto para que el asistente conozca el fondo completo (279 títulos)
-    const cards = Array.from(document.querySelectorAll('.cat-card'));
+  function extractCatalogContext(limit = 120) {
+    const cards = Array.from(document.querySelectorAll('.cat-card')).slice(0, limit);
     if (!cards.length) return '';
+
     return cards.map(card => {
-      const title  = card.querySelector('.cat-title')?.textContent?.trim()  || '';
+      const title = card.querySelector('.cat-title')?.textContent?.trim() || '';
       const author = card.querySelector('.cat-author')?.textContent?.trim() || '';
-      const uso    = card.dataset.uso    || '';
-      const nivel  = card.dataset.nivel  || '';
-      // Formato compacto: una línea por título, sin descripción larga
-      return `${title}|${author}|${uso}|${nivel}`;
+      const usos = Array.from(card.querySelectorAll('.cat-badge')).map(el => el.textContent.trim()).join(', ');
+      const niveles = Array.from(card.querySelectorAll('.niv-badge')).map(el => el.textContent.trim()).join(', ');
+      return `• ${title} — ${author}${usos ? ' — uso: ' + usos : ''}${niveles ? ' — nivel: ' + niveles : ''}`;
     }).join('\n');
   }
 
@@ -12404,9 +12341,9 @@ Tu función es ayudar a docentes y visitantes a:
 - conectar títulos con el currículo LOMLOE y las competencias clave,
 - justificar pedagógicamente el uso del manga en el aula.
 
-Responde SIEMPRE en español académico, independientemente del idioma en que escriba el usuario. Este es el idioma de trabajo del recurso. Sé útil, concreto y profesional. Prioriza títulos reales del fondo mostrado en esta página.
+Responde siempre en español. Sé útil, concreto y profesional. Prioriza títulos reales del fondo mostrado en esta página.
 
-FONDO COMPLETO (279 títulos — formato: Título|Autor|Uso pedagógico|Nivel educativo):
+FONDO DISPONIBLE EN ESTA PÁGINA:
 ${catalogContext || 'Consulta el catálogo visible de la página para seleccionar títulos reales.'}`;
   }
 
